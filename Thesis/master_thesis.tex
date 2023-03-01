@@ -1,0 +1,83 @@
+\documentclass[12pt]{article}
+
+% Packages
+\usepackage{fontspec} % If used, change compiler to XeLaTex
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[british]{isodate}
+\usepackage{csquotes}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage[
+backend=biber,
+style=apa,
+sorting=nyt, % Sort by name, year, title
+backref=true,
+dateabbrev=false,
+language=british,
+urldate=long
+]{biblatex}
+\usepackage{xcolor}
+\usepackage[toc,page]{appendix}
+\usepackage{lettrine}
+\usepackage{svg}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{setspace}
+
+% Custom Settings
+\setmainfont{Times New Roman} % If the usepackage fontspec is active, you can set Times New Roman here
+\geometry{
+ a4paper,
+ right=25mm,
+ bottom=20mm,
+ left=25mm,
+ top=20mm}
+\urlstyle{same}
+\onehalfspacing
+\allowdisplaybreaks
+\renewcommand{\contentsname}{Table of Contents}
+\numberwithin{equation}{section}
+\usepackage{hyperref} % Load after everything else
+\usepackage{footnotebackref} % Brings you back to where the footnote is in the text
+\hypersetup{
+    colorlinks,
+    linkcolor=blue,
+    filecolor=blue,  
+    citecolor=blue,
+    urlcolor=blue}
+
+% Formalities
+\title{Title}
+\author{}
+\date{}
+
+
+\begin{document}
+\selectlanguage{british}
+\pagenumbering{gobble} % Turn page numbering off
+\maketitle
+
+\vspace{13cm}
+\begin{center}
+Supervisor: Gregor Böhl, PhD
+
+\vspace{2cm}
+Date of Submission: \printdate{2023-1-27}\\
+Author: Andreas Koundouros\\
+Matriculation Number: 3464688
+\end{center}
+
+\newpage
+\pagenumbering{roman} % Turn page numbering to small roman
+\begin{abstract}
+This is the abstract.
+\end{abstract}
+
+\newpage
+\pagenumbering{arabic} % Turn page numbering to small arabic
+Hello. This is the start of my test thesis.
+\end{document}
