@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.4.16)  1 MAR 2023 19:35
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.4.16)  7 MAR 2023 17:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1052,26 +1052,39 @@ File: se-ascii-print.def 2019/11/29 v1.12 stringenc: Printable ASCII characters
 )
 [1
 
-] [1]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 83.
+] (./master_thesis.toc)
+\tf@toc=\write5
+\openout5 = `master_thesis.toc'.
+
+ (./master_thesis.lof)
+\tf@lof=\write6
+\openout6 = `master_thesis.lof'.
+
+ (./master_thesis.lot)
+\tf@lot=\write7
+\openout7 = `master_thesis.lot'.
+
  [1]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 83.
+[1] [1]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 113.
+ [1]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 113.
  (./master_thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 83.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 83.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 113.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 113.
 Package rerunfilecheck Info: File `master_thesis.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+(rerunfilecheck)             Checksum: A02D95553E30B97FF125B1AA17CF9044;47.
 Package logreq Info: Writing requests to 'master_thesis.run.xml'.
 \openout1 = `master_thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24292 strings out of 479418
- 456091 string characters out of 5884585
- 1342550 words of memory out of 5000000
- 41487 multiletter control sequences out of 15000+600000
- 534214 words of font info for 49 fonts, out of 8000000 for 9000
+ 24316 strings out of 479418
+ 456574 string characters out of 5884585
+ 1343589 words of memory out of 5000000
+ 41499 multiletter control sequences out of 15000+600000
+ 534238 words of font info for 52 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  74i,5n,81p,824b,8067s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on master_thesis.pdf (3 pages).
+Output written on master_thesis.pdf (5 pages).
