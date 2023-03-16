@@ -1,0 +1,103 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global}
+    \entry{kaplan2018}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=f025571451540285659413736c0535d1}{%
+           family={Kaplan},
+           familyi={K\bibinitperiod},
+           given={Greg},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7fe93c2f2f4c52be0be4e911a995bd86}{%
+           family={Moll},
+           familyi={M\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0a5a837fc5db64a717ef5f2881870194}{%
+           family={Violante},
+           familyi={V\bibinitperiod},
+           given={Giovanni\bibnamedelima L},
+           giveni={G\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{837e5d26de17f82bdf8b210701320d93}
+      \strng{fullhash}{a9984a4c5e710de309da3b171bf15312}
+      \strng{bibnamehash}{a9984a4c5e710de309da3b171bf15312}
+      \strng{authorbibnamehash}{a9984a4c5e710de309da3b171bf15312}
+      \strng{authornamehash}{837e5d26de17f82bdf8b210701320d93}
+      \strng{authorfullhash}{a9984a4c5e710de309da3b171bf15312}
+      \field{sortinit}{K}
+      \field{sortinithash}{d3edc18d54b9438a72c24c925bfb38f4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{American Economic Review}
+      \field{number}{3}
+      \field{title}{{Monetary Policy According to HANK}}
+      \field{volume}{108}
+      \field{year}{2018}
+      \field{pages}{697\bibrangedash 743}
+      \range{pages}{47}
+    \endentry
+    \entry{sw2007}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=f78e4957877432f887653cd776f7ec8b}{%
+           family={Smets},
+           familyi={S\bibinitperiod},
+           given={Frank},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=271104365d8a3ae72ffe6ef9ca74ce39}{%
+           family={Wouters},
+           familyi={W\bibinitperiod},
+           given={Rafael},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{a0a01c0356237521a4dd9ef45801c9d9}
+      \strng{fullhash}{a0a01c0356237521a4dd9ef45801c9d9}
+      \strng{bibnamehash}{a0a01c0356237521a4dd9ef45801c9d9}
+      \strng{authorbibnamehash}{a0a01c0356237521a4dd9ef45801c9d9}
+      \strng{authornamehash}{a0a01c0356237521a4dd9ef45801c9d9}
+      \strng{authorfullhash}{a0a01c0356237521a4dd9ef45801c9d9}
+      \field{sortinit}{S}
+      \field{sortinithash}{c319cff79d99c853d775f88277d4e45f}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{American Economic Review}
+      \field{number}{3}
+      \field{title}{{Shocks and Frictions in US Business Cycles: A Bayesian DSGE Approach}}
+      \field{volume}{97}
+      \field{year}{2007}
+      \field{pages}{586\bibrangedash 606}
+      \range{pages}{21}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -4,3 +4,5 @@
 \babel@toc {british}{}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{References}{I}{section*.4}%

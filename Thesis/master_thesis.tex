@@ -32,6 +32,25 @@ urldate=long
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Custom Settings
+\addbibresource{master_thesis.bib}
+\setlength\bibitemsep{1.5\itemsep}
+\renewcommand*{\finentrypunct}{}
+\renewbibmacro*{pageref}{%
+  \addperiod% NEW
+  \iflistundef{pageref}
+    {}
+%    {\printtext[parens]{% DELETED
+    {\newline\footnotesize\printtext[parens]{% NEW
+       \ifnumgreater{\value{pageref}}{1}
+         {\bibstring{backrefpages}\ppspace}
+     {\bibstring{backrefpage}\ppspace}%
+ %      \printlist[pageref][-\value{listtotal}]{pageref}}}}% DELETED
+       \printlist[pageref][-\value{listtotal}]{pageref}}}}% NEW
+\DefineBibliographyStrings{english}{
+  backrefpage={Cited on page},
+  backrefpages={Cited on pages}
+}
+
 \setmainfont{Times New Roman} % If the usepackage fontspec is active, you can set Times New Roman here
 \geometry{
  a4paper,
@@ -42,7 +61,10 @@ urldate=long
 \urlstyle{same}
 \onehalfspacing
 \allowdisplaybreaks
-\renewcommand{\contentsname}{Table of Contents}
+\addto\captionsbritish{% Replace "english" with the language you use
+  \renewcommand{\contentsname}%
+    {Table of Contents}%
+}
 \numberwithin{equation}{section}
 \usepackage{hyperref} % Load after everything else
 \usepackage{footnotebackref} % Brings you back to where the footnote is in the text
@@ -113,7 +135,13 @@ This is the abstract.
 \newpage
 \pagenumbering{arabic} % Turn page numbering to small arabic
 \section{Introduction}
-This is the start of my test thesis.
+This is the start of my test thesis. And here we have \textcite{kaplan2018} and \textcite{sw2007}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\pagenumbering{Roman}
+\printbibliography[heading=bibintoc]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
