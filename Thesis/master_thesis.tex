@@ -28,12 +28,17 @@ urldate=long
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{setspace}
+\usepackage[symbols, nopostdot, automake, nonumberlist]{glossaries}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Custom Settings
 \addbibresource{master_thesis.bib}
+
 \setlength\bibitemsep{1.5\itemsep}
+
 \renewcommand*{\finentrypunct}{}
 \renewbibmacro*{pageref}{%
   \addperiod% NEW
@@ -52,33 +57,68 @@ urldate=long
 }
 
 \setmainfont{Times New Roman} % If the usepackage fontspec is active, you can set Times New Roman here
-\geometry{
+
+\geometry{ % Adjust paper geometry
  a4paper,
  right=25mm,
  bottom=20mm,
  left=25mm,
  top=20mm}
-\urlstyle{same}
-\onehalfspacing
-\allowdisplaybreaks
-\addto\captionsbritish{% Replace "english" with the language you use
+\urlstyle{same} % Make URL font the same with the rest of the document
+\onehalfspacing % Adjust spacing
+\allowdisplaybreaks % Allow for breaks in equations across pages
+\addto\captionsbritish{ % Replace "english" with the language you use
   \renewcommand{\contentsname}%
     {Table of Contents}%
+} % Adjust title of the table of contents
+\numberwithin{equation}{section} % Number equations with sections
+\setcounter{tocdepth}{2}			% levels which are displayed in the table of contents
+
+\pagestyle{plain}
+
+% Define a custom name format that prints names in bold
+\DeclareNameWrapperFormat{sortname}{\mkbibbold{#1}}
+\DeclareNameWrapperAlias{author}{sortname}
+\DeclareNameWrapperAlias{editor}{sortname}
+\DeclareNameWrapperAlias{translator}{sortname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Glossary
+\makeglossaries 
+
+% Glossary entries
+\newglossaryentry{nk}{
+name=NK,
+description={New Keynesian}
 }
-\numberwithin{equation}{section}
+
+\newglossaryentry{ha}{
+name=HA,
+description={Heterogeneous Agent}
+}
+
+\newglossaryentry{hank}{
+name=HANK,
+description={Heterogeneous Agent New Keynesian}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% hyperref package
 \usepackage{hyperref} % Load after everything else
 \usepackage{footnotebackref} % Brings you back to where the footnote is in the text
-\hypersetup{
+\hypersetup{ 
     colorlinks,
     linkcolor=blue,
     filecolor=blue,  
     citecolor=blue,
-    urlcolor=blue}
+    urlcolor=blue} % Setup with the hyperref package
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Formalities
-\title{Title of the Master Thesis}
+\title{Non-Linear Transitions to\\Tighter Borrowing in HANK}
 \author{}
 \date{}
 
@@ -92,9 +132,9 @@ urldate=long
 \begin{document}
 \selectlanguage{british}
 \pagenumbering{gobble} % Turn page numbering off
-\maketitle
+\maketitle % Create title
 
-\vspace{5cm}
+\vspace{4cm}
 \begin{center}
 Master Thesis Presented to the\\
 Department of Economics at the\\
@@ -106,46 +146,116 @@ Master of Science (M.Sc.)
 
 \vspace{5cm}
 \begin{center}
-Supervisor: Gregor Böhl, PhD
-
-\vspace{2cm}
-Date of Submission: \printdate{2023-1-27}\\
-Author: Andreas Koundouros\\
-Matriculation Number: 3464688
+\begin{tabular}{ l l }
+Supervisors: & Prof.~Dr.~Keith Kuester \\
+& Dr.~Gregor Böhl \\
+& \\
+& \\
+Date of Submission: & \printdate{2023-8-23}\\
+Author: & Andreas Koundouros\\
+Matriculation Number: & 3466868
+\end{tabular}
 \end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\pagenumbering{arabic} % Turn page numbering to small arabic
+\section*{Master Thesis Research Idea}
+
+\begin{center}
+\textbf{Non-Linear Transitions to Tighter Borrowing in HANK}
+\end{center}
+
+My aim is to study the dynamic implications of a tightening of the household-level borrowing constraint in a macroeconomic model with heterogeneous agents (\Gls{ha}). My work follows and extends the analysis by \textcite{gl2017}, who consider a permanently tighter borrowing limit in a model without an aggregate state space. My extension would thus pertain to adding a medium-scale New Keynesian (\Gls{nk}) structure to their model. In doing so, I aim to include some form of aggregate financial frictions, potentially along the lines of the recent work by \textcite{zoch2022}.
+
+Having obtained a full \Gls{hank} model, I will investigate the non-linear transition dynamics from an initial steady state to a state of permanently tighter credit and thus shed light on aggregate and household-level consequences of such a structural change.
+
+\bigskip
+
+The model and its dynamics will be solved using the Python package \texttt{Econpizza} by \textcite{boehl2023econpizza} and the methods therein.
+
+\bigskip
+
+\printbibliography[heading=bibintoc] % Insert references
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \pagenumbering{roman} % Turn page numbering to small roman
 { \hypersetup{hidelinks} \tableofcontents } % Hide links in table of contents
+
+\newpage
 { \hypersetup{hidelinks} \listoffigures } % Hide links in list of figures
 { \hypersetup{hidelinks} \listoftables } % Hide links in list of tables
+
+% Add here list of abbreviations and list of symbols 
+\newpage
+\setlist[description]{leftmargin=!, labelwidth=5em} % Change for glossaries
+\printglossary[title=List of Abbreviations]
+\setlist[description]{style=standard} % Reset settings back to default
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\pagenumbering{roman} % Turn page numbering to small roman
-\begin{abstract}
-This is the abstract.
+\begin{abstract} % Create abstract
+Abstract goes here.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+\section*{To-Do's}
+\begin{enumerate}
+\item[--] read literature
+\item[--] think about the relevance of the model (might it be a good idea to have some data as exposition in the thesis?)
+\end{enumerate}
+
+\section*{To-Read}
+%\textcite{kaplan2018}, \textcite{sw2007}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \pagenumbering{arabic} % Turn page numbering to small arabic
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\leftmark}
+\fancyfoot[C]{\thepage}
+\thispagestyle{plain}
 \section{Introduction}
-This is the start of my test thesis. And here we have \textcite{kaplan2018} and \textcite{sw2007}.
+\label{sec:introduction}
+
+\subsubsection*{Outline}
+\label{sec:outline}
+The remainder of this thesis is structured as follows. Section \ref{sec:literature} reviews the related literature.
+
+\section{Related Literature}
+\label{sec:literature}
+
+\section{Model}
+\label{sec:model}
+
+\section{Implementation and Calibration}
+\label{sec:implementation}
+
+\section{Results}
+\label{sec:results}
+
+\section{Conclusion}
+\label{sec:conclusion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+\thispagestyle{plain}
 \pagenumbering{Roman}
-\printbibliography[heading=bibintoc]
+%\printbibliography[heading=bibintoc] % Insert references
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+\thispagestyle{plain}
 \pagenumbering{gobble} % Turn page numbering off
 \section*{Statement of Authorship}
 I hereby confirm that the work presented has been performed and interpreted solely by myself except for where I explicitly identified the contrary. I assure that this work has not been presented in any other form for the fulfillment of any other degree or qualification. Ideas taken from other works in letter and in spirit are identified in every single case.
@@ -154,7 +264,7 @@ I hereby confirm that the work presented has been performed and interpreted sole
 \noindent
 \rule{8cm}{0.4pt}\\
 Andreas Koundouros\\
-Bonn, the \printdate{2023-1-27}
+Bonn, the \printdate{2023-8-23}
 \end{document}
 % End Document
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

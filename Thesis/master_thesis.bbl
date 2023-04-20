@@ -19,83 +19,123 @@
 
 \refsection{0}
   \datalist[entry]{nyt/global//global/global}
-    \entry{kaplan2018}{article}{}
-      \name{author}{3}{}{%
-        {{un=0,uniquepart=base,hash=f025571451540285659413736c0535d1}{%
-           family={Kaplan},
-           familyi={K\bibinitperiod},
-           given={Greg},
+    \entry{boehl2023econpizza}{misc}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=32d43afd493165498106c852e8be8062}{%
+           family={Boehl},
+           familyi={B\bibinitperiod},
+           given={Gregor},
            giveni={G\bibinitperiod},
            givenun=0}}%
-        {{un=0,uniquepart=base,hash=7fe93c2f2f4c52be0be4e911a995bd86}{%
-           family={Moll},
-           familyi={M\bibinitperiod},
-           given={Benjamin},
-           giveni={B\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=0a5a837fc5db64a717ef5f2881870194}{%
-           family={Violante},
-           familyi={V\bibinitperiod},
-           given={Giovanni\bibnamedelima L},
-           giveni={G\bibinitperiod\bibinitdelim L\bibinitperiod},
-           givenun=0}}%
       }
-      \strng{namehash}{837e5d26de17f82bdf8b210701320d93}
-      \strng{fullhash}{a9984a4c5e710de309da3b171bf15312}
-      \strng{bibnamehash}{a9984a4c5e710de309da3b171bf15312}
-      \strng{authorbibnamehash}{a9984a4c5e710de309da3b171bf15312}
-      \strng{authornamehash}{837e5d26de17f82bdf8b210701320d93}
-      \strng{authorfullhash}{a9984a4c5e710de309da3b171bf15312}
-      \field{sortinit}{K}
-      \field{sortinithash}{d3edc18d54b9438a72c24c925bfb38f4}
+      \strng{namehash}{32d43afd493165498106c852e8be8062}
+      \strng{fullhash}{32d43afd493165498106c852e8be8062}
+      \strng{bibnamehash}{32d43afd493165498106c852e8be8062}
+      \strng{authorbibnamehash}{32d43afd493165498106c852e8be8062}
+      \strng{authornamehash}{32d43afd493165498106c852e8be8062}
+      \strng{authorfullhash}{32d43afd493165498106c852e8be8062}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
       \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{American Economic Review}
-      \field{number}{3}
-      \field{title}{{Monetary Policy According to HANK}}
-      \field{volume}{108}
-      \field{year}{2018}
-      \field{pages}{697\bibrangedash 743}
-      \range{pages}{47}
+      \field{howpublished}{\url{https://gregorboehl.com/live/hank_speed_boehl.pdf}}
+      \field{title}{{Robust Nonlinear Transition Dynamics in HANK}}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2023}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://gregorboehl.com/live/hank_speed_boehl.pdf
+      \endverb
+      \verb{url}
+      \verb https://gregorboehl.com/live/hank_speed_boehl.pdf
+      \endverb
     \endentry
-    \entry{sw2007}{article}{}
+    \entry{zoch2022}{report}{}
       \name{author}{2}{}{%
-        {{un=0,uniquepart=base,hash=f78e4957877432f887653cd776f7ec8b}{%
-           family={Smets},
-           familyi={S\bibinitperiod},
-           given={Frank},
-           giveni={F\bibinitperiod},
+        {{un=0,uniquepart=base,hash=32ca53db369e3723549ad936979285c3}{%
+           family={Chiang},
+           familyi={C\bibinitperiod},
+           given={Yu-Ting},
+           giveni={Y\bibinithyphendelim T\bibinitperiod},
            givenun=0}}%
-        {{un=0,uniquepart=base,hash=271104365d8a3ae72ffe6ef9ca74ce39}{%
-           family={Wouters},
-           familyi={W\bibinitperiod},
-           given={Rafael},
-           giveni={R\bibinitperiod},
+        {{un=0,uniquepart=base,hash=22cecbd7436683c44c57f63a9a09d635}{%
+           family={Zoch},
+           familyi={Z\bibinitperiod},
+           given={Piotr},
+           giveni={P\bibinitperiod},
            givenun=0}}%
       }
-      \strng{namehash}{a0a01c0356237521a4dd9ef45801c9d9}
-      \strng{fullhash}{a0a01c0356237521a4dd9ef45801c9d9}
-      \strng{bibnamehash}{a0a01c0356237521a4dd9ef45801c9d9}
-      \strng{authorbibnamehash}{a0a01c0356237521a4dd9ef45801c9d9}
-      \strng{authornamehash}{a0a01c0356237521a4dd9ef45801c9d9}
-      \strng{authorfullhash}{a0a01c0356237521a4dd9ef45801c9d9}
-      \field{sortinit}{S}
-      \field{sortinithash}{c319cff79d99c853d775f88277d4e45f}
+      \list{institution}{1}{%
+        {St. Louis Fed}%
+      }
+      \strng{namehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{fullhash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{bibnamehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{authorbibnamehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{authornamehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{authorfullhash}{34f7750e878683b1bef80e8af35c9b29}
+      \field{sortinit}{C}
+      \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
       \field{extradatescope}{labelyear}
       \field{labeldatesource}{year}
       \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{American Economic Review}
+      \field{number}{2022-038}
+      \field{title}{{Asset Supply and Liquidty Transformation in HANK}}
+      \field{type}{Working Paper}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2023}
+      \field{year}{2022}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://research.stlouisfed.org/wp/more/2022-038
+      \endverb
+      \verb{url}
+      \verb https://research.stlouisfed.org/wp/more/2022-038
+      \endverb
+    \endentry
+    \entry{gl2017}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=6ddbbd4da1ad4e9e94f3f2f12045ddb2}{%
+           family={Guerrieri},
+           familyi={G\bibinitperiod},
+           given={Veronica},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=639dead8884f90e89000e97090809f8c}{%
+           family={Lorenzoni},
+           familyi={L\bibinitperiod},
+           given={Guido},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{f2c0ef0b0a130dc0a99e206c947608c7}
+      \strng{fullhash}{f2c0ef0b0a130dc0a99e206c947608c7}
+      \strng{bibnamehash}{f2c0ef0b0a130dc0a99e206c947608c7}
+      \strng{authorbibnamehash}{f2c0ef0b0a130dc0a99e206c947608c7}
+      \strng{authornamehash}{f2c0ef0b0a130dc0a99e206c947608c7}
+      \strng{authorfullhash}{f2c0ef0b0a130dc0a99e206c947608c7}
+      \field{sortinit}{G}
+      \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Quarterly Journal of Economics}
       \field{number}{3}
-      \field{title}{{Shocks and Frictions in US Business Cycles: A Bayesian DSGE Approach}}
-      \field{volume}{97}
-      \field{year}{2007}
-      \field{pages}{586\bibrangedash 606}
-      \range{pages}{21}
+      \field{title}{{Credit Crises, Precautionary Savings, and the Liquidity Trap}}
+      \field{volume}{132}
+      \field{year}{2017}
+      \field{pages}{1427\bibrangedash 1467}
+      \range{pages}{41}
     \endentry
   \enddatalist
 \endrefsection
