@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.4.16)  20 APR 2023 15:37
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.4.16)  21 APR 2023 22:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1205,7 +1205,7 @@ File: se-ascii-print.def 2019/11/29 v1.12 stringenc: Printable ASCII characters
 
 \openout4 = `master_thesis.ist'.
 
-] [1] (./master_thesis.toc)
+] [1] [2] (./master_thesis.toc)
 \tf@toc=\write8
 \openout8 = `master_thesis.toc'.
 
@@ -1213,13 +1213,13 @@ File: se-ascii-print.def 2019/11/29 v1.12 stringenc: Printable ASCII characters
 \tf@lof=\write9
 \openout9 = `master_thesis.lof'.
 
- (./master_thesis.lot)
+
+(./master_thesis.lot)
 \tf@lot=\write10
 \openout10 = `master_thesis.lot'.
 
-
-[2] (./master_thesis.gls) [3] [4] [5] [1]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 268.
+ [2] (./master_thesis.gls) [3] [4] [1]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 265.
  [1
 runsystem(makeindex -s master_thesis.ist -t master_thesis.glg -o master_thesis.
 gls master_thesis.glo)...executed safely (allowed).
@@ -1228,10 +1228,11 @@ runsystem(makeindex -s master_thesis.ist -t master_thesis.slg -o master_thesis.
 sls master_thesis.slo)...executed safely (allowed).
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
- (./master_thesis.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 268.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 268.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 265.
+
+(./master_thesis.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 265.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 265.
 Package rerunfilecheck Info: File `master_thesis.out' has not changed.
 (rerunfilecheck)             Checksum: FD088DFE32F6D4F19C8918070DF2EFA1;347.
 Package logreq Info: Writing requests to 'master_thesis.run.xml'.
@@ -1241,7 +1242,7 @@ Package logreq Info: Writing requests to 'master_thesis.run.xml'.
 Here is how much of TeX's memory you used:
  30523 strings out of 479418
  578457 string characters out of 5884585
- 1504910 words of memory out of 5000000
+ 1504927 words of memory out of 5000000
  47569 multiletter control sequences out of 15000+600000
  537680 words of font info for 68 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
