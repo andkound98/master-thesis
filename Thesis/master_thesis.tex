@@ -35,9 +35,11 @@ urldate=long
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Custom Settings
-\addbibresource{master_thesis.bib}
+\addbibresource{master_thesis.bib} % Add bib source
 
-\setlength\bibitemsep{1.5\itemsep}
+\setlength\bibitemsep{1.5\itemsep} % Adjust distance of reference entries
+
+\renewcommand*\appendixpagename{\Large Appendices} % Adjust size of title of the appendices section
 
 \renewcommand*{\finentrypunct}{}
 \renewbibmacro*{pageref}{%
@@ -151,7 +153,7 @@ Supervisors: & Prof.~Dr.~Keith Kuester \\
 & Dr.~Gregor Böhl \\
 & \\
 & \\
-Date of Submission: & \printdate{2023-8-23}\\
+Date of Submission: & \printdate{2023-8-24}\\
 Author: & Andreas Koundouros\\
 Matriculation Number: & 3466868
 \end{tabular}
@@ -174,10 +176,6 @@ Having obtained a full \Gls{hank} model, I will investigate the non-linear trans
 \bigskip
 
 The model and its dynamics will be solved using the Python package \texttt{Econpizza} by \textcite{boehl2023econpizza} and the methods therein.
-
-\bigskip
-
-\printbibliography[heading=bibintoc] % Insert references
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,12 +221,16 @@ Abstract goes here.
 \section{Introduction}
 \label{sec:introduction}
 
+Households face limits to borrowing. This almost trivial observation has a plethora of implications not only for households themselves but also for the aggregate economy.
+
 \subsubsection*{Outline}
 \label{sec:outline}
 The remainder of this thesis is structured as follows. Section \ref{sec:literature} reviews the related literature. Section \ref{sec:model} lays down the macroeconomic model, the numerical implementation and calibration of which is discussed in section \ref{sec:implementation}. Thereafter, section \ref{sec:results} presents the results and section \ref{sec:conclusion} concludes.
 
 \section{Related Literature}
 \label{sec:literature}
+
+The work that is most closely related to the present one is \textcite{gl2017}. The authors, building on the working paper version \textcite{}, take a household-centered approach to study the transitional effects of an unexpected and permanent tightening in the household-level borrowing limit. 
 
 \section{Model}
 \label{sec:model}
@@ -244,10 +246,21 @@ The remainder of this thesis is structured as follows. Section \ref{sec:literatu
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% References section
 \newpage
 \thispagestyle{plain}
 \pagenumbering{Roman}
-%\printbibliography[heading=bibintoc] % Insert references
+\printbibliography[heading=bibintoc] % Insert references
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendices section
+\newpage
+\thispagestyle{plain}
+\pagenumbering{roman}
+\begin{appendices}
+\section{Description of Computer Codes}
+\end{appendices}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -261,7 +274,7 @@ I hereby confirm that the work presented has been performed and interpreted sole
 \noindent
 \rule{8cm}{0.4pt}\\
 Andreas Koundouros\\
-Bonn, the \printdate{2023-8-23}
+Bonn, the \printdate{2023-8-24}
 \end{document}
 % End Document
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

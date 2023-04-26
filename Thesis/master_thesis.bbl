@@ -132,10 +132,23 @@
       \field{journaltitle}{The Quarterly Journal of Economics}
       \field{number}{3}
       \field{title}{{Credit Crises, Precautionary Savings, and the Liquidity Trap}}
+      \field{urlday}{24}
+      \field{urlmonth}{4}
+      \field{urlyear}{2023}
       \field{volume}{132}
       \field{year}{2017}
+      \field{urldateera}{ce}
       \field{pages}{1427\bibrangedash 1467}
       \range{pages}{41}
+      \verb{doi}
+      \verb https://doi.org/10.1093/qje/qjx005
+      \endverb
+      \verb{urlraw}
+      \verb https://academic.oup.com/qje/article-abstract/132/3/1427/3071924?redirectedFrom=fulltext&login=false
+      \endverb
+      \verb{url}
+      \verb https://academic.oup.com/qje/article-abstract/132/3/1427/3071924?redirectedFrom=fulltext&login=false
+      \endverb
     \endentry
   \enddatalist
 \endrefsection
