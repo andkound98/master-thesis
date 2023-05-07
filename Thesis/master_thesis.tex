@@ -105,6 +105,11 @@ name=HANK,
 description={Heterogeneous Agent New Keynesian}
 }
 
+\newglossaryentry{gfc}{
+name=GFC,
+description={Great Financial Crisis}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hyperref package
@@ -153,38 +158,11 @@ Supervisors: & Prof.~Dr.~Keith Kuester \\
 & Dr.~Gregor Böhl \\
 & \\
 & \\
-Date of Submission: & \printdate{2023-8-24}\\
+Date of Submission: & \printdate{2023-8-25}\\
 Author: & Andreas Koundouros\\
 Matriculation Number: & 3466868
 \end{tabular}
 \end{center}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\pagenumbering{arabic} % Turn page numbering to small arabic
-\section*{Master Thesis Research Idea}
-
-\begin{center}
-\textbf{Financial Constraints and Household Heterogeneity in the Macroeconomy}
-\end{center}
-
-My aim is to study the dynamic implications of a tightening of the household-level borrowing constraint in a macroeconomic model with heterogeneous agents (\Gls{ha}). My work follows and extends the analysis by \textcite{gl2017}, who consider a permanently tighter borrowing limit in a model without an aggregate state space. My extension would thus pertain to adding a medium-scale New Keynesian (\Gls{nk}) structure to their model. In doing so, I aim to include some form of aggregate financial frictions, potentially along the lines of the recent work by \textcite{zoch2022}.
-
-Having obtained a full \Gls{hank} model, I will investigate the non-linear transition dynamics from an initial steady state to a state of permanently tighter credit and thus shed light on aggregate and household-level consequences of such a structural change.
-
-\bigskip
-
-The model and its dynamics will be solved using the Python package \texttt{Econpizza} by \textcite{boehl2023econpizza} and the methods therein.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\section*{To-Do's}
-\begin{enumerate}
-\item[--] read literature
-\item[--] think about the relevance of the model (might it be a good idea to have some data as exposition in the thesis?)
-\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -221,7 +199,13 @@ Abstract goes here.
 \section{Introduction}
 \label{sec:introduction}
 
-Households face limits to borrowing. This almost trivial observation has a plethora of implications not only for households themselves but also for the aggregate economy.
+Households face limits to borrowing. This limit to borrowing is usually much harsher than the so-called natural borrowing limit, which is commonly defined as the expected net present value of an individual's income stream.
+
+The presence of a borrowing limit has consequences not only for individual households but also for the economy as a whole. The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).
+
+Since at least the Great Depression economists have aknowledged the importance of debt, leverage and limits to both of these. The Great Financial Crisis (\Gls{gfc}) was a vivid reminder of how developments in finance, including credit and limits to credit, affect households and the macroeconomy. 
+
+The model and its dynamics are solved with the Python package \texttt{Econpizza} by \textcite{boehl2023econpizza} and the methods therein.
 
 \subsubsection*{Outline}
 \label{sec:outline}
@@ -230,16 +214,49 @@ The remainder of this thesis is structured as follows. Section \ref{sec:literatu
 \section{Related Literature}
 \label{sec:literature}
 
-The work that is most closely related to the present one is \textcite{gl2017}. The authors, building on the working paper version \textcite{}, take a household-centered approach to study the transitional effects of an unexpected and permanent tightening in the household-level borrowing limit. 
+This section reviews two strands of the literature which the present thesis is most closely related to: household heterogeneity and financial constraints in the macroeconomy. Before discussing each fields in turn, I briefly highlight the findings of \textcite{gl2017}, the paper that this thesis is most closely related to. 
+
+\textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
+
+\subsection{Household Heterogeneity in the Macroeconomy}
+\label{sec:literature-hetero}
+
+\subsection{Financial Constraints in the Macroeconomy}
+\label{sec:literature-finance}
 
 \section{Model}
 \label{sec:model}
+
+\subsection{The Household Side}
+\label{sec:model-hh}
+
+Households are subject to idiosyncratic, i.e.~household-level, risk. They can self-insure by saving and borrowing in one-period, rsik-free and perfectly liquid bonds.
+
+A note on the asset structure is in order. The one-asset framework seems to be in contradiction to what we find in reality, where households can choose from a variety of assets to self-insure. 
+
+\subsection{The Firm Side}
+\label{sec:model-firms}
+
+\subsection{Fiscal Policy}
+\label{sec:model-fiscal}
+
+\subsection{Monetary Policy}
+\label{sec:model-monetary}
 
 \section{Implementation and Calibration}
 \label{sec:implementation}
 
 \section{Results}
 \label{sec:results}
+
+\subsection{Comparison of Steady States}
+\label{sec:results-stst}
+
+\subsection{Transitional Dynamics}
+\label{sec:results-transition}
+
+\section{Sensitivity Analyses}
+\label{sec:sensitivity}
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -274,7 +291,7 @@ I hereby confirm that the work presented has been performed and interpreted sole
 \noindent
 \rule{8cm}{0.4pt}\\
 Andreas Koundouros\\
-Bonn, the \printdate{2023-8-24}
+Bonn, the \printdate{2023-8-25}
 \end{document}
 % End Document
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

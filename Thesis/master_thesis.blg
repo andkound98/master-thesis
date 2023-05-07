@@ -1,17 +1,17 @@
 [0] Config.pm:304> INFO - This is Biber 2.14
 [0] Config.pm:307> INFO - Logfile is 'master_thesis.blg'
-[137] biber-darwin:322> INFO - === Mon Apr 24, 2023, 21:19:59
-[163] Biber.pm:415> INFO - Reading 'master_thesis.bcf'
-[279] Biber.pm:943> INFO - Found 3 citekeys in bib section 0
-[297] Biber.pm:4256> INFO - Processing section 0
-[297] Utils.pm:75> INFO - Globbing data source 'master_thesis.bib'
-[297] Utils.pm:91> INFO - Globbed data source 'master_thesis.bib' to master_thesis.bib
-[310] Biber.pm:4455> INFO - Looking for bibtex format file 'master_thesis.bib' for section 0
-[311] bibtex.pm:1653> INFO - LaTeX decoding ...
-[322] bibtex.pm:1471> INFO - Found BibTeX data source 'master_thesis.bib'
-[371] UCollate.pm:68> INFO - Overriding locale 'en-GB' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[371] UCollate.pm:68> INFO - Overriding locale 'en-GB' defaults 'variable = shifted' with 'variable = non-ignorable'
-[371] Biber.pm:4084> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'en-GB'
-[371] Biber.pm:4090> INFO - No sort tailoring available for locale 'en-GB'
-[383] bbl.pm:652> INFO - Writing 'master_thesis.bbl' with encoding 'UTF-8'
-[386] bbl.pm:755> INFO - Output to master_thesis.bbl
+[97] biber-darwin:322> INFO - === Mon May  1, 2023, 21:27:42
+[113] Biber.pm:415> INFO - Reading 'master_thesis.bcf'
+[219] Biber.pm:943> INFO - Found 2 citekeys in bib section 0
+[241] Biber.pm:4256> INFO - Processing section 0
+[241] Utils.pm:75> INFO - Globbing data source 'master_thesis.bib'
+[241] Utils.pm:91> INFO - Globbed data source 'master_thesis.bib' to master_thesis.bib
+[255] Biber.pm:4455> INFO - Looking for bibtex format file 'master_thesis.bib' for section 0
+[257] bibtex.pm:1653> INFO - LaTeX decoding ...
+[269] bibtex.pm:1471> INFO - Found BibTeX data source 'master_thesis.bib'
+[318] UCollate.pm:68> INFO - Overriding locale 'en-GB' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[318] UCollate.pm:68> INFO - Overriding locale 'en-GB' defaults 'variable = shifted' with 'variable = non-ignorable'
+[318] Biber.pm:4084> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'en-GB'
+[318] Biber.pm:4090> INFO - No sort tailoring available for locale 'en-GB'
+[328] bbl.pm:652> INFO - Writing 'master_thesis.bbl' with encoding 'UTF-8'
+[331] bbl.pm:755> INFO - Output to master_thesis.bbl
