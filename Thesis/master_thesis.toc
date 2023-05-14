@@ -7,15 +7,15 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2}Related Literature}{1}{section.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Household Heterogeneity in the Macroeconomy}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.1}Household Heterogeneity in the Macroeconomy}{1}{subsection.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Financial Constraints in the Macroeconomy}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Financial Constraints in the Macroeconomy}{1}{subsection.2.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Model}{2}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}The Household Side}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}Households}{2}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}The Firm Side}{2}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Firms}{2}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.3}Fiscal Policy}{2}{subsection.3.3}%
 \defcounter {refsection}{0}\relax 
