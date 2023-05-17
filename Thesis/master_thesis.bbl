@@ -55,6 +55,52 @@
       \verb https://ssrn.com/abstract=4433585
       \endverb
     \endentry
+    \entry{zoch2022}{report}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=32ca53db369e3723549ad936979285c3}{%
+           family={Chiang},
+           familyi={C\bibinitperiod},
+           given={Yu-Ting},
+           giveni={Y\bibinithyphendelim T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=22cecbd7436683c44c57f63a9a09d635}{%
+           family={Zoch},
+           familyi={Z\bibinitperiod},
+           given={Piotr},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {St. Louis Fed}%
+      }
+      \strng{namehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{fullhash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{bibnamehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{authorbibnamehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{authornamehash}{34f7750e878683b1bef80e8af35c9b29}
+      \strng{authorfullhash}{34f7750e878683b1bef80e8af35c9b29}
+      \field{sortinit}{C}
+      \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{number}{2022-038}
+      \field{title}{{Asset Supply and Liquidty Transformation in HANK}}
+      \field{type}{Working Paper}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2023}
+      \field{year}{2022}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://research.stlouisfed.org/wp/more/2022-038
+      \endverb
+      \verb{url}
+      \verb https://research.stlouisfed.org/wp/more/2022-038
+      \endverb
+    \endentry
     \entry{gl2017}{article}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=6ddbbd4da1ad4e9e94f3f2f12045ddb2}{%

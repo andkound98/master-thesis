@@ -65,7 +65,7 @@ urldate=long
  right=25mm,
  bottom=20mm,
  left=25mm,
- top=20mm}
+ top=25mm}
 \urlstyle{same} % Make URL font the same with the rest of the document
 \onehalfspacing % Adjust spacing
 \allowdisplaybreaks % Allow for breaks in equations across pages
@@ -199,11 +199,17 @@ Abstract goes here.
 \section{Introduction}
 \label{sec:introduction}
 
-Households face limits to borrowing. This limit to borrowing is usually much harsher than the so-called natural borrowing limit, which is commonly defined as the expected net present value of an individual's income stream.
+Households face limits to borrowing. The presence of such limits constrains households in their ability to smooth shocks to consumption in the absence of complete markets for the insurance against such shocks. Moreover, borrowing limits combined with idiosyncratic income risk induce precautionary savings, i.e.~a build-up of assets in order to prevent running into the borrowing constraints.
 
-The presence of a borrowing limit has consequences not only for individual households but also for the economy as a whole. The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).
+Borrowing limits have consequences not only for individual households but also for the economy as a whole. The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).
+
+This limit to borrowing is usually much harsher than the so-called natural borrowing limit, which is commonly defined as the expected net present value of an individual's income stream. 
 
 Since at least the Great Depression economists have aknowledged the importance of debt, leverage and limits to both of these. The Great Financial Crisis (\Gls{gfc}) was a vivid reminder of how developments in finance, including credit and limits to credit, affect households and the macroeconomy. 
+
+A heterogeneous-agent (\Gls{ha}) model naturally lends itself to the analysis of household-level borrowing limits for at least two reasons. First, unlike their representative-agent counterparts, prototypical \Gls{ha} models explicitly incorporate borrowing limits. Second, \Gls{ha} models speak to the differential effect of borrowing constraints across the distribution of households.
+
+I further include some financial constraints on the side of the firms and banks as done in \textcite{zoch2022}.
 
 The model and its dynamics are solved with the Python package \texttt{Econpizza} by \textcite{boehl2023econpizza} and the methods therein.
 
@@ -214,12 +220,12 @@ The remainder of this thesis is structured as follows. Section \ref{sec:literatu
 \section{Related Literature}
 \label{sec:literature}
 
-This section reviews two strands of the literature which the present thesis is most closely related to: household heterogeneity and financial constraints in the macroeconomy. Before discussing each fields in turn, I briefly highlight the findings of \textcite{gl2017}, the paper that this thesis is most closely related to. 
-
-\textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
+This section reviews the two strands of the literature which this thesis is most closely related to. I focus first on the macroeconomic literature revolving around household inequality and constraints to household finance. Second, I dwell on the most prominent works on financial constraints and the macroeconomy, where constraints are usually placed in the firm or bank sectors.
 
 \subsection{Household Heterogeneity in the Macroeconomy}
 \label{sec:literature-hetero}
+
+\textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
 
 \subsection{Financial Constraints in the Macroeconomy}
 \label{sec:literature-finance}
@@ -240,17 +246,24 @@ Households are subject to idiosyncratic, i.e.~household-level, income risk. They
 
 A note on the asset structure is in order. The one-asset framework seems to be in contradiction to what we find in reality, where households can choose from a variety of assets to self-insure. What is more, there is government insurance and insurance from employers, see Heathcote et al.
 
+Note that in incomplete markets models it is required that the interest rate times the discount fatcor is smaller than one.
+
+\subsection{Banks}
+\label{sec:model-banks}
+
 \subsection{Firms}
 \label{sec:model-firms}
 
-\subsection{Fiscal Policy}
-\label{sec:model-fiscal}
+\subsection{Fiscal and Monetary Policy}
+\label{sec:model-policy}
 
-\subsection{Monetary Policy}
-\label{sec:model-monetary}
+\subsection{Equilibrium}
+\label{sec:model-eq}
 
 \section{Implementation and Calibration}
 \label{sec:implementation}
+
+The grid is not allowed to change over time as this mimeo notes. Otherwise, the interpolation would be between repeatedly different grid points, making the comparison of over time inaccurate. 
 
 \section{Results}
 \label{sec:results}

@@ -7,31 +7,33 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2}Related Literature}{1}{section.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Household Heterogeneity in the Macroeconomy}{1}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.1}Household Heterogeneity in the Macroeconomy}{2}{subsection.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Financial Constraints in the Macroeconomy}{1}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Financial Constraints in the Macroeconomy}{2}{subsection.2.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Model}{2}{section.3}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.1}Households}{2}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Firms}{2}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Banks}{3}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Fiscal Policy}{2}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.3}Firms}{3}{subsection.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4}Monetary Policy}{2}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.4}Fiscal and Monetary Policy}{3}{subsection.3.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Implementation and Calibration}{2}{section.4}%
+\contentsline {subsection}{\numberline {3.5}Equilibrium}{3}{subsection.3.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Results}{2}{section.5}%
+\contentsline {section}{\numberline {4}Implementation and Calibration}{3}{section.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.1}Comparison of Steady States}{2}{subsection.5.1}%
+\contentsline {section}{\numberline {5}Results}{3}{section.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{2}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.1}Comparison of Steady States}{3}{subsection.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Sensitivity Analyses}{2}{section.6}%
+\contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{3}{subsection.5.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Conclusion}{2}{section.7}%
+\contentsline {section}{\numberline {6}Sensitivity Analyses}{3}{section.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7}Conclusion}{3}{section.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{References}{I}{section*.7}%
 \defcounter {refsection}{0}\relax 
