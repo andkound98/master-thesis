@@ -29,11 +29,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.1}Comparison of Steady States}{3}{subsection.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{3}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{4}{subsection.5.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Sensitivity Analyses}{3}{section.6}%
+\contentsline {section}{\numberline {6}Sensitivity Analyses}{4}{section.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Conclusion}{3}{section.7}%
+\contentsline {section}{\numberline {7}Conclusion}{4}{section.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{References}{I}{section*.7}%
 \defcounter {refsection}{0}\relax 
