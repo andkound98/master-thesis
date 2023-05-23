@@ -1,29 +1,29 @@
-# Author: Gregor Boehl [mail@gregorboehl.com]
+# Author: Andreas Koundouros [koundouros.andreas@gmail.com]
 ---
 name: 'hank_model'
-description: 'A small example HANK model with endogenous labor supply'
+description: 'HANK with endogenous labour supply and shockable borrowing constraints'
 functions_file: 'hank_model_functions.py'
 
 definitions: |
     from jax.numpy import log, maximum
     from econpizza.tools import percentile, jax_print
     
-    a_n = 90
-    a_max = 80
-    a_min = -2
+    a_n = 80
+    a_max = 75
+    a_min = -1
     cutoff_value_specific = 0
     a_grid = new_special_grid(a_max, a_n, a_min, cutoff=True, cutoff_value = cutoff_value_specific)
     
-variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rstar, tax, z, beta, C, N, B, Top10C, Top10A, lower_bound_a, MPC, D_o_Y ]
-parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_beta, rho_r, rho_z, chi, rho_a, db ]
-shocks: [ e_beta, e_rstar, e_z ]
+variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rstar, tax, z, beta, C, N, B, Top10C, Top10A, lower_bound_a, MPC, D_o_Y, g ]
+parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_beta, rho_r, rho_z, chi, rho_a, db, rho_g ]
+shocks: [ e_beta, e_rstar, e_z, e_g ]
 
 distributions:
   dist:
     skills:
       type: exogenous_rouwenhorst
       rho: 0.98
-      sigma: 0.6
+      sigma: 0.8
       n: 8
     a:
       type: endogenous_generic
@@ -41,25 +41,27 @@ decisions:
 
 aux_equations: |
     # Aggregation
-    aggr_a = jnp.sum(dist*a, axis=(0,1))
-    aggr_c = jnp.sum(dist*c, axis=(0,1))
-    aggr_n = jnp.sum(dist*n, axis=(0,1))
+    aggr_a = jnp.sum(dist*a, axis=(0,1)) # asset holdings
+    aggr_c = jnp.sum(dist*c, axis=(0,1)) # consumption 
+    aggr_n = jnp.sum(dist*n, axis=(0,1)) # labour hours
+    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # marginal propensity to consume
+    aggr_debt = -jnp.sum(jnp.where((a <= 0), dist*a, 0), axis=(0, 1)) # debt
     
-    # Calculate consumption and wealth share of top-10% cumsumers
-    top10c = 1 - percentile(c, dist, .9)
-    top10a = 1 - percentile(a, dist, .9)
-    
-    # Calculate aggregate MPC and debt
-    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1))
-    aggr_debt = -jnp.sum(jnp.where((a <= 0), dist*a, 0), axis=(0, 1))
+    # Calculate shares
+    top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
+    top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
     
 equations:
-    # Definitions
+    # Clearing and aggregation
+    ~ B = aggr_a # bond market clearing
+    ~ N = aggr_n # labour market clearing
     ~ C = aggr_c # aggregate consumption
-    ~ Top10C = top10c
-    ~ Top10A = top10a
+    ~ C + g = y # goods market clearing
     ~ MPC = aggr_mpc # aggregate marginal propensity to consume
     ~ D_o_Y = aggr_debt/y # household debt-to-GDP
+    
+    ~ Top10C = top10c
+    ~ Top10A = top10a
 
     # firms
     ~ N = y_prod/z # production function
@@ -68,22 +70,18 @@ equations:
     ~ psi*(pi/piSS - 1)*pi/piSS = (1-theta) + theta*w/z + psi*piPrime/R*(piPrime/piSS - 1)*piPrime/piSS*y_prodPrime/y_prod # NKPC
 
     # fiscal policy
-    ~ tax = (Rr-1)*B # government budget
+    ~ tax + BPrime = Rr*B + g # government budget
     ~ Rr = RLag/pi # ex-post real interest rate
     
     # monetary policy
-    ~ Rn = (Rstar*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # notional nominal rate
-    ~ R = maximum(1, Rn) # ZLB
-
-    # clearings
-    ~ C = y # market clearing
-    ~ aggr_a = B # bond market clearing
-    ~ aggr_n = N # labor market clearing
+    ~ Rn = (Rstar*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # notional nominal interest rate
+    ~ R = maximum(1, Rn) # zero lower bound
 
     # exogenous
     ~ beta = betaSS*(betaLag/betaSS)**rho_beta*exp(e_beta) # exogenous beta
     ~ Rstar = RstarSS*(RstarLag/RstarSS)**rho_r*exp(e_rstar) # exogenous rstar
     ~ z = zSS*(zLag/zSS)**rho_z*exp(e_z) # exogenous technology
+    ~ g = gSS*(gLag/gSS)**rho_g*exp(e_g) # exogenous gov. spending
     
     ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a # exogenous borrowing limit
 
@@ -93,31 +91,33 @@ steady_state:
         beta: 0.97 # discount factor
         sigma_c: 2. # intertemporal elasticity of substitution
         sigma_l: 2. # inverse Frisch elasticity of labour supply
-        theta: 10. # elasticity of substitution
+        theta: 11. # elasticity of substitution
         psi: 100. # parameter on the costs of price adjustment
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in (notional) nominal interest rate
         rho_beta: 0.9 # persistence of discount factor shock
         rho_r: 0.9 # persistence of MP shock
+        rho_g: 0.9 # persistence of government spending shock
         rho_z: 0.9 # persistence of technology shocks
-        db: 0.01 # step size in MPC calculation
-        rho_a: 0.5
-        lower_bound_a: -2 # borrowing limit
+        rho_a: 0.5 # persistence in borrowing limit transition
+        lower_bound_a: -1 # borrowing limit
+        db: 0.025 # step size in MPC calculation
 
         # steady state
-        y: 1. # effective output
-        N: 1. # labor supply
-        z: 1. # technology
+        #y: 1. # effective output
+        N: 1.0 # labor supply
+        z: 1.0 # technology
         pi: 1.0 # inflation
-        B: 3. # bond supply
+        B: 2.8 # bond supply
         w: (theta-1)/theta # wages
         div: 1 - w*N # dividends
+        g: 0.2
 
     init_guesses:
         # guess initial values
+        tax: 0.228 # taxes
         chi: 1. # utility weight on disutility of labor
-        tax: 0.028 # taxes
         Rstar: 1.006 # steady state target rate
         Rr: Rstar # ex-post real rate
         R: Rstar

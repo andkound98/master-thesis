@@ -25,9 +25,9 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {4}Implementation and Calibration}{3}{section.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Results}{3}{section.5}%
+\contentsline {section}{\numberline {5}Results}{4}{section.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.1}Comparison of Steady States}{3}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.1}Comparison of Steady States}{4}{subsection.5.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{4}{subsection.5.2}%
 \defcounter {refsection}{0}\relax 
@@ -37,6 +37,8 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{References}{I}{section*.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{Appendices}{i}{section*.8}%
+\contentsline {section}{Appendices}{A-1}{section*.8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A}Description of Computer Codes}{i}{appendix.a.A}%
+\contentsline {section}{\numberline {A}Description of Computer Codes}{A-1}{appendix.a.A}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {B}The Case of a Shock to Income Risk}{A-1}{appendix.a.B}%

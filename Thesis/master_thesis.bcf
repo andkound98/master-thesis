@@ -2793,6 +2793,7 @@
     <bcf:citekey order="2">zoch2022</bcf:citekey>
     <bcf:citekey order="3">boehl2023econpizza</bcf:citekey>
     <bcf:citekey order="4">gl2017</bcf:citekey>
+    <bcf:citekey order="5">kaplan2018</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

@@ -74,8 +74,7 @@ def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower
     c_nextgrid, n_nextgrid = cn(uc_nextgrid, we[:, None], sigma_c, sigma_l, vphi)
 
     # get consumption and labor supply in grid space
-    lhs = c_nextgrid - we[:, None] * n_nextgrid + \
-        a_grid[None, :] - trans[:, None]
+    lhs = c_nextgrid + a_grid[None, :] - we[:, None] * n_nextgrid - trans[:, None]
     rhs = R * a_grid
 
     c = interpolate(lhs, rhs, c_nextgrid)
@@ -121,8 +120,7 @@ def hh_borrowing_new(Va_p, a_grid, we, trans, R, Rbar, beta, sigma_c, sigma_l, v
     c_nextgrid, n_nextgrid = cn(uc_nextgrid, we[:, None], sigma_c, sigma_l, vphi)
 
     # get consumption and labor supply in grid space
-    lhs = c_nextgrid - we[:, None] * n_nextgrid + \
-        a_grid[None, :] - trans[:, None]
+    lhs = c_nextgrid - we[:, None] * n_nextgrid + a_grid[None, :] - trans[:, None]
     
     rhs = a_grid
     rhs = jnp.where(a_grid < 0,

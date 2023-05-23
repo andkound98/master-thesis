@@ -110,6 +110,11 @@ name=GFC,
 description={Great Financial Crisis}
 }
 
+\newglossaryentry{ltv}{
+name=LTV,
+description={Loan-to-Value}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hyperref package
@@ -199,13 +204,15 @@ Abstract goes here.
 \section{Introduction}
 \label{sec:introduction}
 
-Households face limits to borrowing. The presence of such limits constrains households in their ability to smooth shocks to consumption in the absence of complete markets for the insurance against such shocks. Moreover, borrowing limits combined with idiosyncratic income risk induce precautionary savings, i.e.~a build-up of assets in order to prevent running into the borrowing constraints.
+Households face limits to borrowing. In the real world, these limits take various forms and vary across households and asset types. For example, mortgage debt might be limited by regulatory prescriptions on loan-to-value ratios (\Gls{ltv}). 
 
-Borrowing limits have consequences not only for individual households but also for the economy as a whole. The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).
+Such constraints play an important role for individuals as well as for the aggregate economy. In the absence of complete insurance markets, the presence of borrowing limits constrains households in their ability to smooth shocks to consumption. Moreover, borrowing limits combined with idiosyncratic income risk induce precautionary savings, i.e.~a build-up of assets in order to prevent running into the borrowing constraints. Both of these aspect have implications for the behaviour of the economy as a whole. 
+
+The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).
 
 This limit to borrowing is usually much harsher than the so-called natural borrowing limit, which is commonly defined as the expected net present value of an individual's income stream. 
 
-Since at least the Great Depression economists have aknowledged the importance of debt, leverage and limits to both of these. The Great Financial Crisis (\Gls{gfc}) was a vivid reminder of how developments in finance, including credit and limits to credit, affect households and the macroeconomy. 
+Since at least the Great Depression economists have aknowledged the importance of debt. The Great Financial Crisis (\Gls{gfc}) was a vivid reminder of how developments in finance, including credit and limits to credit, affect households and the macroeconomy. 
 
 A heterogeneous-agent (\Gls{ha}) model naturally lends itself to the analysis of household-level borrowing limits for at least two reasons. First, unlike their representative-agent counterparts, prototypical \Gls{ha} models explicitly incorporate borrowing limits. Second, \Gls{ha} models speak to the differential effect of borrowing constraints across the distribution of households.
 
@@ -242,14 +249,22 @@ GK focus on the economy's financial intermediaries. In their framework, banks ar
 \subsection{Households}
 \label{sec:model-hh}
 
-Households are subject to idiosyncratic, i.e.~household-level, income risk. They can self-insure by saving and borrowing in a one-period, rsik-free and perfectly liquid bond. This bond is the only asset in the economy.
+The household side is modeled following the standard incomplete-markets approach, initiated \textit{inter alia} by. In this framework, households are ex-ante identical but heterogeneous ex-post as they are subject to idiosyncratic, i.e.~household-level, income risk. Markets are incomplete and thus, households can only self-insure by saving and borrowing in a one-period, rsik-free bond. This bond is the only asset in the economy and is perfectly liquid, i.e.~there are no costs involved when purchasing or selling bonds. The bond is to be understood as unsecured borrowing.\footnote{Secured borrowing would be collateralised.}
+
+Households have utility function $U$, which is strictly increasing in household consumption $c_i$. Households choose consumption, labour and asset holdings so as to maximise their utiliy, given the prices they face in the economy.
+
+The bond is supplied by households and by the government. %and is in zero net supply.
 
 A note on the asset structure is in order. The one-asset framework seems to be in contradiction to what we find in reality, where households can choose from a variety of assets to self-insure. What is more, there is government insurance and insurance from employers, see Heathcote et al.
+
+\textcite{kaplan2018} provide an insightful critique of the one-asset structure. 
 
 Note that in incomplete markets models it is required that the interest rate times the discount fatcor is smaller than one.
 
 \subsection{Banks}
 \label{sec:model-banks}
+
+Heterogeneous banks are modeled in the paper Bewley banks by.
 
 \subsection{Firms}
 \label{sec:model-firms}
@@ -323,9 +338,14 @@ lower\_bound\_a &               -2.0000 &                -1.0000 &       -50.00 
 % Appendices section
 \newpage
 \thispagestyle{plain}
-\pagenumbering{roman}
+\pagenumbering{arabic}% resets `page` counter to 1
+\renewcommand*{\thepage}{A-\arabic{page}}
 \begin{appendices}
 \section{Description of Computer Codes}
+\label{sec-app:codes}
+
+\section{The Case of a Shock to Income Risk}
+\label{sec-app:income}
 \end{appendices}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
