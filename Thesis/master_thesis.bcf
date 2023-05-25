@@ -2796,6 +2796,7 @@
     <bcf:citekey order="5">aiyagari1994</bcf:citekey>
     <bcf:citekey order="6">kaplan2018</bcf:citekey>
     <bcf:citekey order="7">kaplan2018</bcf:citekey>
+    <bcf:citekey order="8">gl2017</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">
