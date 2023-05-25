@@ -3,6 +3,8 @@
 """
 Author: Andreas Koundouros, University of Bonn
 Date: 04.05.2023
+
+This file contains custom functions for plotting results from the main file.
 """
 
 import plotly.express as px
@@ -48,7 +50,7 @@ def make_stst_policiy_plots(model,
             else:
                 assets_policy = np.column_stack((assets_policy, asset_column))
                 
-            assets_policy_columns.append(f'skills_{no_states}')
+            assets_policy_columns.append(f'\u03B8_{no_states}')
             
             if consumption_policy.size == 0:
                 consumption_policy = consumption_column
@@ -56,23 +58,23 @@ def make_stst_policiy_plots(model,
                 consumption_policy = np.column_stack((consumption_policy, 
                                                       consumption_column))
                 
-            consumption_policy_columns.append(f'skills_{no_states}')
+            consumption_policy_columns.append(f'\u03B8_{no_states}')
             
             if labour_policy.size == 0:
                 labour_policy = labour_column
             else:
                 labour_policy = np.column_stack((labour_policy, 
-                                                      labour_column))
+                                                 labour_column))
                 
-            labour_policy_columns.append(f'skills_{no_states}')
+            labour_policy_columns.append(f'\u03B8_{no_states}')
         
-        # Create handy data frames for plotting
+        # Create data frames for plotting
         assets_policy_df = pd.DataFrame(assets_policy, 
                                         columns = assets_policy_columns)
         consumption_policy_df = pd.DataFrame(consumption_policy, 
                                              columns = consumption_policy_columns)
         labour_policy_df = pd.DataFrame(labour_policy, 
-                                             columns = labour_policy_columns)
+                                        columns = labour_policy_columns)
         
         # Cut data frames short at borrowing limit if specified
         if cutoff == True:
@@ -83,52 +85,55 @@ def make_stst_policiy_plots(model,
             consumption_policy_df.loc[consumption_policy_df['grid'] < cutoff_value, :] = np.nan
             labour_policy_df.loc[labour_policy_df['grid'] < cutoff_value, :] = np.nan
         
+        # Plot asset policies 
         if plot_asset_policy == True:
-            # Plot asset policies 
-            fig_assets =  px.line(assets_policy_df,
+            fig_assets =  px.line(assets_policy_df, # Create plot
                                   x = 'grid',
                                   y = assets_policy_columns,
                                   title='Asset Policy',
-                                  #markers = True,
                                   color_discrete_sequence=px.colors.qualitative.Plotly[:assets_policy_df.shape[1]]) 
             fig_assets.update_layout(xaxis_title='Bonds Holdings Today', 
                                      yaxis_title='Bonds Holdings Tomorrow',
                                      plot_bgcolor = 'whitesmoke', 
-                                     font=dict(size=20), 
+                                     font=dict(family="Times New Roman",
+                                               size=20,
+                                               color="black"),
                                      margin=dict(l=15, r=15, t=50, b=5), 
                                      legend_title='')
             fig_assets.show()
-
+            
+        # Plot consumption policies
         if plot_consumption_policy == True:
-            # Plot consumption policies
-            fig_consumption =  px.line(consumption_policy_df,
+            fig_consumption =  px.line(consumption_policy_df, # Create plot
                                        x = 'grid',
                                        y = consumption_policy_columns,
                                        title='Consumption Policy',
-                                       #markers = True,
                                        color_discrete_sequence=px.colors.qualitative.Plotly[:consumption_policy_df.shape[1]]) 
             fig_consumption.update_layout(xaxis_title='Bonds Holdings', 
                                           yaxis_title='Consumption',
                                           plot_bgcolor = 'whitesmoke', 
-                                          font=dict(size=20), 
+                                          font=dict(family="Times New Roman",
+                                                    size=20,
+                                                    color="black"),
                                           margin=dict(l=15, r=15, t=50, b=5), 
                                           legend_title='')
             fig_consumption.show()
             
-        if plot_labour_policy == True:
-            # Plot labour supply policies
-            fig_labour =  px.line(labour_policy_df,
+        # Plot labour supply policies
+        if 'n' in model['steady_state']['decisions'].keys() and plot_labour_policy == True:
+            fig_labour =  px.line(labour_policy_df, # Create plot
                                        x = 'grid',
                                        y = labour_policy_columns,
                                        title='Labour Supply Policy',
-                                       #markers = True,
                                        color_discrete_sequence=px.colors.qualitative.Plotly[:labour_policy_df.shape[1]]) 
             fig_labour.update_layout(xaxis_title='Bonds Holdings', 
-                                          yaxis_title='Labour Supply',
-                                          plot_bgcolor = 'whitesmoke', 
-                                          font=dict(size=20), 
-                                          margin=dict(l=15, r=15, t=50, b=5), 
-                                          legend_title='')
+                                     yaxis_title='Labour Supply',
+                                     plot_bgcolor = 'whitesmoke', 
+                                     font=dict(family="Times New Roman",
+                                               size=20,
+                                               color="black"),
+                                     margin=dict(l=15, r=15, t=50, b=5),
+                                     legend_title='')
             fig_labour.show()
         
     else:
@@ -139,10 +144,7 @@ def make_stst_policiy_plots(model,
 # Function for plotting steady state distributions
 def make_stst_dist_plots(model, 
                          plot_dist_skills_and_assets=True, 
-                         plot_dist_assets=True,
-                         plot_dist_mpc_2d=True,
-                         plot_dist_mpc_3d=True,
-                         plot_dist_n=True):
+                         plot_dist_assets=True):
     if type(model) == econpizza.__init__.PizzaModel:
         
         # Get asset grid
@@ -152,7 +154,7 @@ def make_stst_dist_plots(model,
         distribution_skills_and_assets = model['steady_state']['distributions'][0]
         
         if plot_dist_skills_and_assets == True:
-            fig_dist_skills_and_assets, _ = grbar3d(100*distribution_skills_and_assets, 
+            fig_dist_skills_and_assets, _ = grbar3d(100*distribution_skills_and_assets, # Create plot
                                                     xedges=jnp.arange(1, (len(distribution_skills_and_assets)+1)), 
                                                     yedges=a_grid, 
                                                     figsize=(9,7), 
@@ -170,7 +172,7 @@ def make_stst_dist_plots(model,
                                               columns = ['grid', 'distribution'])
         
         if plot_dist_assets == True:
-            fig_distr_assets = px.line(distribution_assets_df, 
+            fig_distr_assets = px.line(distribution_assets_df, # Create plot
                                       x = 'grid', 
                                       y = 'distribution',
                                       title='Bond Distribution',
@@ -178,61 +180,12 @@ def make_stst_dist_plots(model,
             fig_distr_assets.update_layout(xaxis_title='Bond Holdings', 
                                           yaxis_title='Share',
                                           plot_bgcolor = 'whitesmoke', 
-                                          font=dict(size=20), 
+                                          font=dict(family="Times New Roman",
+                                                    size=20,
+                                                    color="black"),
                                           margin=dict(l=15, r=15, t=50, b=5), 
                                           legend_title='')
-            # fig_distr_assets.update_yaxes(range=[0., 1.])
-            # fig_distr_assets.update_xaxes(range=[-2., 20.])
             fig_distr_assets.show()
-
-        # Distribution of MPCs over skills and assets
-        distribution_mpc = model['steady_state']['decisions']['mpc']
-        
-        distribution_mpc_2d = np.column_stack([a_grid, 
-                                               100*jnp.sum(distribution_mpc, 
-                                                           axis = 0)])
-        distribution_mpc_2d_df = pd.DataFrame(distribution_mpc_2d, 
-                                              columns = ['grid', 'distribution'])
-        
-        if plot_dist_mpc_2d == True:
-            fig_dist_mpc_2d = px.line(distribution_mpc_2d_df, 
-                                      x = 'grid', 
-                                      y = 'distribution',
-                                      title='MPC Distribution',
-                                      color_discrete_sequence=[px.colors.qualitative.Plotly[0]])
-            fig_dist_mpc_2d.update_layout(xaxis_title='Bond Holdings', 
-                                          yaxis_title='MPC',
-                                          plot_bgcolor = 'whitesmoke', 
-                                          font=dict(size=20), 
-                                          margin=dict(l=15, r=15, t=50, b=5), 
-                                          legend_title='')
-            fig_dist_mpc_2d.show()
-        
-        if plot_dist_mpc_3d == True:
-            fig_dist_mpc, _ = grbar3d(100*distribution_mpc, 
-                                      xedges=jnp.arange(1, 
-                                                        (len(distribution_skills_and_assets)+1)), 
-                                      yedges=a_grid, 
-                                      figsize=(9,7), 
-                                      depth=.5) # create 3D plot
-            fig_dist_mpc.set_xlabel('Productivity')
-            fig_dist_mpc.set_ylabel('Bond Holdings')
-            fig_dist_mpc.set_zlabel('MPC')
-            fig_dist_mpc.view_init(azim=120) # rotate
-            
-        # Distribution of labour supply over skills and assets
-        distribution_n = model['steady_state']['decisions']['n']
-        
-        if plot_dist_n == True:
-            fig_dist_n, _ = grbar3d(distribution_n, 
-                                      xedges=jnp.arange(1, (len(distribution_skills_and_assets)+1)), 
-                                      yedges=a_grid, 
-                                      figsize=(9,7), 
-                                      depth=.5) # create 3D plot
-            fig_dist_n.set_xlabel('Productivity')
-            fig_dist_n.set_ylabel('Bond Holdings')
-            fig_dist_n.set_zlabel('Labour Supply')
-            fig_dist_n.view_init(azim=120) # rotate
         
     else:
         print('Error: Input must be of type PizzaModel.')
@@ -250,7 +203,6 @@ def shorten_asset_dist(model, x_threshold):
                                                        axis = 0)])
     distribution_assets_df = pd.DataFrame(distribution_assets, 
                                           columns = ['grid', 'distribution'])
-
 
     # Filter the data frame based on the threshold
     filtered_df = distribution_assets_df[distribution_assets_df['grid'] < x_threshold]
@@ -272,6 +224,7 @@ def shorten_asset_dist(model, x_threshold):
 def bar_plot_asset_dist(model, 
                         shorten=False, x_threshold = None, 
                         y_threshold = None):
+    # Create data frame for plotting depending on whether shortening is required
     if shorten == True and x_threshold == None:
         print('Threshold for shortening required.')
         
@@ -302,7 +255,7 @@ def bar_plot_asset_dist(model,
     bar_widths = np.append(bar_widths, bar_widths[-1])  # Add last width for consistency
 
     # Calculate the positions of the bars
-    bar_positions = np.array(a_grid) - np.array(bar_widths) / 2.0
+    bar_positions = np.array(a_grid) - np.array(bar_widths) / 2
     
     # Generate a color sequence using a colormap
     cmap = cm.get_cmap('twilight_shifted')  # Choose a colormap
@@ -312,40 +265,47 @@ def bar_plot_asset_dist(model,
     pos_a_grid = a_grid[y>0]
     pos_a_grid.reset_index(drop=True, inplace=True)
     
+    # Get the frequency of that grid point
     pos_y = y[y>0]
     pos_y.reset_index(drop=True, inplace=True)
     
-    fig = go.Figure()
+    fig = go.Figure() # Create plot
     for i in range(len(a_grid)):
-        fig.add_trace(go.Bar(
-            x=[bar_positions[i]],
-            y=[y[i]],
-            width=bar_widths[i],
-            marker=dict(color=colours[i])))
+        if y[i] > y_threshold: # replace value over y-axis threshold by threshold
+            fig.add_trace(go.Bar(
+                x=[bar_positions[i]],
+                y=np.array(y_threshold),
+                width=bar_widths[i],
+                marker=dict(color=colours[i])))
+        else:
+            fig.add_trace(go.Bar(
+                x=[bar_positions[i]],
+                y=[y[i]],
+                width=bar_widths[i],
+                marker=dict(color=colours[i])))
         
     fig.update_layout(xaxis_title='Bond Holdings', 
                       yaxis_title='Share',
-                      plot_bgcolor = 'whitesmoke', 
+                      plot_bgcolor='whitesmoke', 
                       font=dict(family="Times New Roman",
                                 size=20,
                                 color="black"),
                       margin=dict(l=15, r=15, t=5, b=5), 
                       legend_title='',
                       showlegend=False,
-                      annotations=[dict(x=(pos_a_grid[0]+0.15), 
+                      annotations=[dict(x=(pos_a_grid[0]+4), 
                                         y=y_threshold-1,
                                         text=f'Pr(b={round(pos_a_grid[0],2)}) = {round(pos_y[0],2)}',
-                                        showarrow=True,
+                                        showarrow=False,
                                         arrowhead=1,
                                         arrowcolor='black',
                                         arrowsize=2,
                                         arrowwidth=1,
-                                        ax=150,
+                                        ax=210,
                                         ay=0,
                                         font=dict(family="Times New Roman",
                                                   size=20,
-                                                  color="black")
-                                        )])
+                                                  color="black"))])
     fig.update_yaxes(range=[0., y_threshold]) # Fix range of y-axis
     fig.show()
     
@@ -387,12 +347,16 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     fig.update_layout(title='', # Empty title
                        xaxis_title='Quarters', # x-axis labeling
                        yaxis_title=f'{var_name}', # y-axis labeling
-                       font=dict(size=20),
                        legend=dict(orientation="h", # For horizontal legend
-                                   yanchor="bottom", y=1.02, xanchor="right", x=1), 
-                       legend_title=None, plot_bgcolor = 'whitesmoke', 
-                       margin=dict(l=15, r=15, t=5, b=5))
-    fig.update_traces(line=dict(width=2))
+                                   yanchor="bottom", y=1.02, 
+                                   xanchor="right", x=1), 
+                       legend_title=None, 
+                       plot_bgcolor='whitesmoke', 
+                       margin=dict(l=15, r=15, t=5, b=5),
+                       font=dict(family="Times New Roman",
+                                 size=20,
+                                 color="black"))
+    fig.update_traces(line=dict(width=3))
     fig.show() # Show plot
     
 ###############################################################################

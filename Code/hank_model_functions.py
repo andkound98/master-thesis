@@ -1,6 +1,10 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Author: Andreas Koundouros, University of Bonn
+Date: 26.04.2023
 
-"""functions for the one-asset HANK model with labor choice. Heavily inspired by https://github.com/shade-econ/sequence-jacobian/#sequence-space-jacobian
+This file contains the functions for the HANK model with endogenous labour supply.
 """
 
 import jax
@@ -11,13 +15,11 @@ from grgrjax import jax_print, amax
 from econpizza.utilities.interp import interpolate
 from econpizza.utilities.grids import log_grid
 
-from custom_functions import find_closest_grid_point
-
+#from custom_functions import find_closest_grid_point
 
 def hh_init(a_grid, we, R, sigma_c, T):
     """The initialization for the value function
     """
-    
     # Calculate cash-on-hand in order to derive marginal utility of consumption
     # from it, so to initialise the algorithm
     coh = R * a_grid[None, :] + we[:, None] + T[:, None]
@@ -26,43 +28,6 @@ def hh_init(a_grid, we, R, sigma_c, T):
     Va = R * (0.1 * coh) ** (-sigma_c)
     
     return Va
-
-
-# def hh(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi):
-#     """A single backward step via EGM
-#     """
-
-#     # MUC as implied by next periods value function
-#     uc_nextgrid = beta * Va_p
-#     # back out consumption and labor supply from MUC
-#     c_nextgrid, n_nextgrid = cn(uc_nextgrid, we[:, None], sigma_c, sigma_l, vphi)
-
-#     # get consumption and labor supply in grid space
-#     lhs = c_nextgrid - we[:, None] * n_nextgrid + \
-#         a_grid[None, :] - trans[:, None]
-#     rhs = R * a_grid
-
-#     c = interpolate(lhs, rhs, c_nextgrid)
-#     n = interpolate(lhs, rhs, n_nextgrid)
-
-#     # get todays distribution of assets
-#     a = rhs + we[:, None] * n + trans[:, None] - c
-    
-#     # 
-#     # fix consumption and labor for constrained households
-#     c, n = jnp.where(a < a_grid[0], 
-#                      solve_cn(we[:, None], rhs + trans[:, None] - a_grid[0], sigma_c, sigma_l, vphi, Va_p), 
-#                      jnp.array((c, n)))
-    
-#     # Fix assets where they would be below the borrowing constraint to the 
-#     # borrowing constraint, i.e. ensure that the borrowing constraint holds
-#     a = jnp.where(a > a_grid[0], a, a_grid[0])
-
-#     # Calculate the new marginal utility of consumption, to be used in the next
-#     # EGM step
-#     Va = R * c ** (-sigma_c)
-
-#     return Va, a, c, n
 
 def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower_bound_a, db):
     """A single backward step via EGM
@@ -83,7 +48,9 @@ def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower
     # get todays distribution of assets
     a = rhs + we[:, None] * n + trans[:, None] - c
     
-    lower_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
+    #lower_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
+    
+    lower_a = lower_bound_a
     
     # fix consumption and labor for constrained households
     c, n = jnp.where(a < lower_a, 
@@ -110,7 +77,7 @@ def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower
 
     return Va, a, c, n, mpc
 
-def hh_borrowing_new(Va_p, a_grid, we, trans, R, Rbar, beta, sigma_c, sigma_l, vphi, lower_bound_a, db):
+def hh_borrowing_rbar(Va_p, a_grid, we, trans, R, Rcosts, beta, sigma_c, sigma_l, vphi, lower_bound_a, db):
     """A single backward step via EGM
     """
 
@@ -120,7 +87,9 @@ def hh_borrowing_new(Va_p, a_grid, we, trans, R, Rbar, beta, sigma_c, sigma_l, v
     c_nextgrid, n_nextgrid = cn(uc_nextgrid, we[:, None], sigma_c, sigma_l, vphi)
 
     # get consumption and labor supply in grid space
-    lhs = c_nextgrid - we[:, None] * n_nextgrid + a_grid[None, :] - trans[:, None]
+    lhs = c_nextgrid + a_grid[None, :] - we[:, None] * n_nextgrid - trans[:, None]
+    
+    Rbar = R + Rcosts
     
     rhs = a_grid
     rhs = jnp.where(a_grid < 0,
@@ -133,7 +102,9 @@ def hh_borrowing_new(Va_p, a_grid, we, trans, R, Rbar, beta, sigma_c, sigma_l, v
     # get todays distribution of assets
     a = rhs + we[:, None] * n + trans[:, None] - c
     
-    lower_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
+    #lower_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
+    
+    lower_a = lower_bound_a
     
     # fix consumption and labor for constrained households
     c, n = jnp.where(a < lower_a, 
@@ -148,7 +119,11 @@ def hh_borrowing_new(Va_p, a_grid, we, trans, R, Rbar, beta, sigma_c, sigma_l, v
 
     # Calculate the new marginal utility of consumption, to be used in the next
     # EGM step
-    Va = R * c ** (-sigma_c)
+    Va = c ** (-sigma_c)
+    
+    Va = jnp.where(a < lower_a, 
+                   Rbar * Va, 
+                   R * Va)
     
     # Calculate mpc
     mpc = (interpolate(a, (a + db), c) - c) / db
@@ -159,6 +134,7 @@ def hh_borrowing_new(Va_p, a_grid, we, trans, R, Rbar, beta, sigma_c, sigma_l, v
                     mpc)
 
     return Va, a, c, n, mpc
+
 
 def cn(uc, w, sigma_c, sigma_l, vphi):
     """This function returns the optimal choices for consumption c and labour
@@ -272,43 +248,23 @@ def labor_supply(n, e_grid):
     ne = e_grid[:, None] * n
     return ne
 
-##### NEW
-def new_special_grid(amax, n, amin, cutoff=False, cutoff_value=0):
-    if cutoff == True:
-        grid = log_grid(amax, n, amin)
-        grid = grid[cutoff_value:]
-    else:
-        grid = log_grid(amax, n, amin)
-
-    return grid
-
-
-def ex_grid(a_min_1, a_min_2, a_max, n_1, n_2):
-    grid_1 = jnp.array(np.linspace(a_min_1, a_min_2, n_1))
-    grid_1 = jnp.delete(grid_1, -1)
+##################################
+##################################
+##################################
+##################################
+def special_grid(amax, n, amin, rho_a, amin_terminal, T=200):
+    initialise_log_grid = log_grid(amax, n, amin)
     
-    grid_2 = log_grid(a_max, n_2 + 1, a_min_2)
+    path_borrowing_limit = [np.nan]*T
+    path_borrowing_limit[0] = amin
+    for tt in range(T-1):
+        path_borrowing_limit[tt+1] = round(amin_terminal*(path_borrowing_limit[tt]/amin_terminal)**rho_a, 8)
     
-    final_grid = jnp.append(grid_1, grid_2)
+    path_borrowing_limit = [num for num in path_borrowing_limit if num < amin_terminal]
+    path_borrowing_limit.append(amin_terminal)
+    path_borrowing_limit.append(0)
+    path_borrowing_limit.pop(0)
     
-    return final_grid
-
-def import_gl_grid():
-    import scipy.io
-    import numpy as np
+    full_grid = jnp.append(initialise_log_grid, jnp.array(path_borrowing_limit)).sort()
     
-    path_to_file = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/Literature/2017 Guerrieri Lorenzoni/Replication Codes/gl_ex_grid.mat'
-
-    # Load the .mat file into a dictionary
-    mat_data = scipy.io.loadmat(path_to_file)
-
-    # Extract the vectors and matrix from the dictionary
-    gl_y = mat_data['theta']
-    gl_pi = mat_data['pr']
-    gl_Pi = mat_data['Pr']
-    
-    gl_y_new = jax.device_put(np.squeeze(gl_y))
-    gl_pi_new = jax.device_put(np.squeeze(gl_pi))
-    gl_Pi_new = jax.device_put(np.squeeze(gl_Pi))
-    
-    return gl_y_new, gl_pi_new, gl_Pi_new
+    return full_grid, len(full_grid)

@@ -43,7 +43,6 @@ from custom_functions import (find_closest_grid_point,
 from plot_functions import (make_stst_policiy_plots, 
                             make_stst_dist_plots,
                             plot_all,
-                            #plot_single_transition,
                             plot_selected_transition,
                             bar_plot_asset_dist) 
 
@@ -63,8 +62,8 @@ round_func_2 = lambda x: round(float(x), 2) # Rounding function used throughout
 ###############################################################################
 ###############################################################################
 # Fix initial and terminal borrowing limits
-initial_borrowing_limit = -1
-terminal_borrowing_limit = -0.5
+initial_borrowing_limit = -2
+terminal_borrowing_limit = -1
 
 ###############################################################################
 ###############################################################################
@@ -98,8 +97,7 @@ hank_stst_df['Initial Steady State'] = hank_stst_df['Initial Steady State'].appl
 make_stst_policiy_plots(hank_model_initial)
 make_stst_dist_plots(hank_model_initial)
 bar_plot_asset_dist(hank_model_initial, shorten=True, 
-                    x_threshold = 30,
-                    y_threshold = 10)
+                    x_threshold = 30, y_threshold = 10)
 
 # Calculate terminal steady state
 _ = hank_model_terminal.solve_stst()
@@ -111,13 +109,12 @@ hank_stst_df_terminal['Terminal Steady State'] = hank_stst_df_terminal['Terminal
 make_stst_policiy_plots(hank_model_terminal,cutoff=True)
 make_stst_dist_plots(hank_model_terminal)
 bar_plot_asset_dist(hank_model_terminal, shorten=True, 
-                    x_threshold = 30,
-                    y_threshold = 10)
+                    x_threshold = 30, y_threshold = 10)
 
 # Compare steady states
 full_stst_analysis = pd.merge(hank_stst_df, hank_stst_df_terminal, 
                               on = 'Variable', how = 'left')
-full_stst_analysis['Rel. Change'] = (100*(hank_stst_df_terminal['Terminal Steady State']-hank_stst_df['Initial Steady State'])/hank_stst_df['Initial Steady State']).apply(round_func_2)
+full_stst_analysis['Percent Change'] = (100*(hank_stst_df_terminal['Terminal Steady State']-hank_stst_df['Initial Steady State'])/hank_stst_df['Initial Steady State']).apply(round_func_2)
 print(full_stst_analysis)
 
 ###############################################################################
@@ -125,17 +122,17 @@ print(full_stst_analysis)
 # Transition to New Steady State
 
 # Save old seady state as starting point of transition
-x0 = hank_model_initial['stst']
+hank_model_initial_stst = hank_model_initial['stst']
 
 # Find perfect foresight transition to new steady state
-x_transition, flag_transition = hank_model_terminal.find_path(init_state = x0.values())
+x_transition, flag_transition = hank_model_terminal.find_path(init_state = hank_model_initial_stst.values())
 
 ###############################################################################
 ###############################################################################
 # Transitional Dynamics
 
 # Fix horizon for plotting
-horizon = 30 
+horizon = 15
 
 # Transition of borrowing limit
 varlist_hank_model = ['lower_bound_a']
@@ -165,7 +162,10 @@ variables_to_plot = [['C', 'Consumption'],
                      ['y', 'Output'], 
                      ['pi', 'Inflation'],
                      ['w', 'Wage'],
-                     ['Rn', 'Notional Interest Rate']]
+                     ['R', 'Nominal Interest Rate'],
+                     ['Rn', 'Notional Interest Rate'],
+                     ['div', 'Dividends'],
+                     ['tax', 'Taxes']]
 
 plot_selected_transition(variables_to_plot, 
                          hank_model_initial, x_transition, horizon)
