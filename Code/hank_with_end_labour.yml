@@ -1,24 +1,23 @@
 # Author: Andreas Koundouros [koundouros.andreas@gmail.com]
 ---
 name: 'hank_model'
-description: 'HANK with endogenous labour supply and shockable borrowing constraints'
+description: 'One-Asset HANK with Endogenous Labour Supply and Shockable Borrowing Constraints'
 functions_file: 'hank_model_functions.py'
 
 definitions: |
     from jax.numpy import log, maximum
     from econpizza.tools import percentile, jax_print
     
-    amax = 80
+    amax = 90
     an = 100
     amin = -2
     rho_a = 0.3
     amin_terminal = -1
-    
     a_grid, a_grid_n = special_grid(amax, an, amin, rho_a, amin_terminal)
     
 variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, N, B, Top10C, Top10A, Bot10C, Bot10A, lower_bound_a, MPC, D_o_Y, g ]
-parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_beta, rho_r, rho_z, chi, rho_a, db, rho_g, beta ]
-shocks: [ e_beta, e_rstar, e_z, e_g ]
+parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_r, rho_z, chi, rho_a, db, rho_g, beta ]
+shocks: [ e_z, e_g ]
 
 distributions:
   dist:
@@ -26,7 +25,7 @@ distributions:
       type: exogenous_rouwenhorst
       rho: 0.98
       sigma: 0.7
-      n: 9
+      n: 10
     a: 
       type: endogenous_generic
       n: a_grid_n
@@ -87,7 +86,6 @@ equations:
     # exogenous
     ~ z = zSS*(zLag/zSS)**rho_z*exp(e_z) # exogenous technology
     ~ g = gSS*(gLag/gSS)**rho_g*exp(e_g) # exogenous government consumption
-    
     ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a # exogenous borrowing limit
 
 steady_state:
@@ -101,8 +99,6 @@ steady_state:
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in (notional) nominal interest rate
-        rho_beta: 0.9 # persistence of discount factor shock
-        rho_r: 0.9 # persistence of MP shock
         rho_g: 0.9 # persistence of government spending shock
         rho_z: 0.9 # persistence of technology shocks
         rho_a: 0.3 # persistence in borrowing limit transition
@@ -122,7 +118,7 @@ steady_state:
         # guess initial values
         tax: 0.228 # taxes
         chi: 1. # utility weight on disutility of labor
-        R: 1.01
+        R: 1.008
         Rr: R # ex-post real rate
         Rn: R # notional nominal interest rate
         we: wages(w, skills_grid)

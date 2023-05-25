@@ -36,14 +36,17 @@ def make_stst_policiy_plots(model,
         assets_policy_columns = ['grid']
         consumption_policy = np.array(a_grid)
         consumption_policy_columns = ['grid']
-        labour_policy = np.array(a_grid)
-        labour_policy_columns = ['grid']
+        if 'n' in model['steady_state']['decisions'].keys():
+            labour_policy = np.array(a_grid)
+            labour_policy_columns = ['grid']
         
         # Loop through skills_grid to get policy functions
         for no_states in range(model['distributions']['dist']['skills']['n']):
             asset_column = model['steady_state']['decisions']['a'][no_states]
             consumption_column = model['steady_state']['decisions']['c'][no_states]
-            labour_column = model['steady_state']['decisions']['n'][no_states]
+            
+            if 'n' in model['steady_state']['decisions'].keys():
+                labour_column = model['steady_state']['decisions']['n'][no_states]
             
             if assets_policy.size == 0:
                 assets_policy = asset_column
@@ -60,21 +63,24 @@ def make_stst_policiy_plots(model,
                 
             consumption_policy_columns.append(f'\u03B8_{no_states}')
             
-            if labour_policy.size == 0:
-                labour_policy = labour_column
-            else:
-                labour_policy = np.column_stack((labour_policy, 
-                                                 labour_column))
+            if 'n' in model['steady_state']['decisions'].keys():
+                if labour_policy.size == 0:
+                    labour_policy = labour_column
+                else:
+                    labour_policy = np.column_stack((labour_policy, 
+                                                     labour_column))
                 
-            labour_policy_columns.append(f'\u03B8_{no_states}')
+                labour_policy_columns.append(f'\u03B8_{no_states}')
         
         # Create data frames for plotting
         assets_policy_df = pd.DataFrame(assets_policy, 
                                         columns = assets_policy_columns)
         consumption_policy_df = pd.DataFrame(consumption_policy, 
                                              columns = consumption_policy_columns)
-        labour_policy_df = pd.DataFrame(labour_policy, 
-                                        columns = labour_policy_columns)
+        
+        if 'n' in model['steady_state']['decisions'].keys():
+            labour_policy_df = pd.DataFrame(labour_policy, 
+                                            columns = labour_policy_columns)
         
         # Cut data frames short at borrowing limit if specified
         if cutoff == True:
@@ -83,7 +89,9 @@ def make_stst_policiy_plots(model,
             
             assets_policy_df.loc[assets_policy_df['grid'] < cutoff_value, :] = np.nan
             consumption_policy_df.loc[consumption_policy_df['grid'] < cutoff_value, :] = np.nan
-            labour_policy_df.loc[labour_policy_df['grid'] < cutoff_value, :] = np.nan
+            
+            if 'n' in model['steady_state']['decisions'].keys():
+                labour_policy_df.loc[labour_policy_df['grid'] < cutoff_value, :] = np.nan
         
         # Plot asset policies 
         if plot_asset_policy == True:

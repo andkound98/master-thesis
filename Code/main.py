@@ -11,14 +11,14 @@ This file is the main code file for my master thesis.
 ###############################################################################
 # Import packages
 import os
-import time as tm
-import econpizza as ep # Econpizza
-import pandas as pd
-import numpy as np
+import time as tm # for timing
+import econpizza as ep # econpizza
+import pandas as pd # for data wrangling
+import numpy as np # for data wrangling
 import jax.numpy as jnp
-import plotly.io as pio
-import matplotlib.pyplot as plt
-#from grgrlib import grbar3d
+import plotly.io as pio # for plotting
+import matplotlib.pyplot as plt # for plotting
+from grgrlib import grbar3d # for plotting
 
 ###############################################################################
 ###############################################################################
@@ -62,17 +62,26 @@ round_func_2 = lambda x: round(float(x), 2) # Rounding function used throughout
 ###############################################################################
 ###############################################################################
 # Fix initial and terminal borrowing limits
-initial_borrowing_limit = -2
-terminal_borrowing_limit = -1
+initial_borrowing_limit = -1
+terminal_borrowing_limit = -0.5
+
+# Fix persistence in borrowing limit shock
+persistence_borrowing_limit = 0.3
 
 ###############################################################################
 ###############################################################################
 # Get HANK model dictionary
-full_path_hank = os.path.join(full_path_code, 'hank_model.yml')
+full_path_hank = os.path.join(full_path_code, 'hank_without_end_labour.yml')
 hank_dict = ep.parse(full_path_hank)
 
 # Create model with initial borrowing limit
 hank_dict['steady_state']['fixed_values']['lower_bound_a'] = initial_borrowing_limit
+hank_dict['definitions'] = hank_dict['definitions'].replace('amin = -1', f'amin = {initial_borrowing_limit}')
+hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {terminal_borrowing_limit}')
+
+hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
+hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
+
 hank_model_initial = ep.load(hank_dict)
 
 # Create model with terminal borrowing limit
@@ -97,7 +106,7 @@ hank_stst_df['Initial Steady State'] = hank_stst_df['Initial Steady State'].appl
 make_stst_policiy_plots(hank_model_initial)
 make_stst_dist_plots(hank_model_initial)
 bar_plot_asset_dist(hank_model_initial, shorten=True, 
-                    x_threshold = 30, y_threshold = 10)
+                    x_threshold = 25, y_threshold = 8)
 
 # Calculate terminal steady state
 _ = hank_model_terminal.solve_stst()
@@ -109,13 +118,16 @@ hank_stst_df_terminal['Terminal Steady State'] = hank_stst_df_terminal['Terminal
 make_stst_policiy_plots(hank_model_terminal,cutoff=True)
 make_stst_dist_plots(hank_model_terminal)
 bar_plot_asset_dist(hank_model_terminal, shorten=True, 
-                    x_threshold = 30, y_threshold = 10)
+                    x_threshold = 25, y_threshold = 8)
 
 # Compare steady states
 full_stst_analysis = pd.merge(hank_stst_df, hank_stst_df_terminal, 
                               on = 'Variable', how = 'left')
 full_stst_analysis['Percent Change'] = (100*(hank_stst_df_terminal['Terminal Steady State']-hank_stst_df['Initial Steady State'])/hank_stst_df['Initial Steady State']).apply(round_func_2)
 print(full_stst_analysis)
+
+# Save result as LaTeX table
+#print(full_stst_analysis.to_latex(index=False))
 
 ###############################################################################
 ###############################################################################
@@ -158,7 +170,7 @@ plot_all(x_transition, hank_model_initial['variables'], horizon)
 
 # Plot transition of some selected variables
 variables_to_plot = [['C', 'Consumption'], 
-                     ['N', 'Labour Hours'],
+                     #['N', 'Labour Hours'],
                      ['y', 'Output'], 
                      ['pi', 'Inflation'],
                      ['w', 'Wage'],
@@ -173,19 +185,21 @@ plot_selected_transition(variables_to_plot,
 ###############################################################################
 ###############################################################################
 # Transitional Dynamics of the distribution
-# dist_transition = hank_model_terminal.get_distributions(x_transition)
+dist_transition = hank_model_terminal.get_distributions(x_transition)
 
-# dist = dist_transition['dist']
+dist = dist_transition['dist']
 
-# a_grid_new = hank_model_terminal['context']['a_grid']
-
-# ax, _ = grbar3d(dist[...,:30].sum(0), xedges=a_grid_new, yedges=jnp.arange(30), figsize=(9,7), depth=.5, width=.5, alpha=.5)
-# # set axis labels
-# ax.set_xlabel('wealth')
-# ax.set_ylabel('time')
-# ax.set_zlabel('share')
-# # rotate
-# ax.view_init(azim=50)
+ax, _ = grbar3d(dist[...,:horizon].sum(0), 
+                xedges=hank_model_terminal['context']['a_grid'], 
+                yedges=jnp.arange(horizon), 
+                figsize=(9,7), 
+                depth=.5, 
+                width=.5, 
+                alpha=.5)
+ax.set_xlabel('wealth')
+ax.set_ylabel('time')
+ax.set_zlabel('share')
+ax.view_init(azim=50)
 
 ###############################################################################
 ###############################################################################
