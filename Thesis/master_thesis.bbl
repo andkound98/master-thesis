@@ -19,6 +19,49 @@
 
 \refsection{0}
   \datalist[entry]{nyt/global//global/global}
+    \entry{aiyagari1994}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=117116c90a98fcd0aa5ba0a075f068f0}{%
+           family={Aiyagari},
+           familyi={A\bibinitperiod},
+           given={S.\bibnamedelimi Rao},
+           giveni={S\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{117116c90a98fcd0aa5ba0a075f068f0}
+      \strng{fullhash}{117116c90a98fcd0aa5ba0a075f068f0}
+      \strng{bibnamehash}{117116c90a98fcd0aa5ba0a075f068f0}
+      \strng{authorbibnamehash}{117116c90a98fcd0aa5ba0a075f068f0}
+      \strng{authornamehash}{117116c90a98fcd0aa5ba0a075f068f0}
+      \strng{authorfullhash}{117116c90a98fcd0aa5ba0a075f068f0}
+      \field{sortinit}{A}
+      \field{sortinithash}{a3dcedd53b04d1adfd5ac303ecd5e6fa}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Quarterly Journal of Economics}
+      \field{number}{3}
+      \field{title}{{Uninsured idiosyncratic risk and aggregate saving}}
+      \field{urlday}{25}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{109}
+      \field{year}{1994}
+      \field{urldateera}{ce}
+      \field{pages}{659\bibrangedash 684}
+      \range{pages}{26}
+      \verb{doi}
+      \verb https://doi.org/10.2307/2118417
+      \endverb
+      \verb{urlraw}
+      \verb https://academic.oup.com/qje/article/109/3/659/1838287?login=false
+      \endverb
+      \verb{url}
+      \verb https://academic.oup.com/qje/article/109/3/659/1838287?login=false
+      \endverb
+    \endentry
     \entry{boehl2023econpizza}{misc}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=32d43afd493165498106c852e8be8062}{%
