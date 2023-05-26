@@ -2792,11 +2792,16 @@
     <bcf:citekey order="1">gl2017</bcf:citekey>
     <bcf:citekey order="2">zoch2022</bcf:citekey>
     <bcf:citekey order="3">boehl2023econpizza</bcf:citekey>
-    <bcf:citekey order="4">gl2017</bcf:citekey>
-    <bcf:citekey order="5">aiyagari1994</bcf:citekey>
-    <bcf:citekey order="6">kaplan2018</bcf:citekey>
-    <bcf:citekey order="7">kaplan2018</bcf:citekey>
-    <bcf:citekey order="8">gl2017</bcf:citekey>
+    <bcf:citekey order="4">kaplan2018</bcf:citekey>
+    <bcf:citekey order="5">im1989</bcf:citekey>
+    <bcf:citekey order="6">huggett1993</bcf:citekey>
+    <bcf:citekey order="7">aiyagari1994</bcf:citekey>
+    <bcf:citekey order="8">im1989</bcf:citekey>
+    <bcf:citekey order="9">aiyagari1994</bcf:citekey>
+    <bcf:citekey order="10">gl2017</bcf:citekey>
+    <bcf:citekey order="11">egg2012</bcf:citekey>
+    <bcf:citekey order="12">kaplan2018</bcf:citekey>
+    <bcf:citekey order="13">gl2017</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

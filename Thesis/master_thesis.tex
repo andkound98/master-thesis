@@ -225,6 +225,8 @@ A heterogeneous-agent (\Gls{ha}) model naturally lends itself to the analysis of
 
 First, unlike their representative-agent counterparts, prototypical \Gls{ha} models explicitly incorporate borrowing limits. Second, \Gls{ha} models speak to the differential effect of borrowing constraints across the distribution of households.
 
+The present model is not so much about the \textit{origins} of financial constraints in form of borrowing limits but rather on the \textit{effects} of changes in such limits and their differential consequences across household groups (i.e.~borrowers and lenders).
+
 I further include some financial constraints on the side of the firms and banks as done in \textcite{zoch2022}.
 
 The model and its dynamics are solved with the Python package \texttt{Econpizza} by \textcite{boehl2023econpizza} and the methods therein.
@@ -241,7 +243,11 @@ This section reviews the two strands of the literature which this thesis is most
 \subsection{Household Heterogeneity in the Macroeconomy}
 \label{sec:literature-hetero}
 
+HANK models fuse two basic modelling approaches in macroeconomics.\footnote{The term \enquote{HANK} was coined by \textcite{kaplan2018}.} The first is the incomplete-markets framework, pioneered \textit{inter alia} by \textcite{im1989}, \textcite{huggett1993} and \textcite{aiyagari1994}.\footnote{\textcite{im1989} compares the consumption costs of business cycles in imperfect-insurance models to the costs implied by perfect-insurance models and finds that the former exhibits higher costs than the latter in the case of no borrowing and lower costs when borrowing is permitted. \textcite{aiyagari1994} studies asset market equilibrium where asset supply is given by households who are subject to labour income risk and asset demand by firms with a neoclassical production function. The result is that the degree by which the presence of idiosynratic risk influences aggregate savings and the equilibrium interest rate depends on the calibration of the parameters governing the desire for precautionary savings.} The second one, pertaining to the aggregate economy in the model, is the New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework.
+
 \textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
+
+\textcite{egg2012} analyse a shock to the borrowing limit in a two-agent economy with a constant fraction of borrowers and lenders. The advantage of this approach is that the authors can derive analytical results.
 
 \subsection{Financial Constraints in the Macroeconomy}
 \label{sec:literature-finance}
@@ -255,12 +261,14 @@ GK focus on the economy's financial intermediaries. In their framework, banks ar
 \section{Model}
 \label{sec:model}
 
-The model fuses the incomplete-markets approach, pioneered \textit{inter alia} by \textcite{aiyagari1994}, with a New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework. In the words of \textcite{kaplan2018}, the resulting model is a HANK model.
+This section puts forward the model used to analyse shocks to borrowing constraints. Time, denoted by $t$, is discrete and refers to quarters of a year.
 
 \subsection{Households}
 \label{sec:model-hh}
 
-The household side is modeled following the standard incomplete-markets approach, initiated \textit{inter alia} by. In this framework, households are ex-ante identical but heterogeneous ex-post as they are subject to idiosyncratic, i.e.~household-level, income risk. Markets are incomplete and thus, households can only self-insure by saving and borrowing in a one-period, rsik-free bond. This bond is the only asset in the economy and is perfectly liquid, i.e.~there are no costs involved when purchasing or selling bonds. The bond is to be understood as unsecured borrowing.\footnote{Secured borrowing would be collateralised.}
+The model allows households explicitly to lend and to borrow. This is at the heart of the present analysis.
+
+Households $i$ are ex-ante identical but subject to idiosyncratic, i.e.~household-level, income shocks. Markets are incomplete and thus, households can only self-insure by saving and borrowing in a one-period, rsik-free bond. This bond is the only asset in the economy and is perfectly liquid, i.e.~there are no costs involved when purchasing or selling bonds. The bond is to be understood as unsecured borrowing.\footnote{Secured borrowing would be collateralised.}
 
 Households have utility function $U$, which is strictly increasing in household consumption $c_i$. Households choose consumption, labour and asset holdings so as to maximise their utiliy, given the prices they face in the economy.
 

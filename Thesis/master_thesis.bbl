@@ -43,7 +43,7 @@
       \field{labeltitlesource}{title}
       \field{journaltitle}{The Quarterly Journal of Economics}
       \field{number}{3}
-      \field{title}{{Uninsured idiosyncratic risk and aggregate saving}}
+      \field{title}{{Uninsured Idiosyncratic Risk and Aggregate Saving}}
       \field{urlday}{25}
       \field{urlmonth}{5}
       \field{urlyear}{2023}
@@ -53,7 +53,7 @@
       \field{pages}{659\bibrangedash 684}
       \range{pages}{26}
       \verb{doi}
-      \verb https://doi.org/10.2307/2118417
+      \verb 10.2307/2118417
       \endverb
       \verb{urlraw}
       \verb https://academic.oup.com/qje/article/109/3/659/1838287?login=false
@@ -144,6 +144,55 @@
       \verb https://research.stlouisfed.org/wp/more/2022-038
       \endverb
     \endentry
+    \entry{egg2012}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=ea9e103a858ea269392e3096739a082c}{%
+           family={Eggertsson},
+           familyi={E\bibinitperiod},
+           given={Gauti\bibnamedelima B.},
+           giveni={G\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1dc32e0388d1f3dd99440cc8a5c3333b}{%
+           family={Krugman},
+           familyi={K\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{615c5d21161ce8bcbe0e018cbf9e24b0}
+      \strng{fullhash}{615c5d21161ce8bcbe0e018cbf9e24b0}
+      \strng{bibnamehash}{615c5d21161ce8bcbe0e018cbf9e24b0}
+      \strng{authorbibnamehash}{615c5d21161ce8bcbe0e018cbf9e24b0}
+      \strng{authornamehash}{615c5d21161ce8bcbe0e018cbf9e24b0}
+      \strng{authorfullhash}{615c5d21161ce8bcbe0e018cbf9e24b0}
+      \field{sortinit}{E}
+      \field{sortinithash}{c554bd1a0b76ea92b9f105fe36d9c7b0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Quarterly Journal of Economics}
+      \field{number}{3}
+      \field{title}{{Debt, Deleveraging, and the Liquidity Trap: A Fisher-Minsky-Koo Approach}}
+      \field{urlday}{26}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{127}
+      \field{year}{2012}
+      \field{urldateera}{ce}
+      \field{pages}{1469\bibrangedash 1513}
+      \range{pages}{45}
+      \verb{doi}
+      \verb 10.1093/qje/qjs023
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1093/qje/qjs023
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1093/qje/qjs023
+      \endverb
+    \endentry
     \entry{gl2017}{article}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=6ddbbd4da1ad4e9e94f3f2f12045ddb2}{%
@@ -184,13 +233,105 @@
       \field{pages}{1427\bibrangedash 1467}
       \range{pages}{41}
       \verb{doi}
-      \verb https://doi.org/10.1093/qje/qjx005
+      \verb 10.1093/qje/qjx005
       \endverb
       \verb{urlraw}
       \verb https://academic.oup.com/qje/article-abstract/132/3/1427/3071924?redirectedFrom=fulltext&login=false
       \endverb
       \verb{url}
       \verb https://academic.oup.com/qje/article-abstract/132/3/1427/3071924?redirectedFrom=fulltext&login=false
+      \endverb
+    \endentry
+    \entry{huggett1993}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=bf92eb7565da8011a5bdd496b20c5396}{%
+           family={Huggett},
+           familyi={H\bibinitperiod},
+           given={Mark},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{bf92eb7565da8011a5bdd496b20c5396}
+      \strng{fullhash}{bf92eb7565da8011a5bdd496b20c5396}
+      \strng{bibnamehash}{bf92eb7565da8011a5bdd496b20c5396}
+      \strng{authorbibnamehash}{bf92eb7565da8011a5bdd496b20c5396}
+      \strng{authornamehash}{bf92eb7565da8011a5bdd496b20c5396}
+      \strng{authorfullhash}{bf92eb7565da8011a5bdd496b20c5396}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Economic Dynamics and Control}
+      \field{number}{5}
+      \field{title}{{The Risk-Free Rate in Heterogeneous-Agent Incomplete-Insurance Economies}}
+      \field{urlday}{26}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{17}
+      \field{year}{1993}
+      \field{urldateera}{ce}
+      \field{pages}{953\bibrangedash 969}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1016/0165-1889(93)90024-M
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/016518899390024M
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/016518899390024M
+      \endverb
+    \endentry
+    \entry{im1989}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=87c2fb7adccdd7a1b6c0b1a64f8b4bbe}{%
+           family={Imrohoro{ğ}lu},
+           familyi={I\bibinitperiod},
+           given={Ay{ş}e},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {The University of Chicago Press}%
+      }
+      \strng{namehash}{87c2fb7adccdd7a1b6c0b1a64f8b4bbe}
+      \strng{fullhash}{87c2fb7adccdd7a1b6c0b1a64f8b4bbe}
+      \strng{bibnamehash}{87c2fb7adccdd7a1b6c0b1a64f8b4bbe}
+      \strng{authorbibnamehash}{87c2fb7adccdd7a1b6c0b1a64f8b4bbe}
+      \strng{authornamehash}{87c2fb7adccdd7a1b6c0b1a64f8b4bbe}
+      \strng{authorfullhash}{87c2fb7adccdd7a1b6c0b1a64f8b4bbe}
+      \field{sortinit}{I}
+      \field{sortinithash}{9417e9a1288a9371e2691d999083ed39}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Political Economy}
+      \field{number}{6}
+      \field{title}{{Cost of Business Cycles with Indivisibilities and Liquidity Constraints}}
+      \field{urlday}{26}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{97}
+      \field{year}{1989}
+      \field{urldateera}{ce}
+      \field{pages}{1364\bibrangedash 1383}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1086/261658
+      \endverb
+      \verb{urlraw}
+      \verb https://www.journals.uchicago.edu/doi/abs/10.1086/261658
+      \endverb
+      \verb{url}
+      \verb https://www.journals.uchicago.edu/doi/abs/10.1086/261658
       \endverb
     \endentry
     \entry{kaplan2018}{article}{}
@@ -234,6 +375,9 @@
       \field{year}{2018}
       \field{pages}{697\bibrangedash 743}
       \range{pages}{47}
+      \verb{doi}
+      \verb 10.1257/aer.20160042
+      \endverb
     \endentry
   \enddatalist
 \endrefsection
