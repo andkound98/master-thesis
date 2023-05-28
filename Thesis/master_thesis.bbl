@@ -98,6 +98,57 @@
       \verb https://ssrn.com/abstract=4433585
       \endverb
     \endentry
+    \entry{cherrier2023}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=fdbf98733400e320850fa0bb9d44728e}{%
+           family={Cherrier},
+           familyi={C\bibinitperiod},
+           given={Beatrice},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5855763467d8d1db89ae16f40ca6c00a}{%
+           family={Duarte},
+           familyi={D\bibinitperiod},
+           given={Pedro},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=62ba899eefaee063c28546c69cdf69de}{%
+           family={Sa{ı̈}di},
+           familyi={S\bibinitperiod},
+           given={Aur{é}lien},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{079ee010918c2b36654999a9dfec2aec}
+      \strng{fullhash}{18279747e31b484027463628dad04630}
+      \strng{bibnamehash}{18279747e31b484027463628dad04630}
+      \strng{authorbibnamehash}{18279747e31b484027463628dad04630}
+      \strng{authornamehash}{079ee010918c2b36654999a9dfec2aec}
+      \strng{authorfullhash}{18279747e31b484027463628dad04630}
+      \field{sortinit}{C}
+      \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{European Economic Review}
+      \field{title}{{Household Heterogeneity in Macroeconomic Models: A Historical Perspective}}
+      \field{urlday}{27}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.1016/j.euroecorev.2023.104497
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/abs/pii/S0014292123001265
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/abs/pii/S0014292123001265
+      \endverb
+    \endentry
     \entry{zoch2022}{report}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=32ca53db369e3723549ad936979285c3}{%
@@ -193,6 +244,49 @@
       \verb https://doi.org/10.1093/qje/qjs023
       \endverb
     \endentry
+    \entry{fisher1933}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=220c89c7f75cf8428045e124c21b5ba5}{%
+           family={Fisher},
+           familyi={F\bibinitperiod},
+           given={Irving},
+           giveni={I\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{220c89c7f75cf8428045e124c21b5ba5}
+      \strng{fullhash}{220c89c7f75cf8428045e124c21b5ba5}
+      \strng{bibnamehash}{220c89c7f75cf8428045e124c21b5ba5}
+      \strng{authorbibnamehash}{220c89c7f75cf8428045e124c21b5ba5}
+      \strng{authornamehash}{220c89c7f75cf8428045e124c21b5ba5}
+      \strng{authorfullhash}{220c89c7f75cf8428045e124c21b5ba5}
+      \field{sortinit}{F}
+      \field{sortinithash}{fb0c0faa89eb6abae8213bf60e6799ea}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Econometrica}
+      \field{number}{4}
+      \field{title}{{The Debt-Deflation Theory of Great Depressions}}
+      \field{urlday}{27}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{1}
+      \field{year}{1933}
+      \field{urldateera}{ce}
+      \field{pages}{337\bibrangedash 357}
+      \range{pages}{21}
+      \verb{doi}
+      \verb 10.2307/1907327
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/1907327?casa_token=NIgdevPLzI4AAAAA%3AoE2jW7xrlnjLhSFeX4lN2xJEDkZn-tOJ-Obd2W5_p0oB95145p_e3t0q3rcm3xisDeuGa1hvWaZuHFenddFY3a5kEwEhozOvPF2M5XtlbTBhZw_hzxRB
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/1907327?casa_token=NIgdevPLzI4AAAAA%3AoE2jW7xrlnjLhSFeX4lN2xJEDkZn-tOJ-Obd2W5_p0oB95145p_e3t0q3rcm3xisDeuGa1hvWaZuHFenddFY3a5kEwEhozOvPF2M5XtlbTBhZw_hzxRB
+      \endverb
+    \endentry
     \entry{gl2017}{article}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=6ddbbd4da1ad4e9e94f3f2f12045ddb2}{%
@@ -240,6 +334,61 @@
       \endverb
       \verb{url}
       \verb https://academic.oup.com/qje/article-abstract/132/3/1427/3071924?redirectedFrom=fulltext&login=false
+      \endverb
+    \endentry
+    \entry{heath2009}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=1bcb15a3e6eb22cea043c7f2748b47ba}{%
+           family={Heathcote},
+           familyi={H\bibinitperiod},
+           given={Jonathan},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=75a3f2b5e8c8d1848ea43eb7cd2cf1ab}{%
+           family={Storesletten},
+           familyi={S\bibinitperiod},
+           given={Kjetil},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0a5a837fc5db64a717ef5f2881870194}{%
+           family={Violante},
+           familyi={V\bibinitperiod},
+           given={Giovanni\bibnamedelima L.},
+           giveni={G\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{a1fe90d7e3ec4a3d1f90af0cddbf0c28}
+      \strng{fullhash}{c0ea3f15ebc66fe5a451f1b59dec1ab4}
+      \strng{bibnamehash}{c0ea3f15ebc66fe5a451f1b59dec1ab4}
+      \strng{authorbibnamehash}{c0ea3f15ebc66fe5a451f1b59dec1ab4}
+      \strng{authornamehash}{a1fe90d7e3ec4a3d1f90af0cddbf0c28}
+      \strng{authorfullhash}{c0ea3f15ebc66fe5a451f1b59dec1ab4}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annual Review of Economics}
+      \field{number}{1}
+      \field{title}{{Quantitative Macroeconomics with Heterogeneous Households}}
+      \field{urlday}{27}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{1}
+      \field{year}{2009}
+      \field{urldateera}{ce}
+      \field{pages}{319\bibrangedash 354}
+      \range{pages}{36}
+      \verb{doi}
+      \verb 10.1146/annurev.economics.050708.142922
+      \endverb
+      \verb{urlraw}
+      \verb https://www.annualreviews.org/doi/abs/10.1146/annurev.economics.050708.142922?casa_token=ylDDBHiyumUAAAAA:sIKh8l2CWhfw4tNhgEGRTeRJMXVu6Of77RVEuru1zxwojMY_jQ0Jio0aCliX37POBiFuPlyVi7eAZw
+      \endverb
+      \verb{url}
+      \verb https://www.annualreviews.org/doi/abs/10.1146/annurev.economics.050708.142922?casa_token=ylDDBHiyumUAAAAA:sIKh8l2CWhfw4tNhgEGRTeRJMXVu6Of77RVEuru1zxwojMY_jQ0Jio0aCliX37POBiFuPlyVi7eAZw
       \endverb
     \endentry
     \entry{huggett1993}{article}{}
