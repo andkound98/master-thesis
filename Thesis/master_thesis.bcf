@@ -2806,8 +2806,9 @@
     <bcf:citekey order="15">egg2012</bcf:citekey>
     <bcf:citekey order="16">heath2009</bcf:citekey>
     <bcf:citekey order="17">cherrier2023</bcf:citekey>
-    <bcf:citekey order="18">kaplan2018</bcf:citekey>
-    <bcf:citekey order="19">gl2017</bcf:citekey>
+    <bcf:citekey order="18">cherrier2023</bcf:citekey>
+    <bcf:citekey order="19">kaplan2018</bcf:citekey>
+    <bcf:citekey order="20">gl2017</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">

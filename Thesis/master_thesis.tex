@@ -211,6 +211,12 @@ Abstract goes here.
 
 Households face limits to borrowing. In the real world, these limits take various forms and vary across households (e.g.~by credit-worthiness) and asset types. For example, overdrawing one's checking account is limited to some value and mortgage debt might be constrained by regulatory prescriptions on loan-to-value ratios (\Gls{ltv}). 
 
+Borrowing limits have important implications for the behaviour of households.
+
+They vary over time. For example, banks change their lending standards over time.
+
+How do borrowers and lenders interact in environments with different and time-varying borrowing limits and what do those interactions imply for the aggregate?
+
 In the absence of complete insurance markets, the presence of borrowing limits constrains households in their ability to smooth shocks to consumption. Moreover, borrowing limits combined with idiosyncratic income risk induce precautionary savings, i.e.~a build-up of assets in order to prevent running into the borrowing constraints. 
 
 Borrowing limits play an important role not only for individuals but for the aggregate economy as well.
@@ -276,7 +282,9 @@ This section puts forward the model used to analyse shocks to borrowing constrai
 
 The model allows households explicitly to lend and to borrow. This is at the heart of the present analysis.
 
-Households $i$ are ex-ante identical but subject to idiosyncratic, i.e.~household-level, income shocks. Markets are incomplete and thus, households can only self-insure by saving and borrowing in a one-period, rsik-free bond. This bond is the only asset in the economy and is perfectly liquid, i.e.~there are no costs involved when purchasing or selling bonds. The bond is to be understood as unsecured borrowing.\footnote{Secured borrowing would be collateralised.}
+Default is not considered in this model environment.
+
+Households $i$ are ex-ante identical but subject to idiosyncratic, i.e.~household-level, income shocks.\footnote{As \textcite{cherrier2023} note, there has been a strand of the literature considering also ex-ante heterogeneity in addition to ex-post heterogeneity. Doing so is beyond the scope of the present thesis.} Markets are incomplete and thus, households can only self-insure by saving and borrowing in a one-period, rsik-free bond. This bond is the only asset in the economy and is perfectly liquid, i.e.~there are no costs involved when purchasing or selling bonds. The bond is to be understood as unsecured borrowing.\footnote{Secured borrowing would be collateralised.}
 
 Households have utility function $U$, which is strictly increasing in household consumption $c_i$. Households choose consumption, labour and asset holdings so as to maximise their utiliy, given the prices they face in the economy.
 
@@ -377,6 +385,8 @@ lower\_bound\_a &               -2.0000 &                -1.0000 &       -50.00 
 \section{Description of Computer Codes}
 \label{sec-app:codes}
 
+\newpage
+\thispagestyle{plain}
 \section{The Case of a Shock to Income Risk}
 \label{sec-app:income}
 The literature has given quite some attention to shocks to labour income risk in \Gls{hank} models in order to produce fluctuations which resemble business cycles. In this appendix, I show that a permanent shock to labour income risk produces impulse responses which are similar to the ones obtained from the analysis above.
@@ -388,7 +398,7 @@ The literature has given quite some attention to shocks to labour income risk in
 \newpage
 \thispagestyle{plain}
 \pagenumbering{gobble} % Turn page numbering off
-\section*{Statement of Authorship}
+\section*{Statement of Authorship} % Include statement of authorship
 I hereby confirm that the work presented has been performed and interpreted solely by myself except for where I explicitly identified the contrary. I assure that this work has not been presented in any other form for the fulfillment of any other degree or qualification. Ideas taken from other works in letter and in spirit are identified in every single case.
 
 \vspace{2cm}
