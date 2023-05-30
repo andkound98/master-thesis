@@ -437,6 +437,55 @@
       \verb https://www.sciencedirect.com/science/article/pii/016518899390024M
       \endverb
     \endentry
+    \entry{riosrull2015}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=1913cf3fffab4f8fd726c0fd50066087}{%
+           family={Huo},
+           familyi={H\bibinitperiod},
+           given={Zhen},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2c17a185e0ed42a81fcf01b0e62c7abe}{%
+           family={R{ı́}os-Rull},
+           familyi={R\bibinitperiod},
+           given={Jos{é}-V{ı́}ctor},
+           giveni={J\bibinithyphendelim V\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{bad463d932d54692a7f6935c1fb61367}
+      \strng{fullhash}{bad463d932d54692a7f6935c1fb61367}
+      \strng{bibnamehash}{bad463d932d54692a7f6935c1fb61367}
+      \strng{authorbibnamehash}{bad463d932d54692a7f6935c1fb61367}
+      \strng{authornamehash}{bad463d932d54692a7f6935c1fb61367}
+      \strng{authorfullhash}{bad463d932d54692a7f6935c1fb61367}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Review of Economic Dynamics}
+      \field{number}{1}
+      \field{title}{{Tightening Financial Frictions on Households, Recessions, and Price Reallocations}}
+      \field{urlday}{30}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{18}
+      \field{year}{2015}
+      \field{urldateera}{ce}
+      \field{pages}{118\bibrangedash 139}
+      \range{pages}{22}
+      \verb{doi}
+      \verb 10.1016/j.red.2014.10.004
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1094202514000623?casa_token=B7aqYO8IZ3YAAAAA:vylRJZIcLc3Zi_fYWj5nglTgTidWvnhRK89ndmQeC2W9RsirHQEyLHkEPhn0Ahrwxq62l5IMXg
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1094202514000623?casa_token=B7aqYO8IZ3YAAAAA:vylRJZIcLc3Zi_fYWj5nglTgTidWvnhRK89ndmQeC2W9RsirHQEyLHkEPhn0Ahrwxq62l5IMXg
+      \endverb
+    \endentry
     \entry{im1989}{article}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=87c2fb7adccdd7a1b6c0b1a64f8b4bbe}{%

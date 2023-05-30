@@ -7,38 +7,48 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2}Related Literature}{2}{section.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Household Heterogeneity in the Macroeconomy}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.1}Literature on Borrowing Constraints}{2}{subsection.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Financial Constraints in the Macroeconomy}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Further Literature on Financial Constraints and Household Heterogeneity}{3}{subsection.2.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Model}{3}{section.3}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.1}Households}{3}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Banks}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Firms}{4}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Firms}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.3}Fiscal and Monetary Policy}{4}{subsection.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4}Fiscal and Monetary Policy}{4}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.4}Equilibrium}{4}{subsection.3.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5}Equilibrium}{4}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.5}Model Extensions}{4}{subsection.3.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Implementation and Calibration}{4}{section.4}%
+\contentsline {subsubsection}{\numberline {3.5.1}Banks}{4}{subsubsection.3.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Results}{4}{section.5}%
+\contentsline {subsubsection}{\numberline {3.5.2}Real Debt}{4}{subsubsection.3.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4}Implementation and Calibration}{5}{section.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5}Results}{5}{section.5}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.1}Comparison of Steady States}{5}{subsection.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{5}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.2}Transitional Dynamics}{6}{subsection.5.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Sensitivity Analyses}{5}{section.6}%
+\contentsline {subsubsection}{\numberline {5.2.1}Aggregate Dynamics}{6}{subsubsection.5.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Conclusion}{5}{section.7}%
+\contentsline {subsubsection}{\numberline {5.2.2}Individual-Level Dynamics}{6}{subsubsection.5.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6}Sensitivity Analyses}{6}{section.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7}Conclusion}{6}{section.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{References}{I}{section*.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{Appendices}{A-1}{section*.8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A}Description of Computer Codes}{A-1}{appendix.a.A}%
+\contentsline {section}{\numberline {A}Full Model}{A-1}{appendix.a.A}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {B}The Case of a Shock to Income Risk}{A-2}{appendix.a.B}%
+\contentsline {section}{\numberline {B}Description of Computer Codes}{A-2}{appendix.a.B}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {C}Analogy of the Borrowing Limit Shock to an Income Risk Shock}{A-3}{appendix.a.C}%

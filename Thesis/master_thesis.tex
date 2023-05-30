@@ -1,5 +1,6 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{article} % Set documentclass article and set font size
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Packages
@@ -34,8 +35,9 @@ urldate=long
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Custom Settings
-\addbibresource{master_thesis.bib} % Add bib source
+\addbibresource{master_thesis.bib} % Add bibliography source
 
 \setlength\bibitemsep{1.5\itemsep} % Adjust distance of reference entries
 
@@ -46,13 +48,11 @@ urldate=long
   \addperiod% NEW
   \iflistundef{pageref}
     {}
-%    {\printtext[parens]{% DELETED
-    {\newline\footnotesize\printtext[parens]{% NEW
+    {\newline\footnotesize\printtext[parens]{%
        \ifnumgreater{\value{pageref}}{1}
          {\bibstring{backrefpages}\ppspace}
      {\bibstring{backrefpage}\ppspace}%
- %      \printlist[pageref][-\value{listtotal}]{pageref}}}}% DELETED
-       \printlist[pageref][-\value{listtotal}]{pageref}}}}% NEW
+       \printlist[pageref][-\value{listtotal}]{pageref}}}}%
 \DefineBibliographyStrings{english}{
   backrefpage={Cited on page},
   backrefpages={Cited on pages}
@@ -74,7 +74,7 @@ urldate=long
     {Table of Contents}%
 } % Adjust title of the table of contents
 \numberwithin{equation}{section} % Number equations with sections
-\setcounter{tocdepth}{2}			% levels which are displayed in the table of contents
+\setcounter{tocdepth}{2} % Set maximum level to which sections are displayed in the table of contents
 
 \pagestyle{plain}
 
@@ -84,6 +84,7 @@ urldate=long
 \DeclareNameWrapperAlias{editor}{sortname}
 \DeclareNameWrapperAlias{translator}{sortname}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Glossary
@@ -122,6 +123,7 @@ description={Dynamic Stochastic General Equilibrium}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hyperref package
 \usepackage{hyperref} % Load after everything else
 \usepackage{footnotebackref} % Brings you back to where the footnote is in the text
@@ -132,6 +134,7 @@ description={Dynamic Stochastic General Equilibrium}
     citecolor=blue,
     urlcolor=blue} % Setup with the hyperref package
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Formalities
@@ -176,6 +179,7 @@ Matriculation Number: & 3466868
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \pagenumbering{roman} % Turn page numbering to small roman
 { \hypersetup{hidelinks} \tableofcontents } % Hide links in table of contents
@@ -190,6 +194,8 @@ Matriculation Number: & 3466868
 \printglossary[title=List of Abbreviations]
 \setlist[description]{style=standard} % Reset settings back to default
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
@@ -199,12 +205,16 @@ Abstract goes here.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \pagenumbering{arabic} % Turn page numbering to small arabic
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[C]{\leftmark}
 \fancyfoot[C]{\thepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \thispagestyle{plain}
 \section{Introduction}
 \label{sec:introduction}
@@ -221,7 +231,7 @@ In the absence of complete insurance markets, the presence of borrowing limits c
 
 Borrowing limits play an important role not only for individuals but for the aggregate economy as well.
 
-The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).
+The following question arises: how does time-variation in those limits affect the economic outcomes on aggregate and household levels? To answer this question, this thesis follows and extends the work by \textcite{gl2017} and analyses shocks to the household-level borrowing limits in a heterogeneous agent New Keynesian model (\Gls{hank}).\footnote{The term \enquote{HANK} was coined by \textcite{kaplan2018}.}
 
 This limit to borrowing is usually much harsher than the so-called natural borrowing limit, which is commonly defined as the expected net present value of an individual's income stream. 
 
@@ -241,15 +251,21 @@ The model and its dynamics are solved with the Python package \texttt{Econpizza}
 \label{sec:outline}
 The remainder of this thesis is structured as follows. Section \ref{sec:literature} reviews the related literature. Section \ref{sec:model} lays down the macroeconomic model, the numerical implementation and calibration of which is discussed in section \ref{sec:implementation}. Thereafter, section \ref{sec:results} presents the results and section \ref{sec:conclusion} concludes.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related Literature}
 \label{sec:literature}
 
 This section reviews the two strands of the literature which this thesis is most closely related to. I focus first on the macroeconomic literature revolving around household inequality and constraints to household finance. Second, I dwell on the most prominent works on financial constraints and the macroeconomy, where constraints are usually placed in the firm or bank sectors.
 
-\subsection{Household Heterogeneity in the Macroeconomy}
-\label{sec:literature-hetero}
+\subsection{Literature on Borrowing Constraints}
+\label{sec:literature-borrowing}
 
-HANK models fuse two basic modelling approaches in macroeconomics.\footnote{The term \enquote{HANK} was coined by \textcite{kaplan2018}.} The first is the incomplete-markets framework, pioneered \textit{inter alia} by \textcite{im1989}, \textcite{huggett1993} and \textcite{aiyagari1994}.\footnote{\textcite{im1989} compares the consumption costs of business cycles in imperfect-insurance models to the costs implied by perfect-insurance models and finds that the former exhibits higher costs than the latter in the case of no borrowing and lower costs when borrowing is permitted. \textcite{aiyagari1994} studies asset market equilibrium where asset supply is given by households who are subject to labour income risk and asset demand by firms with a neoclassical production function. The result is that the degree by which the presence of idiosynratic risk influences aggregate savings and the equilibrium interest rate depends on the calibration of the parameters governing the desire for precautionary savings.} The second one, pertaining to the aggregate economy in the model, is the New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework.
+Shocks to borrowing constrains have been considered in the literature before. This subsection reviews some of these works.
+
+At least since \textcite{fisher1933} macroeconomists have been thinking about debt and its influence on features and developments of the macroeconomy.
+
+HANK models fuse two basic modelling approaches in macroeconomics. The first is the incomplete-markets framework, pioneered \textit{inter alia} by \textcite{im1989}, \textcite{huggett1993} and \textcite{aiyagari1994}.\footnote{\textcite{im1989} compares the consumption costs of business cycles in imperfect-insurance models to the costs implied by perfect-insurance models and finds that the former exhibits higher costs than the latter in the case of no borrowing and lower costs when borrowing is permitted. \textcite{aiyagari1994} studies asset market equilibrium where asset supply is given by households who are subject to labour income risk and asset demand by firms with a neoclassical production function. The result is that the degree by which the presence of idiosynratic risk influences aggregate savings and the equilibrium interest rate depends on the calibration of the parameters governing the desire for precautionary savings.} The second one, pertaining to the aggregate economy in the model, is the New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework.
 
 \textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
 
@@ -263,8 +279,10 @@ As \textcite{egg2012} note, it is reasonable to assume that the debt limit depen
 
 \textcite{heath2009} provide an overview of modelling heterogenous households in quantitative macroeconomics. See \textcite{cherrier2023} for a historical overview of the advances and different approaches towards incorporating heterogeneous agents into macroeconomic analysis in the 1980s and 1990s.
 
-\subsection{Financial Constraints in the Macroeconomy}
-\label{sec:literature-finance}
+\textcite{riosrull2015} have an exogenous interest rate and two types of goods.
+
+\subsection{Further Literature on Financial Constraints and Household Heterogeneity}
+\label{sec:literature-more}
 
 In the real world, it is not only households who face financial constraints. Other agents, such as firms and financial intermediaries, can be subject to limits to their borrowing capacity.
 
@@ -272,6 +290,8 @@ BG and BGG are among the earliest and most widely used approaches to the study o
 
 GK focus on the economy's financial intermediaries. In their framework, banks are limited in the amount of leverage they can hold because of the possibility of banks' owners to liquidate the business.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Model}
 \label{sec:model}
 
@@ -288,18 +308,15 @@ Households $i$ are ex-ante identical but subject to idiosyncratic, i.e.~househol
 
 Households have utility function $U$, which is strictly increasing in household consumption $c_i$. Households choose consumption, labour and asset holdings so as to maximise their utiliy, given the prices they face in the economy.
 
-The bond is supplied by households and by the government. %and is in zero net supply.
+The bond is supplied by households (i.e.~when households lend to and borrow from each other) and by the government. %and is in zero net supply.
+
+Thus, I use wealth always to refer to liqiud wealth, which is the only form of wealth available in this setup, while being aware that wealth in reality comprises illiquid wealth, too.
 
 A note on the asset structure is in order. The one-asset framework seems to be in contradiction to what we find in reality, where households can choose from a variety of assets to self-insure. What is more, there is government insurance and insurance from employers, see Heathcote et al.
 
 \textcite{kaplan2018} provide an insightful critique of the one-asset structure. 
 
 Note that in incomplete markets models it is required that the interest rate times the discount fatcor is smaller than one.
-
-\subsection{Banks}
-\label{sec:model-banks}
-
-Heterogeneous banks are modeled in the paper Bewley banks by.
 
 \subsection{Firms}
 \label{sec:model-firms}
@@ -309,9 +326,26 @@ Firm profits bear the problem that they have to be distributed. The way this is 
 \subsection{Fiscal and Monetary Policy}
 \label{sec:model-policy}
 
+Monetary policy sets the nominal interest rate on bonds. In doing so, it follows a standard Taylor rule, while being subject to the zero lower bound on nominal interest rates. 
+
 \subsection{Equilibrium}
 \label{sec:model-eq}
 
+\subsection{Model Extensions}
+\label{sec:model-extensions}
+
+\subsubsection{Banks}
+\label{sec:model-extensions-banks}
+
+Heterogeneous banks are modeled in the paper Bewley banks by.
+
+\subsubsection{Real Debt}
+\label{sec:model-extensions-realdebt}
+
+Another model extension is to consider real instead of nominal debt. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation and Calibration}
 \label{sec:implementation}
 
@@ -360,12 +394,23 @@ lower\_bound\_a &               -2.0000 &                -1.0000 &       -50.00 
 \subsection{Transitional Dynamics}
 \label{sec:results-transition}
 
+\subsubsection{Aggregate Dynamics}
+\label{sec:results-transition-agg}
+
+\subsubsection{Individual-Level Dynamics}
+\label{sec:results-transition-ind}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Sensitivity Analyses}
 \label{sec:sensitivity}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 \label{sec:conclusion}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % References section
@@ -376,23 +421,36 @@ lower\_bound\_a &               -2.0000 &                -1.0000 &       -50.00 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Appendices section
 \newpage
 \thispagestyle{plain}
-\pagenumbering{arabic}% resets `page` counter to 1
-\renewcommand*{\thepage}{A-\arabic{page}}
+\pagenumbering{arabic}  % Turn page numbering to arabic
+\renewcommand*{\thepage}{A-\arabic{page}} % Add 'A' to each page number for appendices section
 \begin{appendices}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Full Model}
+\label{sec-app:full}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\thispagestyle{plain}
 \section{Description of Computer Codes}
 \label{sec-app:codes}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \thispagestyle{plain}
-\section{The Case of a Shock to Income Risk}
+\section{Analogy of the Borrowing Limit Shock to an Income Risk Shock}
 \label{sec-app:income}
-The literature has given quite some attention to shocks to labour income risk in \Gls{hank} models in order to produce fluctuations which resemble business cycles. In this appendix, I show that a permanent shock to labour income risk produces impulse responses which are similar to the ones obtained from the analysis above.
+The literature has given quite some attention to shocks to labour income risk in \Gls{hank} models in order to produce fluctuations which resemble business cycles. In this appendix, I show that a permanent shock to labour income risk produces impulse responses which are similar to the ones obtained from the analysis of a permanent tightening of the borrowing limit.
 
 \end{appendices}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
