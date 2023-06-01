@@ -78,11 +78,9 @@ urldate=long
 
 \pagestyle{plain}
 
-% Define a custom name format that prints names in bold
+% Define a custom name format that prints names of authors in references in bold
 \DeclareNameWrapperFormat{sortname}{\mkbibbold{#1}}
 \DeclareNameWrapperAlias{author}{sortname}
-\DeclareNameWrapperAlias{editor}{sortname}
-\DeclareNameWrapperAlias{translator}{sortname}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,6 +117,11 @@ description={Loan-to-Value}
 \newglossaryentry{dsge}{
 name=DSGE,
 description={Dynamic Stochastic General Equilibrium}
+}
+
+\newglossaryentry{egm}{
+name=EGM,
+description={Endogenous Gridpoints Method}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -219,7 +222,7 @@ Abstract goes here.
 \section{Introduction}
 \label{sec:introduction}
 
-Households face limits to borrowing. In the real world, these limits take various forms and vary across households (e.g.~by credit-worthiness) and asset types. For example, overdrawing one's checking account is limited to some value and mortgage debt might be constrained by regulatory prescriptions on loan-to-value ratios (\Gls{ltv}). 
+Households face limits to borrowing. In the real world, these limits take various forms and vary across households (e.g.~by credit-worthiness) and asset types. For example, overdrawing one's checking account is limited to some value and mortgage debt might be constrained by regulatory prescriptions on loan-to-value ratios (\Gls{ltv}).\footnote{Of course, firms and governments can be subject to borrowing constraints, too. The focus of this thesis, however, is on households.}
 
 Borrowing limits have important implications for the behaviour of households.
 
@@ -238,6 +241,8 @@ This limit to borrowing is usually much harsher than the so-called natural borro
 Since at least the Great Depression economists have aknowledged the importance of debt. The Great Financial Crisis (\Gls{gfc}) was a vivid reminder of how developments in finance, including credit and limits to credit, affect households and the macroeconomy. 
 
 A heterogeneous-agent (\Gls{ha}) model naturally lends itself to the analysis of household-level borrowing limits for at least two reasons. First, models which neglect or only parsimoniously model household heterogeneity cannot speak to interactions between borrowers and lenders.
+
+Debt is inherently connected with heterogeneity as borrowers and lenders crucially differ in their nature.
 
 First, unlike their representative-agent counterparts, prototypical \Gls{ha} models explicitly incorporate borrowing limits. Second, \Gls{ha} models speak to the differential effect of borrowing constraints across the distribution of households.
 
@@ -265,9 +270,11 @@ Shocks to borrowing constrains have been considered in the literature before. Th
 
 At least since \textcite{fisher1933} macroeconomists have been thinking about debt and its influence on features and developments of the macroeconomy.
 
-HANK models fuse two basic modelling approaches in macroeconomics. The first is the incomplete-markets framework, pioneered \textit{inter alia} by \textcite{im1989}, \textcite{huggett1993} and \textcite{aiyagari1994}.\footnote{\textcite{im1989} compares the consumption costs of business cycles in imperfect-insurance models to the costs implied by perfect-insurance models and finds that the former exhibits higher costs than the latter in the case of no borrowing and lower costs when borrowing is permitted. \textcite{aiyagari1994} studies asset market equilibrium where asset supply is given by households who are subject to labour income risk and asset demand by firms with a neoclassical production function. The result is that the degree by which the presence of idiosynratic risk influences aggregate savings and the equilibrium interest rate depends on the calibration of the parameters governing the desire for precautionary savings.} The second one, pertaining to the aggregate economy in the model, is the New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework.
+HANK models fuse two basic modelling approaches in macroeconomics. The first is the incomplete-markets framework, pioneered \textit{inter alia} by \textcite{bewley1986}, \textcite{im1989}, \textcite{huggett1993} and \textcite{aiyagari1994}.\footnote{\textcite{im1989} compares the consumption costs of business cycles in imperfect-insurance models to the costs implied by perfect-insurance models and finds that the former exhibits higher costs than the latter in the case of no borrowing and lower costs when borrowing is permitted. \textcite{aiyagari1994} studies asset market equilibrium where asset supply is given by households who are subject to labour income risk and asset demand by firms with a neoclassical production function. The result is that the degree by which the presence of idiosynratic risk influences aggregate savings and the equilibrium interest rate depends on the calibration of the parameters governing the desire for precautionary savings.} The second one, pertaining to the aggregate economy in the model, is the New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework.
 
 \textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
+
+Relative to \textcite{gl2017}, I add an aggregate state space, featuring production by firms, a \Gls{nk} Phillips Curve and monetary policy which follows the Taylor rule.
 
 \textcite{egg2012} analyse a permanent shock to an exogenously set debt limit in a two-agent economy with a constant fraction of borrowers and lenders. The advantage of this approach is that the authors can derive analytical results. The paper shows that reductions in the borrowing limit can significantly affect macroeconomic outcomes; for example, the economy can end up in a liquidity trap.
 
@@ -346,12 +353,25 @@ Another model extension is to consider real instead of nominal debt.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Shocks to Borrowing Constraints}
+\label{sec:shocks}
+
+This section discusses the shock to the borrowing limit that I confront the above model with and sketches some consequences for the model's dynamics one might expect.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation and Calibration}
 \label{sec:implementation}
+
+The heterogeneous-agent block of the model is solved using the endogenous-gridpoints method (\Gls{egm}) by \textcite{carroll2006}.
 
 The grid is not allowed to change over time as this mimeo notes. Otherwise, the interpolation would be between repeatedly different grid points, making the comparison of over time inaccurate. 
 
 The purpose of the present exercise is not to accurately match all moments of the empirical data but rather to flesh out the main mechanisms by which a shock to the borrowing limit affects individual-level and aggregate behaviour.
+
+As \textcite{auclert2021} note, it is important to calculate the transition using the Jacobian of the terminal steady state.
+
+Note that the perfect solution implies that aggregates move deterministically and agents know this perfectly.
 
 \section{Results}
 \label{sec:results}
@@ -409,6 +429,8 @@ lower\_bound\_a &               -2.0000 &                -1.0000 &       -50.00 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 \label{sec:conclusion}
+
+An interesting extension of the model would be a small open economy as then funds could potentially be obtained elsewhere.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

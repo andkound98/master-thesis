@@ -62,7 +62,115 @@
       \verb https://academic.oup.com/qje/article/109/3/659/1838287?login=false
       \endverb
     \endentry
-    \entry{boehl2023econpizza}{misc}{}
+    \entry{auclert2021}{article}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=52c07b78ce7e0bfdba9341beafffd474}{%
+           family={Auclert},
+           familyi={A\bibinitperiod},
+           given={Adrien},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5c8d55dc1d04147235c9de16b5ecf4d8}{%
+           family={Bard{ó}czy},
+           familyi={B\bibinitperiod},
+           given={Bence},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0b5bd60d6d36d97b1c2ba6e818dc50f2}{%
+           family={Rognlie},
+           familyi={R\bibinitperiod},
+           given={Matthew},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2bac3e878d05c64f06caf2c0bb51019b}{%
+           family={Straub},
+           familyi={S\bibinitperiod},
+           given={Ludwig},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{8fb614c5cc4681915fb76319e66b392b}
+      \strng{fullhash}{f4639a88bc80bdbf8c392f8b7594dde5}
+      \strng{bibnamehash}{f4639a88bc80bdbf8c392f8b7594dde5}
+      \strng{authorbibnamehash}{f4639a88bc80bdbf8c392f8b7594dde5}
+      \strng{authornamehash}{8fb614c5cc4681915fb76319e66b392b}
+      \strng{authorfullhash}{f4639a88bc80bdbf8c392f8b7594dde5}
+      \field{sortinit}{A}
+      \field{sortinithash}{a3dcedd53b04d1adfd5ac303ecd5e6fa}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Econometrica}
+      \field{number}{5}
+      \field{title}{{Using the Sequence-Space Jacobian to Solve and Estimate Heterogeneous-Agent Models}}
+      \field{urlday}{31}
+      \field{urlmonth}{5}
+      \field{urlyear}{2023}
+      \field{volume}{89}
+      \field{year}{2021}
+      \field{urldateera}{ce}
+      \field{pages}{2375\bibrangedash 2408}
+      \range{pages}{34}
+      \verb{doi}
+      \verb 10.3982/ECTA17434
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA17434?casa_token=MiNJJGPx84EAAAAA%3A4ieth5nYcPqFaXt_DsibW9tpS5uB_GYARtZhc8isd3VToV2zvzqW66v6fuOJF6oVlKH3egosh4W2HiAw
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA17434?casa_token=MiNJJGPx84EAAAAA%3A4ieth5nYcPqFaXt_DsibW9tpS5uB_GYARtZhc8isd3VToV2zvzqW66v6fuOJF6oVlKH3egosh4W2HiAw
+      \endverb
+    \endentry
+    \entry{bewley1986}{inbook}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=b8c7c4dd61110282314bd645167f5429}{%
+           family={Bewley},
+           familyi={B\bibinitperiod},
+           given={Truman},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+      }
+      \name{editor}{2}{}{%
+        {{hash=46cd4d56f9e0b8b84f17f718d78f3c4d}{%
+           family={Hildenbrand},
+           familyi={H\bibinitperiod},
+           given={Werner},
+           giveni={W\bibinitperiod}}}%
+        {{hash=b76f97409971b7c349c5ca95c956f216}{%
+           family={Mas-Colell},
+           familyi={M\bibinithyphendelim C\bibinitperiod},
+           given={Andreu},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {North-Holland}%
+      }
+      \strng{namehash}{b8c7c4dd61110282314bd645167f5429}
+      \strng{fullhash}{b8c7c4dd61110282314bd645167f5429}
+      \strng{bibnamehash}{b8c7c4dd61110282314bd645167f5429}
+      \strng{authorbibnamehash}{b8c7c4dd61110282314bd645167f5429}
+      \strng{authornamehash}{b8c7c4dd61110282314bd645167f5429}
+      \strng{authorfullhash}{b8c7c4dd61110282314bd645167f5429}
+      \strng{editorbibnamehash}{f606fcee19d0828558484557477ef6a5}
+      \strng{editornamehash}{f606fcee19d0828558484557477ef6a5}
+      \strng{editorfullhash}{f606fcee19d0828558484557477ef6a5}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{Contributions to Mathematical Economics: In Honor of G{é}rard Debreu}}
+      \field{chapter}{5}
+      \field{title}{{Stationary Monetary Equilibrium with a Continuum of Independently Fluctuating Consumers}}
+      \field{year}{1986}
+      \field{pages}{79\bibrangedash 102}
+      \range{pages}{24}
+    \endentry
+    \entry{boehl2023econpizza}{report}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=32d43afd493165498106c852e8be8062}{%
            family={Boehl},
@@ -70,6 +178,9 @@
            given={Gregor},
            giveni={G\bibinitperiod},
            givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {SSRN}%
       }
       \strng{namehash}{32d43afd493165498106c852e8be8062}
       \strng{fullhash}{32d43afd493165498106c852e8be8062}
@@ -84,18 +195,65 @@
       \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{howpublished}{\url{https://gregorboehl.com/live/hank_speed_boehl.pdf}}
-      \field{title}{{Robust Nonlinear Transition Dynamics in HANK}}
+      \field{number}{4433585}
+      \field{title}{{HANK on Speed: Robust Nonlinear Solutions Using Automatic Differentiation}}
+      \field{type}{Working Paper}
       \field{urlday}{1}
-      \field{urlmonth}{5}
+      \field{urlmonth}{6}
       \field{urlyear}{2023}
       \field{year}{2023}
       \field{urldateera}{ce}
       \verb{urlraw}
-      \verb https://ssrn.com/abstract=4433585
+      \verb https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4433585
       \endverb
       \verb{url}
-      \verb https://ssrn.com/abstract=4433585
+      \verb https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4433585
+      \endverb
+    \endentry
+    \entry{carroll2006}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=473cc4aac98586cce67f15f3f3b0cff4}{%
+           family={Carroll},
+           familyi={C\bibinitperiod},
+           given={Christopher\bibnamedelima D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{473cc4aac98586cce67f15f3f3b0cff4}
+      \strng{fullhash}{473cc4aac98586cce67f15f3f3b0cff4}
+      \strng{bibnamehash}{473cc4aac98586cce67f15f3f3b0cff4}
+      \strng{authorbibnamehash}{473cc4aac98586cce67f15f3f3b0cff4}
+      \strng{authornamehash}{473cc4aac98586cce67f15f3f3b0cff4}
+      \strng{authorfullhash}{473cc4aac98586cce67f15f3f3b0cff4}
+      \field{sortinit}{C}
+      \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Economics Letters}
+      \field{number}{3}
+      \field{title}{{The Method of Endogenous Gridpoints for Solving Dynamic Stochastic Optimization Problems}}
+      \field{urlday}{1}
+      \field{urlmonth}{6}
+      \field{urlyear}{2023}
+      \field{volume}{91}
+      \field{year}{2006}
+      \field{urldateera}{ce}
+      \field{pages}{312\bibrangedash 320}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1016/j.econlet.2005.09.013
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0165176505003368?casa_token=j9BEE5ui8LAAAAAA:uzFzvz2opL6RXbMZ4U0w23VByYMpYHlWwN9qFZ6_fG01UXHI9xXOLO03HzQBZxcwJVV8ucjdnQg
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0165176505003368?casa_token=j9BEE5ui8LAAAAAA:uzFzvz2opL6RXbMZ4U0w23VByYMpYHlWwN9qFZ6_fG01UXHI9xXOLO03HzQBZxcwJVV8ucjdnQg
       \endverb
     \endentry
     \entry{cherrier2023}{article}{}
@@ -238,10 +396,10 @@
       \verb 10.1093/qje/qjs023
       \endverb
       \verb{urlraw}
-      \verb https://doi.org/10.1093/qje/qjs023
+      \verb https://academic.oup.com/qje/article/127/3/1469/1924252?login=true
       \endverb
       \verb{url}
-      \verb https://doi.org/10.1093/qje/qjs023
+      \verb https://academic.oup.com/qje/article/127/3/1469/1924252?login=true
       \endverb
     \endentry
     \entry{fisher1933}{article}{}
