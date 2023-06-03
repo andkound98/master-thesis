@@ -13,19 +13,17 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Model}{3}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Households}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}Household Sector}{4}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Firms}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Remaining Sectors and Equilibrium}{4}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Fiscal and Monetary Policy}{4}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.2.1}Firms}{4}{subsubsection.3.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4}Equilibrium}{4}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.2.2}Fiscal and Monetary Policy}{4}{subsubsection.3.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5}Model Extensions}{4}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.3}Equilibrium}{4}{subsection.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.5.1}Banks}{4}{subsubsection.3.5.1}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.5.2}Real Debt}{5}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.3.1}Real Debt}{5}{subsubsection.3.3.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {4}Shocks to Borrowing Constraints}{5}{section.4}%
 \defcounter {refsection}{0}\relax 
@@ -41,9 +39,9 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {6.2.2}Individual-Level Dynamics}{6}{subsubsection.6.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Sensitivity Analyses}{6}{section.7}%
+\contentsline {subsection}{\numberline {6.3}Sensitivity Analyses}{6}{subsection.6.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8}Conclusion}{6}{section.8}%
+\contentsline {section}{\numberline {7}Conclusion}{6}{section.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{References}{I}{section*.7}%
 \defcounter {refsection}{0}\relax 

@@ -445,6 +445,55 @@
       \verb https://www.jstor.org/stable/1907327?casa_token=NIgdevPLzI4AAAAA%3AoE2jW7xrlnjLhSFeX4lN2xJEDkZn-tOJ-Obd2W5_p0oB95145p_e3t0q3rcm3xisDeuGa1hvWaZuHFenddFY3a5kEwEhozOvPF2M5XtlbTBhZw_hzxRB
       \endverb
     \endentry
+    \entry{gross2002}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=e704a00de9958d978aa7d3118be023d3}{%
+           family={Gross},
+           familyi={G\bibinitperiod},
+           given={David\bibnamedelima B.},
+           giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ce1518c200a32b53f5e60fa3c12ef0a0}{%
+           family={Souleles},
+           familyi={S\bibinitperiod},
+           given={Nicholas\bibnamedelima S.},
+           giveni={N\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{3cdac9697983b8acbe532bba5fe20c82}
+      \strng{fullhash}{3cdac9697983b8acbe532bba5fe20c82}
+      \strng{bibnamehash}{3cdac9697983b8acbe532bba5fe20c82}
+      \strng{authorbibnamehash}{3cdac9697983b8acbe532bba5fe20c82}
+      \strng{authornamehash}{3cdac9697983b8acbe532bba5fe20c82}
+      \strng{authorfullhash}{3cdac9697983b8acbe532bba5fe20c82}
+      \field{sortinit}{G}
+      \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Quarterly Journal of Economics}
+      \field{number}{1}
+      \field{title}{{Do Liquidity Constraints and Interest Rates Matter for Consumer Behavior? Evidence from Credit Card Data}}
+      \field{urlday}{3}
+      \field{urlmonth}{6}
+      \field{urlyear}{2023}
+      \field{volume}{117}
+      \field{year}{2002}
+      \field{urldateera}{ce}
+      \field{pages}{149\bibrangedash 185}
+      \range{pages}{37}
+      \verb{doi}
+      \verb 10.1162/003355302753399472
+      \endverb
+      \verb{urlraw}
+      \verb https://academic.oup.com/qje/article/109/3/659/1838287?login=true
+      \endverb
+      \verb{url}
+      \verb https://academic.oup.com/qje/article/109/3/659/1838287?login=true
+      \endverb
+    \endentry
     \entry{gl2017}{article}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=6ddbbd4da1ad4e9e94f3f2f12045ddb2}{%

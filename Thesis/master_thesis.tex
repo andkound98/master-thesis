@@ -124,6 +124,11 @@ name=EGM,
 description={Endogenous Gridpoints Method}
 }
 
+\newglossaryentry{iou}{
+name=IOU,
+description={I Owe You}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -270,6 +275,8 @@ Shocks to borrowing constrains have been considered in the literature before. Th
 
 At least since \textcite{fisher1933} macroeconomists have been thinking about debt and its influence on features and developments of the macroeconomy.
 
+An early empirircal paper on the importance of borrowing constraints for conusmer behaviour is \textcite{gross2002}.
+
 HANK models fuse two basic modelling approaches in macroeconomics. The first is the incomplete-markets framework, pioneered \textit{inter alia} by \textcite{bewley1986}, \textcite{im1989}, \textcite{huggett1993} and \textcite{aiyagari1994}.\footnote{\textcite{im1989} compares the consumption costs of business cycles in imperfect-insurance models to the costs implied by perfect-insurance models and finds that the former exhibits higher costs than the latter in the case of no borrowing and lower costs when borrowing is permitted. \textcite{aiyagari1994} studies asset market equilibrium where asset supply is given by households who are subject to labour income risk and asset demand by firms with a neoclassical production function. The result is that the degree by which the presence of idiosynratic risk influences aggregate savings and the equilibrium interest rate depends on the calibration of the parameters governing the desire for precautionary savings.} The second one, pertaining to the aggregate economy in the model, is the New Keynsian dynamic stochastic and general equilibrium (\Gls{dsge}) framework.
 
 \textcite{gl2017} build a household-focused incomplete-markets model and find that a permanent tightening in the household-level borrowing constraint evokes deleveraging and increased precuationary savings. Combined, these two effects depress output and interest rates in the economy. The recession is aggravated and the economy falls into a liquidity trap when the model is augmented with nominal wage rigidities and the zero lower bound. 
@@ -304,10 +311,10 @@ GK focus on the economy's financial intermediaries. In their framework, banks ar
 
 This section puts forward the model used to analyse shocks to borrowing constraints. Time, denoted by $t$, is discrete and refers to quarters of a year.
 
-\subsection{Households}
+\subsection{Household Sector}
 \label{sec:model-hh}
 
-The model allows households explicitly to lend and to borrow. This is at the heart of the present analysis.
+The model allows households explicitly to lend and to borrow. This is at the heart of the present analysis. Thus, the households can issue unsecured \enquote{I Owe You}'s (\Gls{iou}).
 
 Default is not considered in this model environment.
 
@@ -325,12 +332,15 @@ A note on the asset structure is in order. The one-asset framework seems to be i
 
 Note that in incomplete markets models it is required that the interest rate times the discount fatcor is smaller than one.
 
-\subsection{Firms}
+\subsection{Remaining Sectors and Equilibrium}
+\label{sec:model-sectors}
+
+\subsubsection{Firms}
 \label{sec:model-firms}
 
 Firm profits bear the problem that they have to be distributed. The way this is done might matter for households and their differential consumption-savings behaviour. 
 
-\subsection{Fiscal and Monetary Policy}
+\subsubsection{Fiscal and Monetary Policy}
 \label{sec:model-policy}
 
 Monetary policy sets the nominal interest rate on bonds. In doing so, it follows a standard Taylor rule, while being subject to the zero lower bound on nominal interest rates. 
@@ -338,11 +348,11 @@ Monetary policy sets the nominal interest rate on bonds. In doing so, it follows
 \subsection{Equilibrium}
 \label{sec:model-eq}
 
-\subsection{Model Extensions}
-\label{sec:model-extensions}
+%\subsection{Model Extensions}
+%\label{sec:model-extensions}
 
-\subsubsection{Banks}
-\label{sec:model-extensions-banks}
+%\subsubsection{Banks}
+%\label{sec:model-extensions-banks}
 
 Heterogeneous banks are modeled in the paper Bewley banks by.
 
@@ -420,15 +430,15 @@ lower\_bound\_a &               -2.0000 &                -1.0000 &       -50.00 
 \subsubsection{Individual-Level Dynamics}
 \label{sec:results-transition-ind}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Sensitivity Analyses}
-\label{sec:sensitivity}
+\subsection{Sensitivity Analyses}
+\label{sec:results-sensitivity}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 \label{sec:conclusion}
+
+Would be interesting to extend the model so  that there is also borrowing by other entities, especially firms.
 
 An interesting extension of the model would be a small open economy as then funds could potentially be obtained elsewhere.
 
