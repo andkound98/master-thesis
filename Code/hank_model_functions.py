@@ -4,9 +4,12 @@
 Author: Andreas Koundouros, University of Bonn
 Date: 26.04.2023
 
-This file contains the functions for the HANK model with endogenous labour supply.
+This file contains the functions for the HANK model.
 """
 
+###############################################################################
+###############################################################################
+# Import packages
 import jax
 from jax import device_put
 import jax.numpy as jnp
@@ -15,13 +18,36 @@ from grgrjax import jax_print, amax
 from econpizza.utilities.interp import interpolate
 from econpizza.utilities.grids import log_grid
 
+###############################################################################
+###############################################################################
+# Function to initialise EGM
 def egm_init(a_grid, skills_grid):
-    # Initialise marginal utility of consumption
+    """EGM initialisation.
+    
+    This function initialises the marginal utility of consumption as an array
+    with some reasonably small number. The dimensions of the array are: number
+    of skills times number of asset grid points. 
+    With this, the EGM can start iterating backwards to calculate the asset and
+    consumption policy functions.
+    
+    Parameters:
+    ----------
+    a_grid       : asset grid
+    skills_grid  : skills grid
+
+    Returns:
+    ----------
+    jnp.ones((skills_grid.shape[0], a_grid.shape[0]))*1e-2: initialised 
+    marginal utility of consumption
+    """
     return jnp.ones((skills_grid.shape[0], a_grid.shape[0]))*1e-2
 
+###############################################################################
+###############################################################################
+# Function for a single EGM step
 def egm_step_new(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, lower_bound_a):
     """A single backward step via EGM with the calculation of the MPC for a 
-    transfer of db
+    transfer of db and a time-varying borrowing limit
     """
 
     # MUC as implied by next periods value function
@@ -41,19 +67,17 @@ def egm_step_new(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, 
     # get todays distribution of assets
     a = rhs + labor_inc + T[:, None] - c
     
-    # fix borrowing constraint
+    # fix borrowing limit
     lower_a = lower_bound_a
     
-    # fix consumption and labor for constrained households
+    # fix consumption and labor for constrained households at the current 
+    # borrowing limit
     c = jnp.where(a < lower_a, 
                   labor_inc + rhs + T[:, None] - lower_a, 
                   c)
     a = jnp.where(a < lower_a, 
                   lower_a, 
                   a)
-
-    # calculate new MUC
-    Wa = R * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
     
     # calculate mpc
     mpc = (interpolate(a, (a + db), c) - c) / db
@@ -62,7 +86,11 @@ def egm_step_new(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, 
     mpc = jnp.where(mpc > 1.0, 
                     1.0, 
                     mpc)
-
+    
+    # calculate new MUC for next EGM step
+    Wa = R * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
+    
+    # return new MUC, asset holdings, consumption and MPCs
     return Wa, a, c, mpc
 
 
@@ -120,7 +148,7 @@ def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower
     mpc = (interpolate(a, (a + db), c) - c) / db
     
     # Ensure that MPC is at most 1
-    mpc = jnp.where(mpc > 1.0, 
+    mpc = jnp.where(mpc > 1.0,
                     1.0, 
                     mpc)
 

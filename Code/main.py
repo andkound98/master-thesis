@@ -106,7 +106,7 @@ hank_stst_df['Initial Steady State'] = hank_stst_df['Initial Steady State'].appl
 make_stst_policiy_plots(hank_model_initial)
 make_stst_dist_plots(hank_model_initial)
 bar_plot_asset_dist(hank_model_initial, shorten=True, 
-                    x_threshold = 25, y_threshold = 8)
+                    x_threshold = 30, y_threshold = 8)
 
 # Calculate terminal steady state
 _ = hank_model_terminal.solve_stst()
@@ -118,7 +118,7 @@ hank_stst_df_terminal['Terminal Steady State'] = hank_stst_df_terminal['Terminal
 make_stst_policiy_plots(hank_model_terminal,cutoff=True)
 make_stst_dist_plots(hank_model_terminal)
 bar_plot_asset_dist(hank_model_terminal, shorten=True, 
-                    x_threshold = 25, y_threshold = 8)
+                    x_threshold = 30, y_threshold = 8)
 
 # Compare steady states
 full_stst_analysis = pd.merge(hank_stst_df, hank_stst_df_terminal, 
@@ -146,27 +146,8 @@ x_transition, flag_transition = hank_model_terminal.find_path(init_state = hank_
 # Fix horizon for plotting
 horizon = 15
 
-# Transition of borrowing limit
-varlist_hank_model = ['lower_bound_a']
-index_hank_model = [hank_model_initial['variables'].index(v) for v in varlist_hank_model]
-
-index_borrowing_limit = index_hank_model[0]
-borrowing_limit_transition = x_transition[:,index_borrowing_limit]
-
-actual_borrowing_limit_transition = [np.nan]*len(borrowing_limit_transition)
-for tt in range(len(borrowing_limit_transition)):
-    actual_borrowing_limit_transition[tt], _ = find_closest_grid_point(borrowing_limit_transition[tt], 
-                                                                       a_grid)
-
-plt.figure('Borrowing Limit')
-plt.plot(actual_borrowing_limit_transition[:horizon])
-
-stable_time = find_stable_time(actual_borrowing_limit_transition)
-print('From period', stable_time,
-      'onwards, the borrowing limit does not change anymore.')
-
 # Plot transition of all variables       
-plot_all(x_transition, hank_model_initial['variables'], horizon)
+plot_all(x_transition, hank_model_initial['variables'], 200)
 
 # Plot transition of some selected variables
 variables_to_plot = [['C', 'Consumption'], 
