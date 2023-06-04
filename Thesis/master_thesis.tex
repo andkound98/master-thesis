@@ -209,6 +209,17 @@ Matriculation Number: & 3466868
 \newpage
 \begin{abstract} % Create abstract
 Abstract goes here.
+
+\begin{center}
+\rule{10cm}{0.4pt}
+\end{center}
+
+% \bigskip
+\noindent
+\textit{JEL Classification:}
+
+\noindent
+\textit{Keywords:} Heterogeneous Households, Borrowing Limits, Household Debt, Deleveraging
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,11 +238,9 @@ Abstract goes here.
 \section{Introduction}
 \label{sec:introduction}
 
-Households face limits to borrowing. In the real world, these limits take various forms and vary across households (e.g.~by credit-worthiness) and asset types. For example, overdrawing one's checking account is limited to some value and mortgage debt might be constrained by regulatory prescriptions on loan-to-value ratios (\Gls{ltv}).\footnote{Of course, firms and governments can be subject to borrowing constraints, too. The focus of this thesis, however, is on households.}
+Households face limits to borrowing. For example, there is usually a limit to how much a credit card holder can spend with one card. Also, home buyers cannot take arbitrarily large loans for purchasing a house. Clearly, these are limits which vary across at least three dimensions: 1) household characteristics (e.g.~credit-worthiness), 2) asset type (e.g.~mortgage debt vs credit card debt) and 3) time.\footnote{This is by no means meant to be a formal or sufficient description of dimensions along which borrowing limits may vary.}
 
-Borrowing limits have important implications for the behaviour of households.
-
-They vary over time. For example, banks change their lending standards over time.
+Such borrowing limits have important implications for the behaviour of households.\footnote{Of course, firms and governments can be subject to borrowing constraints, too. The focus of this thesis, however, is on households.}
 
 How do borrowers and lenders interact in environments with different and time-varying borrowing limits and what do those interactions imply for the aggregate?
 
@@ -340,12 +349,17 @@ Note that in incomplete markets models it is required that the interest rate tim
 
 Firm profits bear the problem that they have to be distributed. The way this is done might matter for households and their differential consumption-savings behaviour. 
 
-\subsubsection{Fiscal and Monetary Policy}
+\subsubsection{Fiscal and Monetary Policies}
 \label{sec:model-policy}
 
-Monetary policy sets the nominal interest rate on bonds. In doing so, it follows a standard Taylor rule, while being subject to the zero lower bound on nominal interest rates. 
+The monetary authority sets the notional gross nominal interest rate according to a standard Taylor rule which features persistence and which responds to the deviations of inflation from its steady state and of output from its lagged value. The strengths of these responses are given by the parameters $\phi_{\pi}$ and $\phi_y$, respectively. In setting the notional interest rate, the central bank is subject to the zero lower bound on nominal interest rates. Thus, equation \eqref{eq:zlb} pins down the effective nominal interest rate by selecting the maximum out of the notional gross nominal interest rate and 1:
+\begin{align}
+    R_{n,t} &= ( R_{n,t-1} )^{\rho} \Bigg( R_{ss} \Bigg( \frac{\pi_t}{\pi_{ss}} \Bigg)^{\phi_{\pi}} \Bigg( \frac{y_t}{y_{t-1}} \Bigg)^{\phi_y} \Bigg)^{(1-\rho)} \label{eq:taylorrule} \\
+    R_t &= \text{max} \ \{ 1, \ R_{n,t} \}, \label{eq:zlb}
+\end{align}
+where $\rho$ is the persistence in the response of the central bank.
 
-\subsection{Equilibrium}
+\subsubsection{Equilibrium}
 \label{sec:model-eq}
 
 %\subsection{Model Extensions}
@@ -354,12 +368,12 @@ Monetary policy sets the nominal interest rate on bonds. In doing so, it follows
 %\subsubsection{Banks}
 %\label{sec:model-extensions-banks}
 
-Heterogeneous banks are modeled in the paper Bewley banks by.
+%Heterogeneous banks are modeled in the paper Bewley banks by.
 
-\subsubsection{Real Debt}
-\label{sec:model-extensions-realdebt}
+%\subsubsection{Real Debt}
+%\label{sec:model-extensions-realdebt}
 
-Another model extension is to consider real instead of nominal debt. 
+%Another model extension is to consider real instead of nominal debt. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
