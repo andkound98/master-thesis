@@ -10,7 +10,9 @@ This file contains some custom functions used throughout the project.
 ###############################################################################
 ###############################################################################
 # Import packages
+import os
 import pandas as pd
+import jax.numpy as jnp
 
 ###############################################################################
 ###############################################################################
@@ -26,7 +28,6 @@ def find_closest_grid_point(ar_borrowing_limit, asset_grid):
     
     return closest_grid_point, indx_min_distance
 
-
 def find_stable_time(list_over_time):
     stable_time_index = 0
     stable_value = list_over_time[stable_time_index]
@@ -40,7 +41,10 @@ def find_stable_time(list_over_time):
         
     return stable_time_index
 
-def make_stst_comparison(hank_model_init, hank_model_term, save_tables, percent=100):
+###############################################################################
+# Function to compare initial and terminal steady state
+def make_stst_comparison(hank_model_init, hank_model_term, 
+                         save_tables, path, percent=100):
     round_func_4 = lambda x: round(float(x), 4) # Rounding functions
     round_func_2 = lambda x: round(float(x), 2)
     
@@ -52,16 +56,50 @@ def make_stst_comparison(hank_model_init, hank_model_term, save_tables, percent=
                                          columns = ['Variable', 'Terminal Steady State'])
     hank_stst_df_terminal['Terminal Steady State'] = hank_stst_df_terminal['Terminal Steady State'].apply(round_func_4)
     
-    # Compare steady states
+    # Merge steady states into one data frame
     full_stst_analysis = pd.merge(hank_stst_df, hank_stst_df_terminal, 
                                   on = 'Variable', how = 'left')
-    full_stst_analysis['Percent Change'] = (percent*(hank_stst_df_terminal['Terminal Steady State']-hank_stst_df['Initial Steady State'])/hank_stst_df['Initial Steady State']).apply(round_func_2)
+    
+    # Add some more features of the steady states
+    a_grid_init = hank_model_init['context']['a_grid']
+    
+    # Initial steady state 
+    distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
+    distribution_assets_initial = 100*jnp.sum(distribution_skills_and_assets_initial, 
+                                      axis = 0)
+    
+    # Terminal steady state 
+    distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
+    distribution_assets_terminal = 100*jnp.sum(distribution_skills_and_assets_terminal, 
+                                      axis = 0)
+    
+    # Add share of indebted households
+    row_share_indebted = {'Variable': 'Share Indebted',
+                          'Initial Steady State': jnp.sum(jnp.where(a_grid_init < 0, 
+                                                                    distribution_assets_initial, 
+                                                                    0)).round(2).item(),
+                          'Terminal Steady State': jnp.sum(jnp.where(a_grid_init < 0, 
+                                                                    distribution_assets_terminal, 
+                                                                    0)).round(2).item()}
+    row_share_indebted_df = pd.DataFrame([row_share_indebted])
+    full_stst_analysis = pd.concat([full_stst_analysis, row_share_indebted_df], 
+                                   ignore_index=True)
+    
+    # Add share of households at borrowing limit    
+    row_share_limit = {'Variable': 'Share at Limit',
+                       'Initial Steady State': distribution_assets_initial[0].round(2).item(),
+                       'Terminal Steady State': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
+    row_share_limit_df = pd.DataFrame([row_share_limit])
+    full_stst_analysis = pd.concat([full_stst_analysis, row_share_limit_df], 
+                                   ignore_index=True)
+    
+    # Add column which calculates changes in percent between the steady states
+    full_stst_analysis['Percent Change'] = (percent*(full_stst_analysis['Terminal Steady State']-full_stst_analysis['Initial Steady State'])/full_stst_analysis['Initial Steady State']).apply(round_func_2)
     
     # Save table for LaTeX
     if save_tables == True:
-        stst_table_path = '/Users/andreaskoundouros/Documents/stst.tex'
-        full_stst_analysis.style.hide(axis="index").to_latex(buf = stst_table_path, 
-                                                             label = 'tab:stst', 
-                                                             hrules=False)
+        stst_table_path = os.path.join(path, 'stst_comparison.tex')
+        full_stst_analysis.to_latex(stst_table_path, 
+                                    label = 'tab:stst', index = False)
     
     return full_stst_analysis

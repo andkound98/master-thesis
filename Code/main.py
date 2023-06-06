@@ -34,6 +34,8 @@ else:
                                       'Code')
     full_path_code = os.path.join(absolute_path, relative_path_code)
     os.chdir(full_path_code) # Set working directory
+    
+path_save_tables = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Tables'
 
 ###############################################################################
 ###############################################################################
@@ -121,7 +123,8 @@ bar_plot_asset_dist(hank_model_terminal, shorten=True,
 
 # Compare steady states
 stst_comparison = make_stst_comparison(hank_model_initial, hank_model_terminal,
-                                       save_tables)
+                                       save_tables, path_save_tables)
+print(stst_comparison)
 
 ###############################################################################
 ###############################################################################
@@ -135,66 +138,58 @@ x_transition, _ = hank_model_terminal.find_path(init_state = hank_model_initial_
 
 ###############################################################################
 ###############################################################################
-# Transitional Dynamics
+# Aggregate transitional dynamics
 
 # Fix horizon for plotting
 horizon = 15
 
-# Plot transition of all variables       
+# If desired, plot transition of all variables       
 plot_all(x_transition, hank_model_initial['variables'], horizon)
 
-# Plot transition of some selected variables
+# Select variables to plot (with descriptions)
 variables_to_plot = [['C', 'Consumption'], 
                      ['y', 'Output'], 
-                     ['pi', 'Inflation'],
-                     ['w', 'Wage'],
-                     ['R', 'Nominal Interest Rate'],
-                     ['Rn', 'Notional Interest Rate'],
-                     ['Rr', 'Ex-Post Real Interest Rate'],
+                     ['pi', 'Inflation'], 
+                     ['w', 'Wage'], 
+                     ['R', 'Nominal Interest Rate'], 
+                     ['Rn', 'Notional Interest Rate'], 
+                     ['Rr', 'Ex-Post Real Interest Rate'], 
                      ['div', 'Dividends'],
                      ['tax', 'Taxes']]
 
+# Depending on the specific HANK model, add aggregate labour hours
 if full_path_hank.endswith('hank_without_end_labour.yml'):
     variables_to_plot.append(['n', 'Labour Hours'])
 elif full_path_hank.endswith('hank_with_end_labour.yml'):
     variables_to_plot.append(['N', 'Labour Hours'])
 
+# Plot transition of some selected variables
 plot_selected_transition(variables_to_plot, 
                          hank_model_initial, x_transition, horizon)
 
 ###############################################################################
 ###############################################################################
-# Transitional Dynamics of the distribution
-# dist_transition = hank_model_terminal.get_distributions(x_transition)
+# Disaggregated transitional dynamics
 
-# dist = dist_transition['dist']
+# Get disaggregated responses of the distribution, of consumption and asset 
+# holdings
+dist_transition = hank_model_terminal.get_distributions(x_transition)
 
-# ax, _ = grbar3d(dist[...,:horizon].sum(0), 
-#                 xedges=hank_model_terminal['context']['a_grid'], 
-#                 yedges=jnp.arange(horizon), 
-#                 figsize=(9,7), 
-#                 depth=.5, 
-#                 width=.5, 
-#                 alpha=.5)
-# ax.set_xlabel('wealth')
-# ax.set_ylabel('time')
-# ax.set_zlabel('share')
-# ax.view_init(azim=50)
+# Store distributional dynamics
+dynamic_dist = dist_transition['dist']
 
-# Save distribution of skills and assets 
-distribution_skills_and_assets = hank_model_initial['steady_state']['distributions'][0]
-
-# Save distribution of assets
-distribution_assets = 100*jnp.sum(distribution_skills_and_assets, axis = 0)
-
-# Summary statistics
-initial_stst = {'Number of Asset Grid Points': len(a_grid),
-                'Number of Income Grid Points': len(skills_grid),
-                'Share of Indebted Households': jnp.sum(jnp.where(a_grid < 0, 
-                                                                  distribution_assets, 
-                                                                  0)).round(2).item(),
-                'Share of Households at the Borrowing Limit': distribution_assets[0].round(2).item()}
-print(initial_stst)
+# Plot 
+ax, _ = grbar3d(100*dynamic_dist[...,:horizon].sum(0),
+                xedges=hank_model_terminal['context']['a_grid'], 
+                yedges=jnp.arange(horizon), 
+                figsize=(9,7), 
+                depth=.5, 
+                width=.5, 
+                alpha=.5)
+ax.set_xlabel('wealth')
+ax.set_ylabel('time')
+ax.set_zlabel('share')
+ax.view_init(azim=50)
 
 ###############################################################################
 ###############################################################################

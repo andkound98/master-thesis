@@ -17,8 +17,6 @@ from grgrlib import grbar3d
 import matplotlib.cm as cm
 import plotly.graph_objects as go
 
-from custom_functions import find_closest_grid_point
-
 ###############################################################################
 ###############################################################################
 # Function for plotting steady state policies
@@ -84,8 +82,7 @@ def make_stst_policiy_plots(model,
         
         # Cut data frames short at borrowing limit if specified
         if cutoff == True:
-            cutoff_value, _ = find_closest_grid_point(model['steady_state']['fixed_values']['lower_bound_a'], 
-                                                   a_grid)
+            cutoff_value = model['steady_state']['fixed_values']['lower_bound_a']
             
             assets_policy_df.loc[assets_policy_df['grid'] < cutoff_value, :] = np.nan
             consumption_policy_df.loc[consumption_policy_df['grid'] < cutoff_value, :] = np.nan
