@@ -1,6 +1,6 @@
 # Author: Andreas Koundouros [koundouros.andreas@gmail.com]
 ---
-name: 'hank_model'
+name: 'hank_with_end_labour'
 description: 'One-Asset HANK with Endogenous Labour Supply and Shockable Borrowing Constraints'
 functions_file: 'hank_model_functions.py'
 
@@ -8,24 +8,24 @@ definitions: |
     from jax.numpy import log, maximum
     from econpizza.tools import percentile, jax_print
     
-    amax = 90
-    an = 100
+    amax = 80
+    an = 90
     amin = -2
     rho_a = 0.3
     amin_terminal = -1
-    a_grid, a_grid_n = special_grid(amax, an, amin, rho_a, amin_terminal)
+    a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
     
-variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, N, B, Top10C, Top10A, Bot10C, Bot10A, lower_bound_a, MPC, D_o_Y, g ]
-parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_r, rho_z, chi, rho_a, db, rho_g, beta ]
-shocks: [ e_z, e_g ]
+variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, N, B, Top10C, Top10A, Top1C, Top1A, Bot10C, Bot10A, lower_bound_a, MPC, D_o_Y ]
+parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_r, rho_z, chi, rho_a, db, beta ]
+shocks: [ e_z, e_a ]
 
 distributions:
   dist:
     skills:
       type: exogenous_rouwenhorst
-      rho: 0.98
-      sigma: 0.7
-      n: 10
+      rho: 0.97
+      sigma: 0.6
+      n: 8
     a: 
       type: endogenous_generic
       n: a_grid_n
@@ -36,7 +36,7 @@ decisions:
     trans = transfers(skills_stationary, div, tax, skills_grid)
     we = wages(w, skills_grid)
     VaPrimeExp = skills_transition @ VaPrime
-    Va, a, c, n, mpc = hh_borrowing(VaPrimeExp, a_grid, we, trans, Rr, beta, sigma_c, sigma_l, chi, lower_bound_a, db)
+    Va, a, c, n, mpc = egm_step_labour(VaPrimeExp, a_grid, we, trans, Rr, beta, sigma_c, sigma_l, chi, db, lower_bound_a)
     n = labor_supply(n, skills_grid)
   outputs: [a,c,n,mpc]
 
@@ -45,12 +45,14 @@ aux_equations: |
     aggr_a = jnp.sum(dist*a, axis=(0,1)) # asset holdings
     aggr_c = jnp.sum(dist*c, axis=(0,1)) # consumption 
     aggr_n = jnp.sum(dist*n, axis=(0,1)) # labour hours
-    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # marginal propensity to consume
-    aggr_debt = -jnp.sum(jnp.where((a <= 0), dist*a, 0), axis=(0, 1)) # debt
+    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # MPC
+    aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
     
     # Calculate shares
     top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
     top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
+    top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
     bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
     bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
     
@@ -59,68 +61,67 @@ equations:
     ~ B = aggr_a # bond market clearing
     ~ N = aggr_n # labour market clearing
     ~ C = aggr_c # aggregate consumption
-    ~ C + g = y # goods market clearing
+    ~ C = y # goods market clearing
     ~ MPC = aggr_mpc # aggregate marginal propensity to consume
     ~ D_o_Y = aggr_debt/y # household debt-to-GDP
     
     # Definitions
     ~ Top10C = top10c
     ~ Top10A = top10a
+    ~ Top1C = top1c
+    ~ Top1A = top1a
     ~ Bot10C = bot10c
     ~ Bot10A = bot10a
 
-    # firms
+    # Firms
     ~ N = y_prod/z # production function
     ~ div = (1 - psi*(pi/piSS - 1)**2/2)*y_prod - w*N # firm dividends
     ~ y = (1 - psi*(pi/piSS - 1)**2/2)*y_prod # "effective" output
     ~ psi*(pi/piSS - 1)*pi/piSS = (1-theta) + theta*w/z + psi*piPrime/R*(piPrime/piSS - 1)*piPrime/piSS*y_prodPrime/y_prod # NKPC
 
-    # fiscal policy
-    ~ tax = (Rr-1)*B + g # government budget
-    ~ Rr = RLag/pi # ex-post real interest rate
+    # Fiscal authority
+    ~ Rr = RLag/pi # real ex-post bond return
+    ~ tax = (Rr-1)*B # balanced budget
     
-    # monetary policy
-    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # notional nominal interest rate
-    ~ R = maximum(1, Rn) # zero lower bound
+    # Monetary authority
+    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # MP rule on shadow nominal rate
+    ~ R = maximum(1, Rn) # ZLB
 
-    # exogenous
+    # Exogenous processes
     ~ z = zSS*(zLag/zSS)**rho_z*exp(e_z) # exogenous technology
-    ~ g = gSS*(gLag/gSS)**rho_g*exp(e_g) # exogenous government consumption
-    ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a # exogenous borrowing limit
+    ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a*exp(e_a) # exogenous borrowing limit
 
 steady_state:
     fixed_values:
         # fix some values
-        beta: 0.975 # discount factor
-        sigma_c: 2 # intertemporal elasticity of substitution
-        sigma_l: 2 # inverse Frisch elasticity of labour supply
-        theta: 11. # elasticity of substitution
+        beta: 0.97 # discount factor
+        sigma_c: 2. # intertemporal elasticity of substitution
+        sigma_l: 2. # inverse Frisch elasticity of labour supply
+        chi: 1. # utility weight on disutility of labor
+        theta: 8. # elasticity of substitution
         psi: 100. # parameter on the costs of price adjustment
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in (notional) nominal interest rate
-        rho_g: 0.9 # persistence of government spending shock
         rho_z: 0.9 # persistence of technology shocks
         rho_a: 0.3 # persistence in borrowing limit transition
         lower_bound_a: amin # borrowing limit
         db: 0.025 # step size in MPC calculation
 
         # steady state
-        N: 1.0 # labor supply
         z: 1.0 # technology
         pi: 1.0 # inflation
         B: 1.6 # bond supply
         w: (theta-1)/theta # wages
-        div: 1 - w*N # dividends
-        g: 0.2 # government consumption
 
     init_guesses:
         # guess initial values
-        tax: 0.228 # taxes
-        chi: 1. # utility weight on disutility of labor
-        R: 1.008
-        Rr: R # ex-post real rate
-        Rn: R # notional nominal interest rate
+        N: 1.0 # labor supply
+        div: 1 - w*N # dividends
+        R: 1.006 # steady state nominal rate
+        Rr: R # steady state real rate
+        Rn: R # steady state notional nominal rate
+        tax: (Rr-1)*B # steady state taxes
         we: wages(w, skills_grid)
         T: transfers(skills_stationary, div, tax, skills_grid)
-        VaPrime: hh_init(a_grid, we, Rr, sigma_c, T) # initialise value function
+        VaPrime: egm_init_labour(a_grid, we, Rr, sigma_c, T) # initialise value function

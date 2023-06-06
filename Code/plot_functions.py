@@ -99,7 +99,7 @@ def make_stst_policiy_plots(model,
                                   x = 'grid',
                                   y = assets_policy_columns,
                                   title='Asset Policy',
-                                  color_discrete_sequence=px.colors.qualitative.Plotly[:assets_policy_df.shape[1]]) 
+                                  color_discrete_sequence=px.colors.qualitative.G10[:assets_policy_df.shape[1]]) 
             fig_assets.update_layout(xaxis_title='Bonds Holdings Today', 
                                      yaxis_title='Bonds Holdings Tomorrow',
                                      plot_bgcolor = 'whitesmoke', 
@@ -116,7 +116,7 @@ def make_stst_policiy_plots(model,
                                        x = 'grid',
                                        y = consumption_policy_columns,
                                        title='Consumption Policy',
-                                       color_discrete_sequence=px.colors.qualitative.Plotly[:consumption_policy_df.shape[1]]) 
+                                       color_discrete_sequence=px.colors.qualitative.G10[:consumption_policy_df.shape[1]]) 
             fig_consumption.update_layout(xaxis_title='Bonds Holdings', 
                                           yaxis_title='Consumption',
                                           plot_bgcolor = 'whitesmoke', 
@@ -133,7 +133,7 @@ def make_stst_policiy_plots(model,
                                        x = 'grid',
                                        y = labour_policy_columns,
                                        title='Labour Supply Policy',
-                                       color_discrete_sequence=px.colors.qualitative.Plotly[:labour_policy_df.shape[1]]) 
+                                       color_discrete_sequence=px.colors.qualitative.G10[:labour_policy_df.shape[1]]) 
             fig_labour.update_layout(xaxis_title='Bonds Holdings', 
                                      yaxis_title='Labour Supply',
                                      plot_bgcolor = 'whitesmoke', 
@@ -184,7 +184,7 @@ def make_stst_dist_plots(model,
                                       x = 'grid', 
                                       y = 'distribution',
                                       title='Bond Distribution',
-                                      color_discrete_sequence=[px.colors.qualitative.Plotly[0]])
+                                      color_discrete_sequence=[px.colors.qualitative.G10[0]])
             fig_distr_assets.update_layout(xaxis_title='Bond Holdings', 
                                           yaxis_title='Share',
                                           plot_bgcolor = 'whitesmoke', 
@@ -337,7 +337,7 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     
     stst = x_trans[-1, var_index] # Find steady state
     
-    variable_interest_rate = ['R', 'Rn', 'Rstar', 'Rr']
+    variable_interest_rate = ['R', 'Rn', 'Rr']
     if variable in variable_interest_rate:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                (x_trans[:horizon,var_index] - stst)])
@@ -351,7 +351,7 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     fig = px.line(x_single_transition_df, # Create plot
                   x = 'Quarters',
                   y = f'{var_name}',
-                  color_discrete_map={f'{var_name}': '#636EFA'})
+                  color_discrete_map={f'{var_name}': [px.colors.qualitative.G10[0]]})
     fig.update_layout(title='', # Empty title
                        xaxis_title='Quarters', # x-axis labeling
                        yaxis_title=f'{var_name}', # y-axis labeling

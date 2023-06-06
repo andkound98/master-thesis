@@ -1,6 +1,6 @@
 # Author: Andreas Koundouros [koundouros.andreas@gmail.com]
 ---
-name: 'hank_model_wo_labour'
+name: 'hank_without_end_labour'
 description: 'One-Asset HANK without Endogenous Labour Supply and Shockable Borrowing Constraints'
 functions_file: 'hank_model_functions.py'
 
@@ -8,23 +8,23 @@ definitions: |
     from jax.numpy import log, maximum
     from econpizza.tools import percentile, jax_print
     
-    amax = 100
-    an = 110
+    amax = 60
+    an = 60
     amin = -1
     rho_a = 0.3
-    amin_terminal = 0
-    a_grid, a_grid_n = special_grid(amax, an, amin, rho_a, amin_terminal)
+    amin_terminal = -0.5
+    a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
 
-variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, n, B, Top10C, Top10A, Bot10A, Bot10C, FracBorr, lower_bound_a, MPC, D_o_Y ]
+variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, n, B, Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C, lower_bound_a, MPC, D_o_Y ]
 parameters: [ sigma_c, sigma_l, beta, theta, psi, phi_pi, phi_y, rho, rho_z, rho_a, db ]
-shocks: [ e_z ]
+shocks: [ e_z, e_a ]
 
 distributions:
   dist:
     skills:
       type: exogenous_rouwenhorst
-      rho: 0.96
-      sigma: 0.5
+      rho: 0.97
+      sigma: 0.6
       n: 8
     a: 
       type: endogenous_generic
@@ -35,61 +35,65 @@ decisions:
   calls: |
     tfs = transfers(skills_stationary, div, tax, skills_grid)
     WaPrimeExp = skills_transition @ WaPrime
-    Wa, a, c, mpc = egm_step_new(WaPrimeExp, a_grid, skills_grid, w, n, tfs, Rr, beta, sigma_c, sigma_l, db, lower_bound_a)
+    Wa, a, c, mpc = egm_step(WaPrimeExp, a_grid, skills_grid, w, n, tfs, Rr, beta, sigma_c, sigma_l, db, lower_bound_a)
   outputs: [a,c,mpc]
 
 aux_equations: |
     # Aggregation
     aggr_a = jnp.sum(dist*a, axis=(0,1)) # asset holdings
     aggr_c = jnp.sum(dist*c, axis=(0,1)) # consumption 
-    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # marginal propensity to consume
-    aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0, 1)) # debt
+    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # MPC
+    aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
     
     # Calculate shares
     top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
     top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
+    top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
     bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
     bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
-    
-    share_borrowing = jnp.sum(jnp.where(a < 0, dist, 0))
 
 equations:
     # Clearing and aggregation
     ~ B = aggr_a # bond market clearing
     ~ C = aggr_c # aggregate consumption
     ~ C = y # goods market clearing
-    ~ MPC = aggr_mpc # aggregate marginal propensity to consume
+    ~ MPC = aggr_mpc # aggregate MPC
     ~ D_o_Y = aggr_debt/y # household debt-to-GDP
     
     # Definitions
     ~ Top10C = top10c
     ~ Top10A = top10a
+    ~ Top1C = top1c
+    ~ Top1A = top1a
     ~ Bot10C = bot10c
     ~ Bot10A = bot10a
-    ~ FracBorr = share_borrowing
 
-    # firms
+    # Firms
     ~ n = y_prod/z # production function
     ~ div = (1 - psi*(pi/piSS - 1)**2/2)*y_prod - w*n # dividends
     ~ y = (1 - psi*(pi/piSS - 1)**2/2)*y_prod # "effective" output
     ~ psi*(pi/piSS - 1)*pi/piSS = (1-theta) + theta*w + psi*piPrime/R*(piPrime/piSS - 1)*piPrime/piSS*y_prodPrime/y_prod # NKPC
 
-    # government
-    ~ tax = (Rr-1)*B # balanced budget
+    # Fiscal authority
     ~ Rr = RLag/pi # real ex-post bond return
+    ~ tax = (Rr-1)*B # balanced budget
+    
+    # Monetary authority
     ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # MP rule on shadow nominal rate
     ~ R = maximum(1, Rn) # ZLB
 
-    # clearing conditions
+    # Clearing conditions
     ~ n**sigma_l = w # labor market clearing
 
-    # exogenous
+    # Exogenous processes
     ~ z = zSS*(zLag/zSS)**rho_z*exp(e_z) # exogenous technology
-    ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a # exogenous borrowing limit
+    ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a*exp(e_a) # exogenous borrowing limit
 
 steady_state:
+    # Fixed steady state values
     fixed_values:
-        # parameters:
+        # Parameters:
         beta: 0.97 # discount factor
         sigma_c: 2. # intertemporal elasticity of substitution
         sigma_l: 2. # inverse Frisch elasticity of labour supply
@@ -97,25 +101,24 @@ steady_state:
         psi: 100. # parameter on the costs of price adjustment
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
-        rho: 0.8 # persistence in (notional) nominal interest rate
+        rho: 0.8 # persistence in notional nominal interest rate
         rho_z: 0.9 # persistence of technology shocks
-        rho_a: 0.3
+        rho_a: 0.3 # persistence of borrowing limit shock
         lower_bound_a: amin # borrowing limit
         db: 0.025 # step size in MPC calculation
 
-        # steady state
+        # Endogenous variables
         pi: 1.0 # inflation
-        B: 1.6 # bond supply
-        w: (theta-1)/theta # wages
+        B: 1.6 # government bond supply
+        w: (theta-1)/theta # real wage (equal to marginal costs of the firm)
         n: w**(1/sigma_l) # labor supply
         div: 1 - w*n # dividends
-        
-        #y: 1.0 # effective output
-        #z: y/n # technology
-
+    
+    # Initial guesses for steady state
     init_guesses:
-        R: 1.006 # steady state nominal rage
-        Rr: R # steady state real rage
-        Rn: R # steady state notional rage
-        tax: 0.02
-        WaPrime: egm_init(a_grid, skills_stationary)
+        R: 1.006 # steady state nominal rate
+        Rr: R # steady state real rate
+        Rn: R # steady state notional nominal rate
+        tax: (Rr-1)*B # steady state taxes
+        WaPrime: egm_init(a_grid, skills_stationary) # initialise marginal continuation value
+        

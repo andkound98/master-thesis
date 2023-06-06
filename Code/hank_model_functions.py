@@ -4,7 +4,8 @@
 Author: Andreas Koundouros, University of Bonn
 Date: 26.04.2023
 
-This file contains the functions for the HANK model.
+This file contains the functions for the HANK models with and without
+endogenous labour supply.
 """
 
 ###############################################################################
@@ -19,6 +20,10 @@ from econpizza.utilities.interp import interpolate
 from econpizza.utilities.grids import log_grid
 
 ###############################################################################
+###############################################################################
+###############################################################################
+# Functions for HANK without Endogenous Labour Supply
+
 ###############################################################################
 # Function to initialise EGM
 def egm_init(a_grid, skills_grid):
@@ -43,20 +48,44 @@ def egm_init(a_grid, skills_grid):
     return jnp.ones((skills_grid.shape[0], a_grid.shape[0]))*1e-2
 
 ###############################################################################
-###############################################################################
 # Function for a single EGM step
-def egm_step_new(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, lower_bound_a):
-    """A single backward step via EGM with the calculation of the MPC for a 
-    transfer of db and a time-varying borrowing limit
+def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, lower_bound_a):    
+    """One Step of the Endogenous Gridpoint Method (EGM).
+    
+    This function takes a single backward step via EGM. It is iterated on 
+    backwards in order to obtain optimal consumption and asset holding 
+    policies.
+    
+    Parameters:
+    ----------
+    Wa_p        : next period's marginal continuation value
+    a_grid      : asset grid
+    skills_grid : skills grid
+    w           : wage 
+    n           : labour hours
+    T           : dividends net of taxes
+    R           : real interest rate
+    beta        : discount factor
+    sigma_c     : risk aversion
+    sigma_l     : inverse Frisch elasticity of labour supply
+    db          : step size in MPC calculation
+    lower_bound_a:borrowing limit 
+
+    Returns:
+    ----------
+    Wa          : this period's marginal continuation value
+    a           : asset policy
+    c           : consumption policy
+    mpc         : marginal propensity to consume
     """
 
     # MUC as implied by next periods value function
     ux_nextgrid = beta * Wa_p
     
     # calculate labor income
-    labor_inc = skills_grid[:, None]*n*w
+    labor_inc = skills_grid[:, None]*n*w 
 
-    # consumption can be readily obtained from MUC and MU of labor
+    # next period's consumption from MUC and MU of labor
     c_nextgrid = ux_nextgrid**(-1/sigma_c) + labor_inc/(1 + sigma_l)
 
     # get consumption in grid space
@@ -67,16 +96,13 @@ def egm_step_new(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, 
     # get todays distribution of assets
     a = rhs + labor_inc + T[:, None] - c
     
-    # fix borrowing limit
-    lower_a = lower_bound_a
-    
     # fix consumption and labor for constrained households at the current 
     # borrowing limit
-    c = jnp.where(a < lower_a, 
-                  labor_inc + rhs + T[:, None] - lower_a, 
+    c = jnp.where(a < lower_bound_a, 
+                  labor_inc + rhs + T[:, None] - lower_bound_a, 
                   c)
-    a = jnp.where(a < lower_a, 
-                  lower_a, 
+    a = jnp.where(a < lower_bound_a, 
+                  lower_bound_a, 
                   a)
     
     # calculate mpc
@@ -94,55 +120,78 @@ def egm_step_new(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, 
     return Wa, a, c, mpc
 
 
-def hh_init(a_grid, we, R, sigma_c, T):
-    """The initialization for the value function
+###############################################################################
+###############################################################################
+###############################################################################
+# Functions for HANK with Endogenous Labour Supply
+
+###############################################################################
+# Function to initialise EGM
+
+def egm_init_labour(a_grid, we, R, sigma_c, T):
+    """EGM initialisation.
+    
+    This function initialises the marginal utility of consumption as an array
+    with some reasonably small number. The dimensions of the array are: number
+    of skills times number of asset grid points. 
+    With this, the EGM can start iterating backwards to calculate the asset,
+    consumption and labour policy functions.
+    
+    Parameters:
+    ----------
+    a_grid          : asset grid
+    we              : effective wage 
+    R               : real interest rate
+    sigma_c         : risk aversion
+    T               : dividends net of taxes/transfers
+
+    Returns:
+    ----------
+    Wa              : initialised marginal continuation value
     """
+    
     # Calculate cash-on-hand in order to derive marginal utility of consumption
-    # from it, so to initialise the algorithm
+    # from it
     coh = R * a_grid[None, :] + we[:, None] + T[:, None]
     
-    # Marginal utility of consumption
-    Va = R * (0.1 * coh) ** (-sigma_c)
+    Wa = R * (0.1 * coh) ** (-sigma_c)
     
-    return Va
+    return Wa
 
-def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower_bound_a, db):
+###############################################################################
+# Function for a single EGM step
+
+def egm_step_labour(Wa_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, db, lower_bound_a):
     """A single backward step via EGM
     """
 
     # MUC as implied by next periods value function
-    uc_nextgrid = beta * Va_p
+    uc_nextgrid = beta * Wa_p
+    
     # back out consumption and labor supply from MUC
-    c_nextgrid, n_nextgrid = cn(uc_nextgrid, we[:, None], sigma_c, sigma_l, vphi)
+    c_nextgrid, n_nextgrid = cn(uc_nextgrid, 
+                                we[:, None], sigma_c, sigma_l, vphi)
 
     # get consumption and labor supply in grid space
-    lhs = c_nextgrid + a_grid[None, :] - we[:, None] * n_nextgrid - trans[:, None]
+    lhs = c_nextgrid - we[:, None] * n_nextgrid + a_grid[None, :] - trans[:, None]
     rhs = R * a_grid
-
     c = interpolate(lhs, rhs, c_nextgrid)
     n = interpolate(lhs, rhs, n_nextgrid)
 
     # get todays distribution of assets
     a = rhs + we[:, None] * n + trans[:, None] - c
     
-    #lower_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
-    
-    lower_a = lower_bound_a
-    
-    # fix consumption and labor for constrained households
-    c, n = jnp.where(a < lower_a, 
-                     solve_cn(we[:, None], rhs + trans[:, None] - lower_a, sigma_c, sigma_l, vphi, Va_p), 
+    # fix consumption and labour for constrained households
+    c, n = jnp.where(a < lower_bound_a, 
+                     solve_cn(we[:, None], 
+                              rhs + trans[:, None] - lower_bound_a, 
+                              sigma_c, sigma_l, vphi, Wa_p), 
                      jnp.array((c, n)))
     
-    # Fix assets where they would be below the borrowing constraint to the 
-    # borrowing constraint, i.e. ensure that the borrowing constraint holds
-    a = jnp.where(a < lower_a, 
-                  lower_a, 
-                  a)
-
-    # Calculate the new marginal utility of consumption, to be used in the next
-    # EGM step
-    Va = R * c ** (-sigma_c)
+    # fix asset holdings for constrained households
+    a = jnp.where(a > lower_bound_a, 
+                  a, 
+                  lower_bound_a)
     
     # Calculate mpc
     mpc = (interpolate(a, (a + db), c) - c) / db
@@ -152,66 +201,14 @@ def hh_borrowing(Va_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, lower
                     1.0, 
                     mpc)
 
-    return Va, a, c, n, mpc
+    # calculate new MUC for next EGM step
+    Wa = R * c ** (-sigma_c)
+    
+    # return new MUC, asset holdings, consumption, labour supply and MPCs
+    return Wa, a, c, n, mpc
 
-def hh_borrowing_rbar(Va_p, a_grid, we, trans, R, Rcosts, beta, sigma_c, sigma_l, vphi, lower_bound_a, db):
-    """A single backward step via EGM
-    """
-
-    # MUC as implied by next periods value function
-    uc_nextgrid = beta * Va_p
-    # back out consumption and labor supply from MUC
-    c_nextgrid, n_nextgrid = cn(uc_nextgrid, we[:, None], sigma_c, sigma_l, vphi)
-
-    # get consumption and labor supply in grid space
-    lhs = c_nextgrid + a_grid[None, :] - we[:, None] * n_nextgrid - trans[:, None]
-    
-    Rbar = R + Rcosts
-    
-    rhs = a_grid
-    rhs = jnp.where(a_grid < 0,
-                    Rbar * a_grid, 
-                    R * a_grid)
-
-    c = interpolate(lhs, rhs, c_nextgrid)
-    n = interpolate(lhs, rhs, n_nextgrid)
-
-    # get todays distribution of assets
-    a = rhs + we[:, None] * n + trans[:, None] - c
-    
-    #lower_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
-    
-    lower_a = lower_bound_a
-    
-    # fix consumption and labor for constrained households
-    c, n = jnp.where(a < lower_a, 
-                     solve_cn(we[:, None], rhs + trans[:, None] - lower_a, sigma_c, sigma_l, vphi, Va_p), 
-                     jnp.array((c, n)))
-    
-    # Fix assets where they would be below the borrowing constraint to the 
-    # borrowing constraint, i.e. ensure that the borrowing constraint holds
-    a = jnp.where(a < lower_a, 
-                  lower_a, 
-                  a)
-
-    # Calculate the new marginal utility of consumption, to be used in the next
-    # EGM step
-    Va = c ** (-sigma_c)
-    
-    Va = jnp.where(a < lower_a, 
-                   Rbar * Va, 
-                   R * Va)
-    
-    # Calculate mpc
-    mpc = (interpolate(a, (a + db), c) - c) / db
-    
-    # Ensure that MPC is at most 1
-    mpc = jnp.where(mpc > 1.0, 
-                    1.0, 
-                    mpc)
-
-    return Va, a, c, n, mpc
-
+###############################################################################
+# Function for determining the optimal consumption and labour choices
 
 def cn(uc, w, sigma_c, sigma_l, vphi):
     """This function returns the optimal choices for consumption c and labour
@@ -223,11 +220,15 @@ def cn(uc, w, sigma_c, sigma_l, vphi):
     """
     return jnp.array((uc ** (-1/sigma_c), (w * uc / vphi) ** (1/sigma_l)))
 
+###############################################################################
+#  
 
 def solve_cn(w, trans, sigma_c, sigma_l, vphi, uc_seed):
     uc = solve_uc(w, trans, sigma_c, sigma_l, vphi, uc_seed)
     return cn(uc, w, sigma_c, sigma_l, vphi)
 
+###############################################################################
+#
 
 def solve_uc_cond(carry):
     """Check Net Expenditure Condition.
@@ -246,6 +247,8 @@ def solve_uc_cond(carry):
     ne, _, _ = carry
     return amax(ne) > 1e-8
 
+###############################################################################
+# 
 
 def solve_uc_body(carry):
     ne, log_uc, pars = carry
@@ -253,6 +256,8 @@ def solve_uc_body(carry):
     log_uc -= ne / ne_p
     return ne, log_uc, pars
 
+###############################################################################
+# 
 
 def solve_uc(w, trans, sigma_c, sigma_l, vphi, uc_seed):
     """Solve for optimal uc given in log uc space.
@@ -263,6 +268,8 @@ def solve_uc(w, trans, sigma_c, sigma_l, vphi, uc_seed):
     _, log_uc, _ = jax.lax.while_loop(solve_uc_cond, solve_uc_body, (uc_seed, log_uc, pars))
     return jnp.exp(log_uc)
 
+###############################################################################
+# Function for calculating net expenditures 
 
 def netexp(log_uc, w, trans, sigma_c, sigma_l, vphi):
     """Return net expenditure as a function of log uc and its derivative
@@ -277,15 +284,8 @@ def netexp(log_uc, w, trans, sigma_c, sigma_l, vphi):
 
     return ne, netexp_loguc
 
-
-def transfers(pi_e, Div, Tax, e_grid):
-    # hardwired incidence rules are proportional to skill; scale does not matter
-    tax_rule, div_rule = e_grid, e_grid
-    div = Div / jnp.sum(pi_e * div_rule) * div_rule
-    tax = Tax / jnp.sum(pi_e * tax_rule) * tax_rule
-    T = div - tax
-    return T
-
+###############################################################################
+# Function for calculating the effective wage
 
 def wages(w, e_grid):
     """Effective wage calculation.
@@ -305,6 +305,8 @@ def wages(w, e_grid):
     we = w * e_grid
     return we
 
+###############################################################################
+# Function for calculating the effective labour supply
 
 def labor_supply(n, e_grid):
     """Effective labour supply calculation.
@@ -325,23 +327,86 @@ def labor_supply(n, e_grid):
     ne = e_grid[:, None] * n
     return ne
 
-##################################
-##################################
-##################################
-##################################
-def special_grid(amax, n, amin, rho_a, amin_terminal, T=200):
+
+###############################################################################
+###############################################################################
+###############################################################################
+# Functions Common to both HANK Models
+
+###############################################################################
+# Function for creating the asset grid
+
+def create_grid(amax, n, amin, rho_a, amin_terminal, T=200):
+    """Asset grid.
+    
+    This function calculates the dividends net of taxes/transfers the household
+    receives. Dividends accrue due to monopoly profits in the model and taxes/
+    transfers are due to the fiscal authority running a balanced budget.
+    
+    Parameters:
+    ----------
+    amax            : maximum asset holdings
+    n               : number of grid points for the log grid
+    amin            : initial borrowing limit
+    rho_a           : persistence in borrowing limit shock
+    amin_terminal   : terminal borrowing limit
+    T               :
+
+    Returns:
+    ----------
+    full_grid       : final asset grid
+    len(full_grid)  : length of final asset grid
+    """
+    
+    # Initialise a typical log grid
     initialise_log_grid = log_grid(amax, n, amin)
     
-    path_borrowing_limit = [np.nan]*T
-    path_borrowing_limit[0] = amin
-    for tt in range(T-1):
+    # Create the full path of the borrowing limit from the initial borrowing 
+    # limit to the terminal borrowing limit, using the given persistence of
+    # the transition process
+    path_borrowing_limit = [np.nan]*T # initialise empty container
+    path_borrowing_limit[0] = amin # initialise first entry of the container
+    for tt in range(T-1): # iterate forward by using the transition process of 
+    # the borrowing limit
         path_borrowing_limit[tt+1] = round(amin_terminal*(path_borrowing_limit[tt]/amin_terminal)**rho_a, 8)
     
     path_borrowing_limit = [num for num in path_borrowing_limit if num < amin_terminal]
-    path_borrowing_limit.append(amin_terminal)
-    path_borrowing_limit.append(0)
-    path_borrowing_limit.pop(0)
+    path_borrowing_limit.append(amin_terminal) # ensure that terminal borrowing limit is included 
+    path_borrowing_limit.append(0) # ensure that 0 is included
+    path_borrowing_limit.pop(0) # delete double initial borrowing limit
     
+    # Combine initial log grid and grid values of borrowing limit path and 
+    # sort the result
     full_grid = jnp.append(initialise_log_grid, jnp.array(path_borrowing_limit)).sort()
     
+    # Return the final grid and its length
     return full_grid, len(full_grid)
+
+###############################################################################
+# Function for calculating transfers to household
+
+def transfers(skills_stationary, Div, Tax, skills_grid):
+    """Transfer calculation.
+    
+    This function calculates the dividends net of taxes/transfers the household
+    receives. Dividends accrue due to monopoly profits in the model and taxes/
+    transfers are due to the fiscal authority running a balanced budget.
+    
+    Parameters:
+    ----------
+    skills_stationary       : 
+    Div                     :
+    Tax                     :
+    skills_grid             : 
+
+    Returns:
+    ----------
+    T                       : 
+    """
+    
+    # hardwired incidence rules are proportional to skill; scale does not matter
+    rule = skills_grid
+    div = Div / jnp.sum(skills_stationary * rule) * rule
+    tax = Tax / jnp.sum(skills_stationary * rule) * rule
+    T = div - tax
+    return T
