@@ -8,16 +8,16 @@ definitions: |
     from jax.numpy import log, maximum
     from econpizza.tools import percentile, jax_print
     
-    amax = 60
-    an = 60
+    amax = 50
+    an = 50
     amin = -1
     rho_a = 0.3
     amin_terminal = -0.5
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
 
-variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, n, B, Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C, lower_bound_a, MPC, D_o_Y ]
-parameters: [ sigma_c, sigma_l, beta, theta, psi, phi_pi, phi_y, rho, rho_z, rho_a, db ]
-shocks: [ e_z, e_a ]
+variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rrminus, tax, C, n, B, lower_bound_a, MPC, D_o_Y ] # Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C,
+parameters: [ sigma_c, sigma_l, beta, z, theta, psi, phi_pi, phi_y, rho, rho_a, db, Rbar ]
+shocks: [ e_a ]
 
 distributions:
   dist:
@@ -35,7 +35,7 @@ decisions:
   calls: |
     tfs = transfers(skills_stationary, div, tax, skills_grid)
     WaPrimeExp = skills_transition @ WaPrime
-    Wa, a, c, mpc = egm_step(WaPrimeExp, a_grid, skills_grid, w, n, tfs, Rr, beta, sigma_c, sigma_l, db, lower_bound_a)
+    Wa, a, c, mpc = egm_step(WaPrimeExp, a_grid, skills_grid, w, n, tfs, Rr, Rrminus, beta, sigma_c, sigma_l, db, lower_bound_a)
   outputs: [a,c,mpc]
 
 aux_equations: |
@@ -46,28 +46,28 @@ aux_equations: |
     aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
     
     # Calculate shares
-    top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
-    top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
-    top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
-    top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
-    bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
-    bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
+    # top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
+    # top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    # top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
+    # top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
+    # bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
+    # bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
 
 equations:
     # Clearing and aggregation
     ~ B = aggr_a # bond market clearing
     ~ C = aggr_c # aggregate consumption
-    ~ C = y # goods market clearing
+    ~ C + Rbar*aggr_debt = y # goods market clearing
     ~ MPC = aggr_mpc # aggregate MPC
     ~ D_o_Y = aggr_debt/y # household debt-to-GDP
     
     # Definitions
-    ~ Top10C = top10c
-    ~ Top10A = top10a
-    ~ Top1C = top1c
-    ~ Top1A = top1a
-    ~ Bot10C = bot10c
-    ~ Bot10A = bot10a
+    # ~ Top10C = top10c
+    # ~ Top10A = top10a
+    # ~ Top1C = top1c
+    # ~ Top1A = top1a
+    # ~ Bot10C = bot10c
+    # ~ Bot10A = bot10a
 
     # Firms
     ~ n = y_prod/z # production function
@@ -76,7 +76,8 @@ equations:
     ~ psi*(pi/piSS - 1)*pi/piSS = (1-theta) + theta*w + psi*piPrime/R*(piPrime/piSS - 1)*piPrime/piSS*y_prodPrime/y_prod # NKPC
 
     # Fiscal authority
-    ~ Rr = RLag/pi # real ex-post bond return
+    ~ Rr = RLag/pi # ex-post real return on positive bond holdings 
+    ~ Rrminus = Rr + Rbar # ex-post real return on negative bond holdings
     ~ tax = (Rr-1)*B # balanced budget
     
     # Monetary authority
@@ -87,7 +88,6 @@ equations:
     ~ n**sigma_l = w # labor market clearing
 
     # Exogenous processes
-    ~ z = zSS*(zLag/zSS)**rho_z*exp(e_z) # exogenous technology
     ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a*exp(e_a) # exogenous borrowing limit
 
 steady_state:
@@ -102,10 +102,10 @@ steady_state:
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in notional nominal interest rate
-        rho_z: 0.9 # persistence of technology shocks
         rho_a: 0.3 # persistence of borrowing limit shock
         lower_bound_a: amin # borrowing limit
         db: 0.025 # step size in MPC calculation
+        Rbar: 0.01 # intermediation cost
 
         # Endogenous variables
         pi: 1.0 # inflation
@@ -116,9 +116,11 @@ steady_state:
     
     # Initial guesses for steady state
     init_guesses:
-        R: 1.006 # steady state nominal rate
-        Rr: R # steady state real rate
+        z: 1.06 # technology
+        R: 1.005 # steady state nominal rate
+        Rr: R # steady state real rate on positive bond holdings 
         Rn: R # steady state notional nominal rate
+        Rrminus: Rr + Rbar # steady state real rate on negative bond holdings
         tax: (Rr-1)*B # steady state taxes
         WaPrime: egm_init(a_grid, skills_stationary) # initialise marginal continuation value
         

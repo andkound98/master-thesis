@@ -49,7 +49,7 @@ def egm_init(a_grid, skills_grid):
 
 ###############################################################################
 # Function for a single EGM step
-def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, lower_bound_a):    
+def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, Rminus, beta, sigma_c, sigma_l, db, lower_bound_a):    
     """One Step of the Endogenous Gridpoint Method (EGM).
     
     This function takes a single backward step via EGM. It is iterated on 
@@ -87,10 +87,15 @@ def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, 
 
     # next period's consumption from MUC and MU of labor
     c_nextgrid = ux_nextgrid**(-1/sigma_c) + labor_inc/(1 + sigma_l)
-
+    
+    # Get full interest rate schedule
+    Rfull = jnp.where(a_grid < 0,
+                      Rminus,
+                      R)
+    
     # get consumption in grid space
     lhs = c_nextgrid - labor_inc + a_grid[None, :] - T[:, None]
-    rhs = R * a_grid
+    rhs = Rfull * a_grid
     c = interpolate(lhs, rhs, c_nextgrid)
 
     # get todays distribution of assets
@@ -114,7 +119,7 @@ def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, 
                     mpc)
     
     # calculate new MUC for next EGM step
-    Wa = R * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
+    Wa = Rfull * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
     
     # return new MUC, asset holdings, consumption and MPCs
     return Wa, a, c, mpc
@@ -128,7 +133,7 @@ def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, db, 
 ###############################################################################
 # Function to initialise EGM
 
-def egm_init_labour(a_grid, we, R, sigma_c, T):
+def egm_init_labour(a_grid, we, R, Rminus, sigma_c, T):
     """EGM initialisation.
     
     This function initialises the marginal utility of consumption as an array
@@ -150,18 +155,23 @@ def egm_init_labour(a_grid, we, R, sigma_c, T):
     Wa              : initialised marginal continuation value
     """
     
+    # Get full interest rate schedule
+    Rfull = jnp.where(a_grid < 0,
+                      Rminus,
+                      R)
+    
     # Calculate cash-on-hand in order to derive marginal utility of consumption
     # from it
-    coh = R * a_grid[None, :] + we[:, None] + T[:, None]
+    coh = Rfull * a_grid[None, :] + we[:, None] + T[:, None]
     
-    Wa = R * (0.1 * coh) ** (-sigma_c)
+    Wa = Rfull * (0.1 * coh) ** (-sigma_c)
     
     return Wa
 
 ###############################################################################
 # Function for a single EGM step
 
-def egm_step_labour(Wa_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, db, lower_bound_a):
+def egm_step_labour(Wa_p, a_grid, we, trans, R, Rminus, beta, sigma_c, sigma_l, vphi, db, lower_bound_a):
     """A single backward step via EGM
     """
 
@@ -171,10 +181,15 @@ def egm_step_labour(Wa_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, db
     # back out consumption and labor supply from MUC
     c_nextgrid, n_nextgrid = cn(uc_nextgrid, 
                                 we[:, None], sigma_c, sigma_l, vphi)
+    
+    # Get full interest rate schedule
+    Rfull = jnp.where(a_grid < 0,
+                      Rminus,
+                      R)
 
     # get consumption and labor supply in grid space
     lhs = c_nextgrid - we[:, None] * n_nextgrid + a_grid[None, :] - trans[:, None]
-    rhs = R * a_grid
+    rhs = Rfull * a_grid
     c = interpolate(lhs, rhs, c_nextgrid)
     n = interpolate(lhs, rhs, n_nextgrid)
 
@@ -202,7 +217,7 @@ def egm_step_labour(Wa_p, a_grid, we, trans, R, beta, sigma_c, sigma_l, vphi, db
                     mpc)
 
     # calculate new MUC for next EGM step
-    Wa = R * c ** (-sigma_c)
+    Wa = Rfull * c ** (-sigma_c)
     
     # return new MUC, asset holdings, consumption, labour supply and MPCs
     return Wa, a, c, n, mpc

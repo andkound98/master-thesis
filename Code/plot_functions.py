@@ -274,7 +274,7 @@ def bar_plot_asset_dist(model,
     pos_y = y[y>0]
     pos_y.reset_index(drop=True, inplace=True)
     
-    fig = go.Figure() # Create plot
+    fig = go.Figure() # make plot
     for i in range(len(a_grid)):
         if y[i] > y_threshold: # replace value over y-axis threshold by threshold
             fig.add_trace(go.Bar(
@@ -332,12 +332,15 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     variable = [variable] # Make variable a list
     var_index = [model['variables'].index(v) for v in variable] # Find variable index
     
-    stst = x_trans[-1, var_index] # Find steady state
+    stst = x_trans[-1, var_index] # Find steady state (by definition, last
+    # value in transition is the steady state value)
     
-    variable_interest_rate = ['R', 'Rn', 'Rr']
-    if variable in variable_interest_rate:
+    if variable in ['R', 'Rn', 'Rr']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                (x_trans[:horizon,var_index] - stst)])
+    elif variable == 'lower_bound_a':
+        x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
+                                               x_trans[:horizon,var_index]])
     else:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                percent*((x_trans[:horizon,var_index] - stst)/stst)])
@@ -345,20 +348,20 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     x_single_transition_df = pd.DataFrame(x_single_transition, # Turn into data frame
                                           columns = ['Quarters', f'{var_name}'])
     
-    fig = px.line(x_single_transition_df, # Create plot
+    fig = px.line(x_single_transition_df, # make plot
                   x = 'Quarters',
                   y = f'{var_name}',
                   color_discrete_map={f'{var_name}': [px.colors.qualitative.G10[0]]})
-    fig.update_layout(title='', # Empty title
+    fig.update_layout(title='', # empty title
                        xaxis_title='Quarters', # x-axis labeling
                        yaxis_title=f'{var_name}', # y-axis labeling
-                       legend=dict(orientation="h", # For horizontal legend
+                       legend=dict(orientation="h", # horizontal legend
                                    yanchor="bottom", y=1.02, 
                                    xanchor="right", x=1), 
                        legend_title=None, 
                        plot_bgcolor='whitesmoke', 
                        margin=dict(l=15, r=15, t=5, b=5),
-                       font=dict(family="Times New Roman",
+                       font=dict(family="Times New Roman", # adjust font
                                  size=20,
                                  color="black"))
     fig.update_traces(line=dict(width=3))
@@ -370,9 +373,10 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
 def plot_selected_transition(list_of_variables, 
                              model, x_trans, horizon, percent=100):
     for sublist in list_of_variables:
-        variable = sublist[0]
-        variable_name = sublist[1]
+        variable = sublist[0] # extract variable
+        variable_name = sublist[1] # extract variable name
         
-        plot_single_transition(model, x_trans, 
+        plot_single_transition(model, x_trans, # plot single transition of a 
+                               # given variable from the list
                                variable, variable_name, 
                                horizon, percent)

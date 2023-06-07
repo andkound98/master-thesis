@@ -43,10 +43,10 @@ path_save_tables = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-t
 from custom_functions import make_stst_comparison # quick steady state comparison
 
 from plot_functions import (make_stst_policiy_plots, # plot steady state policies
-                            make_stst_dist_plots,
+                            make_stst_dist_plots, # plot steady state distributions
                             plot_all, # plot all IRFs
                             plot_selected_transition, # plot selected IRFs
-                            bar_plot_asset_dist) 
+                            bar_plot_asset_dist) # plot steady state distribution in bar plot
 
 ###############################################################################
 ###############################################################################
@@ -57,17 +57,8 @@ pio.renderers.default = "svg" # For plotting in the Spyder window
 pd.set_option('display.max_columns', None) # Show all columns
 pd.set_option('display.expand_frame_repr', False)  # Prevent line wrapping
 
-save_tables = True # If true, it saves the tables after creating them
-save_plots = False # If true, it saves the plots after creating them
-
-###############################################################################
-###############################################################################
-# Fix borrowing limits
-initial_borrowing_limit = -1 # initial borrowing limit
-terminal_borrowing_limit = -0.5 # terminal borrowing limit
-
-# Fix persistence in borrowing limit shock
-persistence_borrowing_limit = 0.3
+save_tables = True # If true, it saves the tables 
+save_plots = False # If true, it saves the plots 
 
 ###############################################################################
 ###############################################################################
@@ -76,8 +67,23 @@ persistence_borrowing_limit = 0.3
 # HANK without endogenous labour supply
 full_path_hank = os.path.join(full_path_code, 'hank_without_end_labour.yml')
 # HANK with endogenous labour supply
-#full_path_hank = os.path.join(full_path_code, 'hank_with_end_labour.yml')   
+#full_path_hank = os.path.join(full_path_code, 'hank_with_end_labour.yml')  
 
+###############################################################################
+###############################################################################
+# Fix borrowing limits
+if full_path_hank.endswith('hank_without_end_labour.yml'):
+    initial_borrowing_limit = -1 # initial borrowing limit
+    terminal_borrowing_limit = -0.8 # terminal borrowing limit
+elif full_path_hank.endswith('hank_with_end_labour.yml'):
+    initial_borrowing_limit = -2 # initial borrowing limit
+    terminal_borrowing_limit = -1 # terminal borrowing limit
+
+# Fix persistence in borrowing limit shock
+persistence_borrowing_limit = 0.3  
+
+###############################################################################
+###############################################################################
 # Get model as dictionary
 hank_dict = ep.parse(full_path_hank)
 
@@ -155,7 +161,8 @@ variables_to_plot = [['C', 'Consumption'],
                      ['Rn', 'Notional Interest Rate'], 
                      ['Rr', 'Ex-Post Real Interest Rate'], 
                      ['div', 'Dividends'],
-                     ['tax', 'Taxes']]
+                     ['tax', 'Taxes'],
+                     ['lower_bound_a', 'Borrowing Limit']]
 
 # Depending on the specific HANK model, add aggregate labour hours
 if full_path_hank.endswith('hank_without_end_labour.yml'):

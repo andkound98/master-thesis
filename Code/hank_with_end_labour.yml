@@ -15,9 +15,9 @@ definitions: |
     amin_terminal = -1
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
     
-variables: [ div, y, y_prod, w, pi, R, Rn, Rr, tax, z, C, N, B, Top10C, Top10A, Top1C, Top1A, Bot10C, Bot10A, lower_bound_a, MPC, D_o_Y ]
-parameters: [ sigma_c, sigma_l, theta, psi, phi_pi, phi_y, rho, rho_r, rho_z, chi, rho_a, db, beta ]
-shocks: [ e_z, e_a ]
+variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rrminus, tax, C, N, B, lower_bound_a, MPC, D_o_Y ] # Top10C, Top10A, Top1C, Top1A, Bot10C, Bot10A,
+parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_r, chi, rho_a, db, Rbar ]
+shocks: [ e_a ]
 
 distributions:
   dist:
@@ -36,7 +36,7 @@ decisions:
     trans = transfers(skills_stationary, div, tax, skills_grid)
     we = wages(w, skills_grid)
     VaPrimeExp = skills_transition @ VaPrime
-    Va, a, c, n, mpc = egm_step_labour(VaPrimeExp, a_grid, we, trans, Rr, beta, sigma_c, sigma_l, chi, db, lower_bound_a)
+    Va, a, c, n, mpc = egm_step_labour(VaPrimeExp, a_grid, we, trans, Rr, Rrminus, beta, sigma_c, sigma_l, chi, db, lower_bound_a)
     n = labor_supply(n, skills_grid)
   outputs: [a,c,n,mpc]
 
@@ -49,29 +49,29 @@ aux_equations: |
     aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
     
     # Calculate shares
-    top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
-    top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
-    top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
-    top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
-    bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
-    bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
+    # top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
+    # top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    # top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
+    # top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
+    # bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
+    # bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
     
 equations:
     # Clearing and aggregation
     ~ B = aggr_a # bond market clearing
     ~ N = aggr_n # labour market clearing
     ~ C = aggr_c # aggregate consumption
-    ~ C = y # goods market clearing
+    ~ C + Rbar*aggr_debt = y # goods market clearing
     ~ MPC = aggr_mpc # aggregate marginal propensity to consume
     ~ D_o_Y = aggr_debt/y # household debt-to-GDP
     
     # Definitions
-    ~ Top10C = top10c
-    ~ Top10A = top10a
-    ~ Top1C = top1c
-    ~ Top1A = top1a
-    ~ Bot10C = bot10c
-    ~ Bot10A = bot10a
+    # ~ Top10C = top10c
+    # ~ Top10A = top10a
+    # ~ Top1C = top1c
+    # ~ Top1A = top1a
+    # ~ Bot10C = bot10c
+    # ~ Bot10A = bot10a
 
     # Firms
     ~ N = y_prod/z # production function
@@ -81,6 +81,7 @@ equations:
 
     # Fiscal authority
     ~ Rr = RLag/pi # real ex-post bond return
+    ~ Rrminus = Rr + Rbar
     ~ tax = (Rr-1)*B # balanced budget
     
     # Monetary authority
@@ -88,7 +89,6 @@ equations:
     ~ R = maximum(1, Rn) # ZLB
 
     # Exogenous processes
-    ~ z = zSS*(zLag/zSS)**rho_z*exp(e_z) # exogenous technology
     ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a*exp(e_a) # exogenous borrowing limit
 
 steady_state:
@@ -103,25 +103,26 @@ steady_state:
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in (notional) nominal interest rate
-        rho_z: 0.9 # persistence of technology shocks
         rho_a: 0.3 # persistence in borrowing limit transition
         lower_bound_a: amin # borrowing limit
         db: 0.025 # step size in MPC calculation
+        Rbar: 0.0
 
         # steady state
-        z: 1.0 # technology
         pi: 1.0 # inflation
         B: 1.6 # bond supply
         w: (theta-1)/theta # wages
 
     init_guesses:
         # guess initial values
+        z: 1.0 # technology
         N: 1.0 # labor supply
         div: 1 - w*N # dividends
         R: 1.006 # steady state nominal rate
         Rr: R # steady state real rate
         Rn: R # steady state notional nominal rate
+        Rrminus: Rr + Rbar
         tax: (Rr-1)*B # steady state taxes
         we: wages(w, skills_grid)
         T: transfers(skills_stationary, div, tax, skills_grid)
-        VaPrime: egm_init_labour(a_grid, we, Rr, sigma_c, T) # initialise value function
+        VaPrime: egm_init_labour(a_grid, we, Rr, Rrminus, sigma_c, T) # initialise value function

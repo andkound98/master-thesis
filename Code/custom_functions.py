@@ -97,7 +97,11 @@ def make_stst_comparison(hank_model_init, hank_model_term,
     full_stst_analysis['Percent Change'] = (percent*(full_stst_analysis['Terminal Steady State']-full_stst_analysis['Initial Steady State'])/full_stst_analysis['Initial Steady State']).apply(round_func_2)
     
     # Save table for LaTeX
-    if save_tables == True:
+    if save_tables == True and 'n' in hank_model_init['steady_state']['decisions'].keys():
+        stst_table_path = os.path.join(path, 'stst_comparison_labour.tex')
+        full_stst_analysis.to_latex(stst_table_path, 
+                                    label = 'tab:stst_labour', index = False)
+    elif save_tables == True and 'n' not in hank_model_init['steady_state']['decisions'].keys():
         stst_table_path = os.path.join(path, 'stst_comparison.tex')
         full_stst_analysis.to_latex(stst_table_path, 
                                     label = 'tab:stst', index = False)
