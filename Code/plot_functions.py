@@ -7,6 +7,10 @@ Date: 04.05.2023
 This file contains custom functions for plotting results from the main file.
 """
 
+###############################################################################
+###############################################################################
+# Import packages
+import os
 import plotly.express as px
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,6 +25,9 @@ import plotly.graph_objects as go
 ###############################################################################
 # Function for plotting steady state policies
 def make_stst_policiy_plots(model, 
+                            save_plots, # if plots are supposed to be saved
+                            path, # path to save plots
+                            init_or_term,
                             plot_asset_policy=True, 
                             plot_consumption_policy=True,
                             plot_labour_policy=True,
@@ -140,6 +147,62 @@ def make_stst_policiy_plots(model,
                                      margin=dict(l=15, r=15, t=50, b=5),
                                      legend_title='')
             fig_labour.show()
+        
+        # Depending on which model is used and whether it is the initial or 
+        # terminal steady state that is being analysed, save the plot at the 
+        # correct path
+        if 'n' in model['steady_state']['decisions'].keys(): 
+            if save_plots == True and init_or_term == 'initial':
+                path_asset_plot = os.path.join(path, 'Endogenous_Labour', 'Initial', 
+                                               'stst_asset_policies.svg')
+                path_consumption_plot = os.path.join(path, 'Endogenous_Labour', 'Initial', 
+                                                     "stst_consumption_policies.svg")
+                
+                fig_assets.write_image(path_asset_plot)
+                fig_consumption.write_image(path_consumption_plot)
+                if 'n' in model['steady_state']['decisions'].keys():
+                    path_labour_plot = os.path.join(path, 'Endogenous_Labour', 'Initial', 
+                                                    "stst_labour_policies.svg")
+                    fig_labour.write_image(path_labour_plot)
+                    
+            elif save_plots == True and init_or_term == 'terminal':
+                path_asset_plot = os.path.join(path, 'Endogenous_Labour', 'Terminal', 
+                                               'stst_asset_policies.svg')
+                path_consumption_plot = os.path.join(path, 'Endogenous_Labour', 'Terminal', 
+                                                     "stst_consumption_policies.svg")
+                
+                fig_assets.write_image(path_asset_plot)
+                fig_consumption.write_image(path_consumption_plot)
+                if 'n' in model['steady_state']['decisions'].keys():
+                    path_labour_plot = os.path.join(path, 'Endogenous_Labour', 'Terminal', 
+                                                    "stst_labour_policies.svg")
+                    fig_labour.write_image(path_labour_plot)
+        elif 'n' not in model['steady_state']['decisions'].keys(): 
+            if save_plots == True and init_or_term == 'initial':
+                path_asset_plot = os.path.join(path, 'Baseline', 'Initial', 
+                                               'stst_asset_policies.svg')
+                path_consumption_plot = os.path.join(path, 'Baseline', 'Initial', 
+                                                     "stst_consumption_policies.svg")
+                
+                fig_assets.write_image(path_asset_plot)
+                fig_consumption.write_image(path_consumption_plot)
+                if 'n' in model['steady_state']['decisions'].keys():
+                    path_labour_plot = os.path.join(path, 'Baseline', 'Initial', 
+                                                    "stst_labour_policies.svg")
+                    fig_labour.write_image(path_labour_plot)
+                    
+            elif save_plots == True and init_or_term == 'terminal':
+                path_asset_plot = os.path.join(path, 'Baseline', 'Terminal', 
+                                               'stst_asset_policies.svg')
+                path_consumption_plot = os.path.join(path, 'Baseline', 'Terminal', 
+                                                     "stst_consumption_policies.svg")
+                
+                fig_assets.write_image(path_asset_plot)
+                fig_consumption.write_image(path_consumption_plot)
+                if 'n' in model['steady_state']['decisions'].keys():
+                    path_labour_plot = os.path.join(path, 'Baseline', 'Terminal', 
+                                                    "stst_labour_policies.svg")
+                    fig_labour.write_image(path_labour_plot)
         
     else:
         print('Error: Input must be of type PizzaModel.')
