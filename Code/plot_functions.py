@@ -401,7 +401,7 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     if variable in ['R', 'Rn', 'Rr']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                (x_trans[:horizon,var_index] - stst)])
-    elif variable == 'lower_bound_a':
+    elif variable in ['lower_bound_a']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                x_trans[:horizon,var_index]])
     else:

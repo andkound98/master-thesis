@@ -11,8 +11,8 @@ definitions: |
     amax = 50
     an = 50
     amin = -1
-    rho_a = 0.3
-    amin_terminal = -0.5
+    rho_a = 0.9
+    amin_terminal = -0.8
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
 
 variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rrminus, tax, C, n, B, lower_bound_a, MPC, D_o_Y ] # Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C,
@@ -105,7 +105,7 @@ steady_state:
         rho_a: 0.3 # persistence of borrowing limit shock
         lower_bound_a: amin # borrowing limit
         db: 0.025 # step size in MPC calculation
-        Rbar: 0.01 # intermediation cost
+        Rbar: 0.0 # intermediation cost
 
         # Endogenous variables
         pi: 1.0 # inflation

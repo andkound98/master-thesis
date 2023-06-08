@@ -36,6 +36,7 @@ else:
     os.chdir(full_path_code) # Set working directory
     
 path_save_tables = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Tables'
+path_save_plots = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Thesis/Plots'
 
 ###############################################################################
 ###############################################################################
@@ -58,7 +59,7 @@ pd.set_option('display.max_columns', None) # Show all columns
 pd.set_option('display.expand_frame_repr', False)  # Prevent line wrapping
 
 save_tables = True # If true, it saves the tables 
-save_plots = False # If true, it saves the plots 
+save_plots = True # If true, it saves the plots 
 
 ###############################################################################
 ###############################################################################
@@ -71,7 +72,7 @@ full_path_hank = os.path.join(full_path_code, 'hank_without_end_labour.yml')
 
 ###############################################################################
 ###############################################################################
-# Fix borrowing limits
+# Fix borrowing limits according to model used
 if full_path_hank.endswith('hank_without_end_labour.yml'):
     initial_borrowing_limit = -1 # initial borrowing limit
     terminal_borrowing_limit = -0.8 # terminal borrowing limit
@@ -79,8 +80,8 @@ elif full_path_hank.endswith('hank_with_end_labour.yml'):
     initial_borrowing_limit = -2 # initial borrowing limit
     terminal_borrowing_limit = -1 # terminal borrowing limit
 
-# Fix persistence in borrowing limit shock
-persistence_borrowing_limit = 0.3  
+# Fix persistence in the shock to the borrowing limit
+persistence_borrowing_limit = 0.3
 
 ###############################################################################
 ###############################################################################
@@ -112,8 +113,11 @@ skills_grid = hank_model_initial['context']['skills_grid']
 # Calculate initial steady state
 _ = hank_model_initial.solve_stst()
 
-# Plot features of the initial steady state  
-make_stst_policiy_plots(hank_model_initial)
+# Plot steady state policy functions 
+make_stst_policiy_plots(hank_model_initial, 
+                        save_plots, path_save_plots, 'initial')
+
+# Plot steady state distributions
 make_stst_dist_plots(hank_model_initial)
 bar_plot_asset_dist(hank_model_initial, shorten=True, 
                     x_threshold = 30, y_threshold = 8)
@@ -121,14 +125,18 @@ bar_plot_asset_dist(hank_model_initial, shorten=True,
 # Calculate terminal steady state
 _ = hank_model_terminal.solve_stst()
 
-# Plot features of the terminal steady state 
-make_stst_policiy_plots(hank_model_terminal,cutoff=True)
+# Plot steady state policy functions 
+make_stst_policiy_plots(hank_model_terminal, 
+                        save_plots, path_save_plots, 'terminal', cutoff=True)
+
+# Plot steady state distributions
 make_stst_dist_plots(hank_model_terminal)
 bar_plot_asset_dist(hank_model_terminal, shorten=True, 
                     x_threshold = 30, y_threshold = 8)
 
 # Compare steady states
-stst_comparison = make_stst_comparison(hank_model_initial, hank_model_terminal,
+stst_comparison = make_stst_comparison(hank_model_initial, 
+                                       hank_model_terminal,
                                        save_tables, path_save_tables)
 print(stst_comparison)
 

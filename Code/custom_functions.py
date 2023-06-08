@@ -18,7 +18,8 @@ import jax.numpy as jnp
 ###############################################################################
 # Custom functions
 
-def find_closest_grid_point(ar_borrowing_limit, asset_grid):
+def find_closest_grid_point(ar_borrowing_limit, 
+                            asset_grid):
     import jax.numpy as jnp
     array_distances = jnp.abs(asset_grid - ar_borrowing_limit)
     
@@ -43,8 +44,11 @@ def find_stable_time(list_over_time):
 
 ###############################################################################
 # Function to compare initial and terminal steady state
-def make_stst_comparison(hank_model_init, hank_model_term, 
-                         save_tables, path, percent=100):
+def make_stst_comparison(hank_model_init, # model with initial borrowing limit
+                         hank_model_term, # model with terminal borrowing limit
+                         save_tables, # if table is supposed to be saved
+                         path, # path to save table
+                         percent=100):
     round_func_4 = lambda x: round(float(x), 4) # Rounding functions
     round_func_2 = lambda x: round(float(x), 2)
     
