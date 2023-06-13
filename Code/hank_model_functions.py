@@ -392,7 +392,8 @@ def create_grid(amax, n, amin, rho_a, amin_terminal, T=200):
     
     # Combine initial log grid and grid values of borrowing limit path and 
     # sort the result
-    full_grid = jnp.append(initialise_log_grid, jnp.array(path_borrowing_limit)).sort()
+    full_grid = jnp.append(initialise_log_grid, 
+                           jnp.array(path_borrowing_limit)).sort()
     
     # Return the final grid and its length
     return full_grid, len(full_grid)

@@ -77,8 +77,8 @@ def make_stst_comparison(hank_model_init, # model with initial borrowing limit
     distribution_assets_terminal = 100*jnp.sum(distribution_skills_and_assets_terminal, 
                                       axis = 0)
     
-    # Add share of indebted households
-    row_share_indebted = {'Variable': 'Share Indebted',
+    # Add fraction of indebted households
+    row_share_indebted = {'Variable': 'Frac. of Borrowers',
                           'Initial Steady State': jnp.sum(jnp.where(a_grid_init < 0, 
                                                                     distribution_assets_initial, 
                                                                     0)).round(2).item(),
@@ -89,12 +89,24 @@ def make_stst_comparison(hank_model_init, # model with initial borrowing limit
     full_stst_analysis = pd.concat([full_stst_analysis, row_share_indebted_df], 
                                    ignore_index=True)
     
-    # Add share of households at borrowing limit    
-    row_share_limit = {'Variable': 'Share at Limit',
+    # Add fraction of households at borrowing limit    
+    row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
                        'Initial Steady State': distribution_assets_initial[0].round(2).item(),
                        'Terminal Steady State': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
     row_share_limit_df = pd.DataFrame([row_share_limit])
     full_stst_analysis = pd.concat([full_stst_analysis, row_share_limit_df], 
+                                   ignore_index=True)
+    
+    # Add fraction of households at 0 assets 
+    row_share_zero = {'Variable': 'Frac. at Zero Assets',
+                      'Initial Steady State': jnp.sum(jnp.where(a_grid_init == 0, 
+                                                                distribution_assets_initial, 
+                                                                0)).round(2).item(),
+                      'Terminal Steady State': jnp.sum(jnp.where(a_grid_init == 0, 
+                                                                 distribution_assets_terminal, 
+                                                                 0)).round(2).item()}
+    row_share_zero_df = pd.DataFrame([row_share_zero])
+    full_stst_analysis = pd.concat([full_stst_analysis, row_share_zero_df], 
                                    ignore_index=True)
     
     # Add column which calculates changes in percent between the steady states

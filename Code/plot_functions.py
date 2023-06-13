@@ -66,6 +66,7 @@ def plot_single_policy(model,
     fig_policy.update_layout(xaxis_title='Bonds Holdings Today', 
                              yaxis_title=f'{policy_name}',
                              plot_bgcolor = 'whitesmoke', 
+                             margin=dict(l=15, r=15, t=5, b=5),
                              font=dict(family="Times New Roman",
                                        size=20,
                                        color="black"),
@@ -296,10 +297,10 @@ def plot_single_transition(model,
     stst = x_trans[-1, var_index] # Find steady state (by definition, last
     # value in transition is the steady state value)
     
-    if variable in ['R', 'Rn', 'Rr']:
+    if variable[0] in ['R', 'Rn', 'Rr']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                (x_trans[:horizon,var_index] - stst)])
-    elif variable in ['D_o_Y', 'lower_bound_a']:
+    elif variable[0] in ['D_o_Y', 'lower_bound_a']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                x_trans[:horizon,var_index]])
     else:
@@ -328,6 +329,44 @@ def plot_single_transition(model,
     fig.update_traces(line=dict(width=3))
     fig.show() # Show plot
     
+def plot_double_transition(model, 
+                           x_trans, 
+                           variables, 
+                           var_names, 
+                           horizon, 
+                           percent=100):
+    time = list(range(0, horizon, 1)) # Time vector
+    
+    var_indices = [model['variables'].index(v) for v in variables] # Find variable index
+    
+    stst = x_trans[-1, var_indices] # Find steady state (by definition, last
+    # value in transition is the steady state value)
+    
+    if variables[0] in ['R', 'Rn', 'Rr'] and variables[1] in ['R', 'Rn', 'Rr']:
+        x_double_transition = np.column_stack([time, # Concatenate IRFs and time vector
+                                               percent*(x_trans[:horizon,var_indices] - stst)])
+    x_double_transition_df = pd.DataFrame(x_double_transition, # Turn into data frame
+                                          columns = ['Quarters', f'{var_names[0]}', f'{var_names[1]}'])
+    fig = px.line(x_double_transition_df, # make plot
+                  x = 'Quarters',
+                  y = [f'{var_names[0]}', f'{var_names[1]}'],
+                  color_discrete_map={f'{var_names[0]}': px.colors.qualitative.G10[0],
+                                      f'{var_names[1]}': px.colors.qualitative.G10[1]})
+    fig.update_layout(title='', # empty title
+                       xaxis_title='Quarters', # x-axis labeling
+                       yaxis_title='', # y-axis labeling
+                       legend=dict(orientation="h", # horizontal legend
+                                   yanchor="bottom", y=1.02, 
+                                   xanchor="right", x=1), 
+                       legend_title=None, 
+                       plot_bgcolor='whitesmoke', 
+                       margin=dict(l=15, r=15, t=5, b=5),
+                       font=dict(family="Times New Roman", # adjust font
+                                 size=20,
+                                 color="black"))
+    fig.update_traces(line=dict(width=3))
+    fig.show() # Show plot
+    
 ###############################################################################
 ###############################################################################
 # Function for plotting the transition of a list of selected variables
@@ -338,6 +377,9 @@ def plot_selected_transition(list_of_variables,
                              percent=100):
     # Loop through list of selected variables
     for sublist in list_of_variables:
+        if 'R' in sublist:
+            percent=400
+        
         if len(sublist) == 2:
             variable = sublist[0] # extract variable
             variable_name = sublist[1] # extract variable name
@@ -347,6 +389,12 @@ def plot_selected_transition(list_of_variables,
                                    variable, variable_name, 
                                    horizon, percent)
         elif len(sublist) == 4:
-            pass # TO DO
+            variables = [sublist[0], sublist[2]] # extract variable
+            variable_names = [sublist[1], sublist[3]] # extract variable name
+            
+            plot_double_transition(model, x_trans, # plot double transition of a 
+                                   # given variable from the list
+                                   variables, variable_names, 
+                                   horizon, percent)
         else: 
             print('Error with the dimensions of the variable list.')

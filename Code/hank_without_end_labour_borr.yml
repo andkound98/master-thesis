@@ -1,7 +1,7 @@
 # Author: Andreas Koundouros [koundouros.andreas@gmail.com]
 ---
-name: 'hank_without_end_labour'
-description: 'One-Asset HANK without Endogenous Labour Supply and Shockable Borrowing Constraints'
+name: 'hank_without_end_labour_borr'
+description: 'One-Asset HANK without Endogenous Labour Supply and Shockable Borrowing Wedge'
 functions_file: 'hank_model_functions.py'
 
 definitions: |
@@ -12,12 +12,12 @@ definitions: |
     an = 60
     amin = -1
     rho_a = 0.3
-    amin_terminal = 0
+    amin_terminal = -0.5
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
 
-variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rrminus, tax, C, n, B, lower_bound_a, MPC, D_o_Y, gr_liquid ] # Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C,
-parameters: [ sigma_c, sigma_l, beta, z, theta, psi, phi_pi, phi_y, rho, rho_a, db, Rbar ]
-shocks: [ e_a ]
+variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rrminus, tax, C, n, B, lower_bound_a, MPC, D_o_Y, Rbar ] # Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C,
+parameters: [ sigma_c, sigma_l, beta, z, theta, psi, phi_pi, phi_y, rho, rho_a, rho_Rbar, db ]
+shocks: [ e_a, e_Rbar ]
 
 distributions:
   dist:
@@ -60,7 +60,6 @@ equations:
     ~ C + Rbar*aggr_debt = y # goods market clearing
     ~ MPC = aggr_mpc # aggregate MPC
     ~ D_o_Y = aggr_debt/y # household debt-to-GDP
-    ~ gr_liquid = B + aggr_debt # gross liquid asset holdings
     
     # Definitions
     # ~ Top10C = top10c
@@ -90,6 +89,7 @@ equations:
 
     # Exogenous processes
     ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a*exp(e_a) # exogenous borrowing limit
+    ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar)
 
 steady_state:
     # Fixed steady state values
@@ -103,10 +103,10 @@ steady_state:
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in notional nominal interest rate
-        rho_a: rho_a # persistence of borrowing limit shock
-        lower_bound_a: amin # borrowing limit
+        rho_a: 0.3 # persistence of borrowing limit shock
+        rho_Rbar: 0.3
+        lower_bound_a: -1 # borrowing limit
         db: 0.025 # step size in MPC calculation
-        Rbar: 0.01 # intermediation cost
 
         # Variables
         pi: 1.0 # inflation
@@ -114,6 +114,7 @@ steady_state:
         w: (theta-1)/theta # real wage (equal to marginal costs of the firm)
         n: w**(1/sigma_l) # labor supply
         div: 1 - w*n # dividends
+        Rbar: 1e-8 # intermediation cost
     
     # Initial guesses for steady state
     init_guesses:

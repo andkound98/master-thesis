@@ -10,9 +10,9 @@ definitions: |
     
     amax = 80
     an = 90
-    amin = -2
+    amin = -1
     rho_a = 0.3
-    amin_terminal = -1
+    amin_terminal = 0
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
     
 variables: [ div, y, y_prod, w, pi, R, Rn, Rr, Rrminus, tax, C, N, B, lower_bound_a, MPC, D_o_Y ] # Top10C, Top10A, Top1C, Top1A, Bot10C, Bot10A,
@@ -97,13 +97,13 @@ steady_state:
         beta: 0.97 # discount factor
         sigma_c: 2. # intertemporal elasticity of substitution
         sigma_l: 2. # inverse Frisch elasticity of labour supply
-        chi: 1. # utility weight on disutility of labor
-        theta: 8. # elasticity of substitution
+        chi: 10. # utility weight on disutility of labor
+        theta: 10. # elasticity of substitution
         psi: 100. # parameter on the costs of price adjustment
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in (notional) nominal interest rate
-        rho_a: 0.3 # persistence in borrowing limit transition
+        rho_a: rho_a # persistence in borrowing limit transition
         lower_bound_a: amin # borrowing limit
         db: 0.025 # step size in MPC calculation
         Rbar: 0.0
@@ -118,7 +118,7 @@ steady_state:
         z: 1.0 # technology
         N: 1.0 # labor supply
         div: 1 - w*N # dividends
-        R: 1.006 # steady state nominal rate
+        R: 1.005 # steady state nominal rate
         Rr: R # steady state real rate
         Rn: R # steady state notional nominal rate
         Rrminus: Rr + Rbar
