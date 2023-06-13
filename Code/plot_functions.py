@@ -16,249 +16,142 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import jax.numpy as jnp
-import econpizza
 from grgrlib import grbar3d
 import matplotlib.cm as cm
 import plotly.graph_objects as go
 
 ###############################################################################
 ###############################################################################
-# Function for plotting steady state policies
-def make_stst_policiy_plots(model, 
-                            save_plots, # if plots are supposed to be saved
-                            path, # path to save plots
-                            init_or_term,
-                            plot_asset_policy=True, 
-                            plot_consumption_policy=True,
-                            plot_labour_policy=True,
-                            cutoff=False):
-    if type(model) == econpizza.__init__.PizzaModel:
-        # Get asset grid
-        a_grid = model['context']['a_grid']
+# Function for plotting the functions of a single policy
+def plot_single_policy(model,
+                       policy,
+                       policy_name,
+                       save_plots,
+                       path,
+                       borr_cutoff=None,
+                       x_threshold=None):
+    # Preliminaries
+    a_grid = model['context']['a_grid'] # Get asset grid
+    policy_arr = np.array(a_grid) # Initialise container for policies
+    policy_columns = ['grid'] # Initialise name constainer
+    
+    # Loop through skill grid to get policy functions for each skill level
+    for no_states in range(model['distributions']['dist']['skills']['n']):
+        one_policy = model['steady_state']['decisions'][f'{policy}'][no_states]
         
-        # Initialise arrays 
-        assets_policy = np.array(a_grid)
-        assets_policy_columns = ['grid']
-        consumption_policy = np.array(a_grid)
-        consumption_policy_columns = ['grid']
-        if 'n' in model['steady_state']['decisions'].keys():
-            labour_policy = np.array(a_grid)
-            labour_policy_columns = ['grid']
+        if policy_arr.size == 0:
+            policy_arr = one_policy
+        else:
+            policy_arr = np.column_stack((policy_arr, one_policy))
+            
+        policy_columns.append(f'\u03B8_{no_states}')
+    
+    # Create data frames for plotting
+    policy_df = pd.DataFrame(policy_arr, 
+                             columns = policy_columns)
+    
+    # Cutoff if borrowing limit does not coincide with lowest asset grid point
+    if borr_cutoff != None:
+        policy_df.loc[policy_df['grid'] < borr_cutoff, :] = np.nan
+    
+    # Cutoff x axis if desired
+    if x_threshold != None:
+        policy_df.loc[policy_df['grid'] > x_threshold, :] = np.nan
         
-        # Loop through skills_grid to get policy functions
-        for no_states in range(model['distributions']['dist']['skills']['n']):
-            asset_column = model['steady_state']['decisions']['a'][no_states]
-            consumption_column = model['steady_state']['decisions']['c'][no_states]
+    fig_policy =  px.line(policy_df, # Create plot
+                          x = 'grid',
+                          y = policy_columns,
+                          title = '',
+                          color_discrete_sequence=px.colors.qualitative.G10[:policy_df.shape[1]]) 
+    fig_policy.update_layout(xaxis_title='Bonds Holdings Today', 
+                             yaxis_title=f'{policy_name}',
+                             plot_bgcolor = 'whitesmoke', 
+                             font=dict(family="Times New Roman",
+                                       size=20,
+                                       color="black"),
+                             margin=dict(l=15, r=15, t=50, b=5), 
+                             legend_title='')
+    fig_policy.show()
+    
+    if save_plots == True:
+        path_plot = os.path.join(path, f'stst_policies_{policy}.svg')
+        fig_policy.write_image(path_plot)
+    
+
+###############################################################################
+###############################################################################
+# Function for plotting selected policy functions
+def plot_selected_policies(list_of_policies,
+                            model,
+                            save_plots,
+                            path,
+                            borr_cutoff=None,
+                            x_threshold=None):
+    # Loop through list of selected policies
+    for sublist in list_of_policies:
+        if len(sublist) == 2:
+            policy = sublist[0] # extract policy
+            policy_name = sublist[1] # extract policy name
             
-            if 'n' in model['steady_state']['decisions'].keys():
-                labour_column = model['steady_state']['decisions']['n'][no_states]
+            plot_single_policy(model, policy, policy_name, 
+                               save_plots, path, 
+                               borr_cutoff, x_threshold)
             
-            if assets_policy.size == 0:
-                assets_policy = asset_column
-            else:
-                assets_policy = np.column_stack((assets_policy, asset_column))
-                
-            assets_policy_columns.append(f'\u03B8_{no_states}')
-            
-            if consumption_policy.size == 0:
-                consumption_policy = consumption_column
-            else:
-                consumption_policy = np.column_stack((consumption_policy, 
-                                                      consumption_column))
-                
-            consumption_policy_columns.append(f'\u03B8_{no_states}')
-            
-            if 'n' in model['steady_state']['decisions'].keys():
-                if labour_policy.size == 0:
-                    labour_policy = labour_column
-                else:
-                    labour_policy = np.column_stack((labour_policy, 
-                                                     labour_column))
-                
-                labour_policy_columns.append(f'\u03B8_{no_states}')
+        else: 
+            print('Error with the dimensions of the variable list.')
         
-        # Create data frames for plotting
-        assets_policy_df = pd.DataFrame(assets_policy, 
-                                        columns = assets_policy_columns)
-        consumption_policy_df = pd.DataFrame(consumption_policy, 
-                                             columns = consumption_policy_columns)
-        
-        if 'n' in model['steady_state']['decisions'].keys():
-            labour_policy_df = pd.DataFrame(labour_policy, 
-                                            columns = labour_policy_columns)
-        
-        # Cut data frames short at borrowing limit if specified
-        if cutoff == True:
-            cutoff_value = model['steady_state']['fixed_values']['lower_bound_a']
-            
-            assets_policy_df.loc[assets_policy_df['grid'] < cutoff_value, :] = np.nan
-            consumption_policy_df.loc[consumption_policy_df['grid'] < cutoff_value, :] = np.nan
-            
-            if 'n' in model['steady_state']['decisions'].keys():
-                labour_policy_df.loc[labour_policy_df['grid'] < cutoff_value, :] = np.nan
-        
-        # Plot asset policies 
-        if plot_asset_policy == True:
-            fig_assets =  px.line(assets_policy_df, # Create plot
-                                  x = 'grid',
-                                  y = assets_policy_columns,
-                                  title='Asset Policy',
-                                  color_discrete_sequence=px.colors.qualitative.G10[:assets_policy_df.shape[1]]) 
-            fig_assets.update_layout(xaxis_title='Bonds Holdings Today', 
-                                     yaxis_title='Bonds Holdings Tomorrow',
-                                     plot_bgcolor = 'whitesmoke', 
-                                     font=dict(family="Times New Roman",
-                                               size=20,
-                                               color="black"),
-                                     margin=dict(l=15, r=15, t=50, b=5), 
-                                     legend_title='')
-            fig_assets.show()
-            
-        # Plot consumption policies
-        if plot_consumption_policy == True:
-            fig_consumption =  px.line(consumption_policy_df, # Create plot
-                                       x = 'grid',
-                                       y = consumption_policy_columns,
-                                       title='Consumption Policy',
-                                       color_discrete_sequence=px.colors.qualitative.G10[:consumption_policy_df.shape[1]]) 
-            fig_consumption.update_layout(xaxis_title='Bonds Holdings', 
-                                          yaxis_title='Consumption',
-                                          plot_bgcolor = 'whitesmoke', 
-                                          font=dict(family="Times New Roman",
-                                                    size=20,
-                                                    color="black"),
-                                          margin=dict(l=15, r=15, t=50, b=5), 
-                                          legend_title='')
-            fig_consumption.show()
-            
-        # Plot labour supply policies
-        if 'n' in model['steady_state']['decisions'].keys() and plot_labour_policy == True:
-            fig_labour =  px.line(labour_policy_df, # Create plot
-                                       x = 'grid',
-                                       y = labour_policy_columns,
-                                       title='Labour Supply Policy',
-                                       color_discrete_sequence=px.colors.qualitative.G10[:labour_policy_df.shape[1]]) 
-            fig_labour.update_layout(xaxis_title='Bonds Holdings', 
-                                     yaxis_title='Labour Supply',
-                                     plot_bgcolor = 'whitesmoke', 
-                                     font=dict(family="Times New Roman",
-                                               size=20,
-                                               color="black"),
-                                     margin=dict(l=15, r=15, t=50, b=5),
-                                     legend_title='')
-            fig_labour.show()
-        
-        # Depending on which model is used and whether it is the initial or 
-        # terminal steady state that is being analysed, save the plot at the 
-        # correct path
-        if 'n' in model['steady_state']['decisions'].keys(): 
-            if save_plots == True and init_or_term == 'initial':
-                path_asset_plot = os.path.join(path, 'Endogenous_Labour', 'Initial', 
-                                               'stst_asset_policies.svg')
-                path_consumption_plot = os.path.join(path, 'Endogenous_Labour', 'Initial', 
-                                                     "stst_consumption_policies.svg")
-                
-                fig_assets.write_image(path_asset_plot)
-                fig_consumption.write_image(path_consumption_plot)
-                if 'n' in model['steady_state']['decisions'].keys():
-                    path_labour_plot = os.path.join(path, 'Endogenous_Labour', 'Initial', 
-                                                    "stst_labour_policies.svg")
-                    fig_labour.write_image(path_labour_plot)
-                    
-            elif save_plots == True and init_or_term == 'terminal':
-                path_asset_plot = os.path.join(path, 'Endogenous_Labour', 'Terminal', 
-                                               'stst_asset_policies.svg')
-                path_consumption_plot = os.path.join(path, 'Endogenous_Labour', 'Terminal', 
-                                                     "stst_consumption_policies.svg")
-                
-                fig_assets.write_image(path_asset_plot)
-                fig_consumption.write_image(path_consumption_plot)
-                if 'n' in model['steady_state']['decisions'].keys():
-                    path_labour_plot = os.path.join(path, 'Endogenous_Labour', 'Terminal', 
-                                                    "stst_labour_policies.svg")
-                    fig_labour.write_image(path_labour_plot)
-        elif 'n' not in model['steady_state']['decisions'].keys(): 
-            if save_plots == True and init_or_term == 'initial':
-                path_asset_plot = os.path.join(path, 'Baseline', 'Initial', 
-                                               'stst_asset_policies.svg')
-                path_consumption_plot = os.path.join(path, 'Baseline', 'Initial', 
-                                                     "stst_consumption_policies.svg")
-                
-                fig_assets.write_image(path_asset_plot)
-                fig_consumption.write_image(path_consumption_plot)
-                if 'n' in model['steady_state']['decisions'].keys():
-                    path_labour_plot = os.path.join(path, 'Baseline', 'Initial', 
-                                                    "stst_labour_policies.svg")
-                    fig_labour.write_image(path_labour_plot)
-                    
-            elif save_plots == True and init_or_term == 'terminal':
-                path_asset_plot = os.path.join(path, 'Baseline', 'Terminal', 
-                                               'stst_asset_policies.svg')
-                path_consumption_plot = os.path.join(path, 'Baseline', 'Terminal', 
-                                                     "stst_consumption_policies.svg")
-                
-                fig_assets.write_image(path_asset_plot)
-                fig_consumption.write_image(path_consumption_plot)
-                if 'n' in model['steady_state']['decisions'].keys():
-                    path_labour_plot = os.path.join(path, 'Baseline', 'Terminal', 
-                                                    "stst_labour_policies.svg")
-                    fig_labour.write_image(path_labour_plot)
-        
-    else:
-        print('Error: Input must be of type PizzaModel.')
         
 ###############################################################################
 ###############################################################################
 # Function for plotting steady state distributions
 def make_stst_dist_plots(model, 
                          plot_dist_skills_and_assets=True, 
-                         plot_dist_assets=True):
-    if type(model) == econpizza.__init__.PizzaModel:
-        
-        # Get asset grid
-        a_grid = model['context']['a_grid']
-        
-        # Distribution over skills and assets
-        distribution_skills_and_assets = model['steady_state']['distributions'][0]
-        
-        if plot_dist_skills_and_assets == True:
-            fig_dist_skills_and_assets, _ = grbar3d(100*distribution_skills_and_assets, # Create plot
-                                                    xedges=jnp.arange(1, (len(distribution_skills_and_assets)+1)), 
-                                                    yedges=a_grid, 
-                                                    figsize=(9,7), 
-                                                    depth=.5) # create 3D plot
-            fig_dist_skills_and_assets.set_xlabel('Productivity')
-            fig_dist_skills_and_assets.set_ylabel('Bond Holdings')
-            fig_dist_skills_and_assets.set_zlabel('Share')
-            fig_dist_skills_and_assets.view_init(azim=120) # rotate
+                         plot_dist_assets=True,
+                         percent=100):
+    # Get asset grid
+    a_grid = model['context']['a_grid']
+    
+    # Distribution over skills and assets
+    distribution_skills_and_assets = model['steady_state']['distributions'][0]
+    
+    if plot_dist_skills_and_assets == True:
+        fig_dist_skills_and_assets, _ = grbar3d(100*distribution_skills_and_assets, # Create plot
+                                                xedges=jnp.arange(1, (len(distribution_skills_and_assets)+1)), 
+                                                yedges=a_grid, 
+                                                figsize=(9,7), 
+                                                depth=.5) # create 3D plot
+        fig_dist_skills_and_assets.set_xlabel('Productivity')
+        fig_dist_skills_and_assets.set_ylabel('Bond Holdings')
+        fig_dist_skills_and_assets.set_zlabel('Share')
+        fig_dist_skills_and_assets.view_init(azim=120) # rotate
 
-        # Distribution over assets
-        distribution_assets = np.column_stack([a_grid, 
-                                               100*jnp.sum(distribution_skills_and_assets, 
+    # Distribution over assets
+    distribution_assets = np.column_stack([a_grid, 
+                                           percent*jnp.sum(distribution_skills_and_assets, 
                                                            axis = 0)])
-        distribution_assets_df = pd.DataFrame(distribution_assets, 
-                                              columns = ['grid', 'distribution'])
+    distribution_assets_df = pd.DataFrame(distribution_assets, 
+                                          columns = ['grid', 'distribution'])
+    
+    if plot_dist_assets == True:
+        fig_distr_assets = px.line(distribution_assets_df, # Create plot
+                                  x = 'grid', 
+                                  y = 'distribution',
+                                  title='Bond Distribution',
+                                  color_discrete_sequence=[px.colors.qualitative.G10[0]])
+        fig_distr_assets.update_layout(xaxis_title='Bond Holdings', 
+                                      yaxis_title='Share',
+                                      plot_bgcolor = 'whitesmoke', 
+                                      font=dict(family="Times New Roman",
+                                                size=20,
+                                                color="black"),
+                                      margin=dict(l=15, r=15, t=50, b=5), 
+                                      legend_title='')
+        fig_distr_assets.show()
+
         
-        if plot_dist_assets == True:
-            fig_distr_assets = px.line(distribution_assets_df, # Create plot
-                                      x = 'grid', 
-                                      y = 'distribution',
-                                      title='Bond Distribution',
-                                      color_discrete_sequence=[px.colors.qualitative.G10[0]])
-            fig_distr_assets.update_layout(xaxis_title='Bond Holdings', 
-                                          yaxis_title='Share',
-                                          plot_bgcolor = 'whitesmoke', 
-                                          font=dict(family="Times New Roman",
-                                                    size=20,
-                                                    color="black"),
-                                          margin=dict(l=15, r=15, t=50, b=5), 
-                                          legend_title='')
-            fig_distr_assets.show()
-        
-    else:
-        print('Error: Input must be of type PizzaModel.')
-        
-def shorten_asset_dist(model, x_threshold):
+def shorten_asset_dist(model, 
+                       x_threshold,
+                       percent=100):
     # Get asset grid
     a_grid = model['context']['a_grid']
     
@@ -267,8 +160,8 @@ def shorten_asset_dist(model, x_threshold):
     
     # Distribution over assets
     distribution_assets = np.column_stack([a_grid, 
-                                           100*jnp.sum(distribution_skills_and_assets, 
-                                                       axis = 0)])
+                                           percent*jnp.sum(distribution_skills_and_assets, 
+                                                           axis = 0)])
     distribution_assets_df = pd.DataFrame(distribution_assets, 
                                           columns = ['grid', 'distribution'])
 
@@ -290,19 +183,17 @@ def shorten_asset_dist(model, x_threshold):
     return short_asset_dist
 
 def bar_plot_asset_dist(model, 
-                        shorten=False, x_threshold = None, 
-                        y_threshold = None):
+                        x_threshold=None, 
+                        y_threshold=None,
+                        percent=100):
     # Create data frame for plotting depending on whether shortening is required
-    if shorten == True and x_threshold == None:
-        print('Threshold for shortening required.')
-        
-    elif shorten == True and x_threshold != None:
+    if x_threshold != None:
         short_distribution_assets_df = shorten_asset_dist(model, x_threshold)
         
         a_grid = short_distribution_assets_df['grid']
         y = short_distribution_assets_df['distribution']
         
-    elif shorten == False:
+    elif x_threshold == None:
         a_grid = model['context']['a_grid']
         
         # Distribution over skills and assets
@@ -310,8 +201,8 @@ def bar_plot_asset_dist(model,
         
         # Distribution over assets
         distribution_assets = np.column_stack([a_grid, 
-                                               100*jnp.sum(distribution_skills_and_assets, 
-                                                           axis = 0)])
+                                               percent*jnp.sum(distribution_skills_and_assets, 
+                                                               axis = 0)])
         distribution_assets_df = pd.DataFrame(distribution_assets, 
                                               columns = ['grid', 'distribution'])
         
@@ -380,7 +271,9 @@ def bar_plot_asset_dist(model,
 ###############################################################################
 ###############################################################################
 # Function for plotting the transition of all variables
-def plot_all(x_trans, var_names, horizon=30):
+def plot_all(x_trans, 
+             var_names, 
+             horizon=30):
     for i,v in enumerate(var_names):
         plt.figure()
         plt.plot(x_trans[:horizon, i])
@@ -389,7 +282,12 @@ def plot_all(x_trans, var_names, horizon=30):
 ###############################################################################
 ###############################################################################
 # Function for plotting the transition of a single variable
-def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=100):   
+def plot_single_transition(model, 
+                           x_trans, 
+                           variable, 
+                           var_name, 
+                           horizon, 
+                           percent=100):   
     time = list(range(0, horizon, 1)) # Time vector
     
     variable = [variable] # Make variable a list
@@ -401,7 +299,7 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
     if variable in ['R', 'Rn', 'Rr']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                (x_trans[:horizon,var_index] - stst)])
-    elif variable in ['lower_bound_a']:
+    elif variable in ['D_o_Y', 'lower_bound_a']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                x_trans[:horizon,var_index]])
     else:
@@ -434,12 +332,21 @@ def plot_single_transition(model, x_trans, variable, var_name, horizon, percent=
 ###############################################################################
 # Function for plotting the transition of a list of selected variables
 def plot_selected_transition(list_of_variables, 
-                             model, x_trans, horizon, percent=100):
+                             model, 
+                             x_trans, 
+                             horizon, 
+                             percent=100):
+    # Loop through list of selected variables
     for sublist in list_of_variables:
-        variable = sublist[0] # extract variable
-        variable_name = sublist[1] # extract variable name
+        if len(sublist) == 2:
+            variable = sublist[0] # extract variable
+            variable_name = sublist[1] # extract variable name
         
-        plot_single_transition(model, x_trans, # plot single transition of a 
-                               # given variable from the list
-                               variable, variable_name, 
-                               horizon, percent)
+            plot_single_transition(model, x_trans, # plot single transition of a 
+                                   # given variable from the list
+                                   variable, variable_name, 
+                                   horizon, percent)
+        elif len(sublist) == 4:
+            pass # TO DO
+        else: 
+            print('Error with the dimensions of the variable list.')
