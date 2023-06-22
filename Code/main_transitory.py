@@ -22,7 +22,7 @@ from grgrlib import grbar3d # for plotting
 
 ###############################################################################
 ###############################################################################
-# Fix paths
+# Set paths
 absolute_path = os.getcwd() # Set working directory accordingly
 
 if absolute_path.endswith('Code'):
@@ -34,20 +34,20 @@ else:
                                       'Code')
     full_path_code = os.path.join(absolute_path, relative_path_code)
     os.chdir(full_path_code) # Set working directory
-    
-path_save_tables = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Results/Tables'
-path_save_plots = '/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Results/Plots'
 
 ###############################################################################
 ###############################################################################
 # Import custom functions
-from custom_functions import make_stst_comparison # quick steady state comparison
+from custom_functions import (make_paths, 
+                              make_models,
+                              make_stst_comparison) # make comparison of steady states
 
-from plot_functions import (make_stst_policiy_plots, # plot steady state policies
+from plot_functions import (plot_single_policy, 
+                            plot_selected_policies, # plot steady state policy functions
                             make_stst_dist_plots, # plot steady state distributions
+                            bar_plot_asset_dist, # plot steady state distribution in bar plot
                             plot_all, # plot all IRFs
-                            plot_selected_transition, # plot selected IRFs
-                            bar_plot_asset_dist) # plot steady state distribution in bar plot
+                            plot_selected_transition) # plot selected IRFs
 
 ###############################################################################
 ###############################################################################
@@ -58,87 +58,81 @@ pio.renderers.default = "svg" # For plotting in the Spyder window
 pd.set_option('display.max_columns', None) # Show all columns
 pd.set_option('display.expand_frame_repr', False) # Prevent line wrapping
 
-save_tables = True # If true, it saves the tables 
-save_plots = True # If true, it saves the plots 
+save_results = False # If true, results (tables and plots) are stored
 
 ###############################################################################
 ###############################################################################
-# Choose HANK model
+# Choose HANK model and shock
 
 # HANK without endogenous labour supply
-full_path_hank = os.path.join(full_path_code, 'hank_without_end_labour_borr.yml')
+full_path_hank = os.path.join(full_path_code, 'hank_without_end_labour.yml')
 # HANK with endogenous labour supply
 #full_path_hank = os.path.join(full_path_code, 'hank_with_end_labour.yml')  
 
-###############################################################################
-###############################################################################
-# Get model as dictionary
-hank_dict = ep.parse(full_path_hank)
-
-# Create model with initial borrowing wedge
-hank_dict['steady_state']['fixed_values']['Rbar'] = 1e-8
-hank_model_initial = ep.load(hank_dict) # Load initial model
-
-# Create model with terminal borrowing wedge
-hank_dict['steady_state']['fixed_values']['Rbar'] = 0.02
-hank_model_terminal = ep.load(hank_dict) # Load terminal model
+# Shock; True: shock to borrowing limit, False: shock to borrowing wedge
+shock_limit = True
 
 ###############################################################################
 ###############################################################################
-# Analysis of Steady States
+# Fix borrowing limits according to model used
+hank_model_initial, hank_model_terminal, terminal_borrowing_limit = make_models(full_path_hank, 
+                                                                                shock_limit)
+
+###############################################################################
+###############################################################################
+# Steady States
 
 # Save asset and income grids for later convenience
 a_grid = hank_model_initial['context']['a_grid']
-skills_grid = hank_model_initial['context']['skills_grid']
+#skills_grid = hank_model_initial['context']['skills_grid']
 
-# Calculate initial steady state
-_ = hank_model_initial.solve_stst()
+# Select steady state policies to plot
+policies_to_plot = [['a', 'Assets'],
+                    ['c', 'Consumption']]
+if full_path_hank.endswith('hank_with_end_labour.yml'):
+    policies_to_plot.append(['n', 'Labour Supply'])
 
-# Plot steady state policy functions 
-make_stst_policiy_plots(hank_model_initial, 
-                        save_plots, path_save_plots, 'initial')
+full_path_results = make_paths(full_path_hank, 
+                               full_path_code, 
+                               shock_limit)
+
+###############################################################################
+###############################################################################
+# Initial Steady State
+
+# Find initial steady state
+stst = hank_model_initial.solve_stst()
+
+# Plot steady state policy functions
+plot_selected_policies(policies_to_plot, hank_model_initial, 
+                       save_results, full_path_results, 'initial',
+                       borr_cutoff=None, x_threshold=None)
+
+# Plot marginal propensities to consume
+plot_single_policy(hank_model_initial, 'mpc', 'MPC',
+                   save_results, full_path_results, 'initial',
+                   borr_cutoff=None, x_threshold=3)
 
 # Plot steady state distributions
 make_stst_dist_plots(hank_model_initial)
-bar_plot_asset_dist(hank_model_initial, shorten=True, 
+bar_plot_asset_dist(hank_model_initial,
                     x_threshold = 30, y_threshold = 8)
 
-# Calculate terminal steady state
-_ = hank_model_terminal.solve_stst()
-
-# Plot steady state policy functions 
-make_stst_policiy_plots(hank_model_terminal, 
-                        save_plots, path_save_plots, 'terminal', cutoff=True)
-
-# Plot steady state distributions
-make_stst_dist_plots(hank_model_terminal)
-bar_plot_asset_dist(hank_model_terminal, shorten=True, 
-                    x_threshold = 30, y_threshold = 8)
-
-# Compare steady states
-stst_comparison = make_stst_comparison(hank_model_initial, 
-                                       hank_model_terminal,
-                                       save_tables, path_save_tables)
-print(stst_comparison)
 
 ###############################################################################
 ###############################################################################
-# Transition to New Steady State
-
-# Save old seady state as starting point of transition
-hank_model_initial_stst = hank_model_initial['stst']
-#hank_model_initial_stst = hank_model_terminal['stst']
+# Transitory Shocks
+shock = ('e_a', -0.05)
 
 # Find perfect foresight transition to new steady state
-x_transition, _ = hank_model_terminal.find_path(init_state = hank_model_initial_stst.values())
-#x_transition, _ = hank_model_initial.find_path(init_state = hank_model_initial_stst.values())
+x_transition, _ = hank_model_initial.find_path(shock)
+
+# Fix horizon for plotting
+horizon = 15
 
 ###############################################################################
 ###############################################################################
 # Aggregate transitional dynamics
-
-# Fix horizon for plotting
-horizon = 15
 
 # If desired, plot transition of all variables       
 plot_all(x_transition, hank_model_initial['variables'], horizon)
@@ -148,13 +142,13 @@ variables_to_plot = [['C', 'Consumption'],
                      ['y', 'Output'], 
                      ['pi', 'Inflation'], 
                      ['w', 'Wage'], 
-                     ['R', 'Nominal Interest Rate'], 
-                     ['Rn', 'Notional Interest Rate'], 
+                     ['R', 'Nominal Interest Rate', 'Rn', 'Notional Interest Rate'], 
                      ['Rr', 'Ex-Post Real Interest Rate'], 
                      ['div', 'Dividends'],
                      ['tax', 'Taxes'],
                      ['lower_bound_a', 'Borrowing Limit'],
-                     ['D_o_Y', 'Household Debt-to-Output']]
+                     ['D', 'Household Debt'], 
+                     ['DY', 'Household Debt-to-Output']]
 
 # Depending on the specific HANK model, add aggregate labour hours
 if full_path_hank.endswith('hank_without_end_labour.yml'):
@@ -164,7 +158,8 @@ elif full_path_hank.endswith('hank_with_end_labour.yml'):
 
 # Plot transition of some selected variables
 plot_selected_transition(variables_to_plot, 
-                         hank_model_initial, x_transition, horizon)
+                         hank_model_initial, x_transition, horizon,
+                         save_results, full_path_results)
 
 ###############################################################################
 ###############################################################################
@@ -172,7 +167,7 @@ plot_selected_transition(variables_to_plot,
 
 # Get disaggregated responses of the distribution, of consumption and asset 
 # holdings
-dist_transition = hank_model_terminal.get_distributions(x_transition)
+dist_transition = hank_model_initial.get_distributions(x_transition)
 
 # Store distributional dynamics
 dynamic_dist = dist_transition['dist']

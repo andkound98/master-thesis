@@ -1,36 +1,45 @@
 # Author: Andreas Koundouros [koundouros.andreas@gmail.com]
 ---
 name: 'hank_without_end_labour'
-description: 'One-Asset HANK without Endogenous Labour Supply and Shockable Borrowing Constraints'
+description: 'One-Asset HANK with Shocks to the Borrowing Constraint and the Interest Rate Wedge'
 functions_file: 'hank_model_functions.py'
 
 definitions: |
+    # Imports
     from jax.numpy import log, maximum
     from econpizza.tools import percentile, jax_print
     
-    amax = 50
-    an = 50
-    amin = -1
-    rho_a = 0.3
-    amin_terminal = -0.75
+    # Create custom grid
+    amax = 70 # Maximum asset grid point
+    an = 70 # Number of asset grid points 
+    amin = 0 # Initial borrowing constraint
+    rho_a = 0.3 # Persistence in shock to borrowing constraint
+    amin_terminal = 0 # Terminal borrowing constraint
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
 
-variables: [ div, y, y_prod, w, pi, piw, R, Rn, Rr, Rbar, Rrminus, tau, C, n, B, lower_bound_a, MPC, D, DY, gr_liquid, Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C ] # Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C,
-parameters: [ sigma_c, sigma_l, beta, z, theta, psi, phi_pi, phi_y, rho, rho_a, rho_Rbar, da ]
+# Variables and parameters for aggregate and disaggregated model blocks
+variables: [ div, mc, y, y_prod, w, pi, pitilde, piw, R, Rn, Rr, Rbar, Rrminus, C, n, B, tau, lower_bound_a, MPC, D, DY, gr_liquid ] # Top10C, Top10A, Top1C, Top1A, Bot10A, Bot10C,
+parameters: [ sigma_c, sigma_l, beta, z, theta, psi, phi_pi, phi_y, rho, rho_a, rho_Rbar, da, omega ]
 shocks: [ e_a, e_Rbar ]
 
+# Households
+# Grids for exogenous and endogenous state variables
 distributions:
   dist:
+    # Income grid 
     skills:
       type: exogenous_rouwenhorst
-      rho: 0.97
-      sigma: 0.6
-      n: 8
+      rho: 0.95 # Persistence in labour income
+      sigma: 0.5 # Variance of shocks to labour income (income risk)
+      n: 8 # Number of income grid points
+    # Asset grid
     a: 
       type: endogenous_generic
-      n: a_grid_n
+      n: a_grid_n # Number of asset grid points 
 
+# Decision problem of households
 decisions:
+  # EGM step
   inputs: [WaPrime]
   calls: |
     tfs = transfers(skills_stationary, div, 0, skills_grid)
@@ -45,80 +54,83 @@ aux_equations: |
     aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # MPC
     aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
     
-    # Calculate shares
-    top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
-    top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
-    top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
-    top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
-    bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
-    bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
+    # Shares
+    # top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
+    # top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    # top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
+    # top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
+    # bot10a = percentile(a, dist, .1) # wealth share of bottom-10% 
+    # bot10c = percentile(c, dist, .1) # consumption share of bottom-10% 
 
 equations:
-    # Clearing and aggregation
-    ~ B = aggr_a # bond market clearing
+    # Aggregation
     ~ C = aggr_c # aggregate consumption
-    ~ C + Rbar*aggr_debt = y # goods market clearing
     ~ MPC = aggr_mpc # aggregate MPC
     ~ D = aggr_debt # household debt
     ~ DY = D/y # household debt-to-GDP
-    ~ gr_liquid = B + D # gross liquid asset holdings
+    ~ gr_liquid = B + D # gross liquid assets
     
     # Definitions
-    ~ Top10C = top10c
-    ~ Top10A = top10a
-    ~ Top1C = top1c
-    ~ Top1A = top1a
-    ~ Bot10C = bot10c
-    ~ Bot10A = bot10a
+    # ~ Top10C = top10c
+    # ~ Top10A = top10a
+    # ~ Top1C = top1c
+    # ~ Top1A = top1a
+    # ~ Bot10C = bot10c
+    # ~ Bot10A = bot10a
 
     # Firms
     ~ y_prod = z*n # production function
-    ~ psi*(pi/piSS - 1)*pi/piSS = (1-theta) + theta*w + psi*piPrime/R*(piPrime/piSS - 1)*piPrime/piSS*y_prodPrime/y_prod # NKPC
-    ~ div = (1 - psi*(pi/piSS - 1)**2/2)*y_prod - w*n # dividends
-    ~ y = (1 - psi*(pi/piSS - 1)**2/2)*y_prod # "effective" output
-    ~ piw = w/wLag # real wage inflation
+    ~ psi*(pi/pitildeLag - 1)*pi/pitildeLag = (1-theta) + theta*w + psi*beta*(piPrime/pitilde - 1)*piPrime/pitilde*y_prodPrime/y_prod # NK price Phillips curve
+    ~ div = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - w*n # dividends 
+    ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - Rbar*aggr_debt # "effective" output 
+    ~ pitilde = piSS**omega * pi**(1-omega) # price indexation
+    ~ piw = w/wLag # real wage inflation 
+    ~ mc = w/z # real marginal costs 
     
     # Fiscal authority
-    ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
-    ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
-    ~ tau = ((Rr - 1)*B)/(w*n) # balanced government budget 
+    ~ tau*w*n = (Rr-1)*B # balanced government budget 
     
     # Monetary authority
-    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # MP rule on shadow nominal rate
-    ~ R = maximum(1, Rn) # ZLB
+    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
+    ~ R = maximum(1, Rn) # ZLB on nominal interest rates
+    ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
+    ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
 
-    # Clearing conditions
-    ~ w = n**sigma_l # labour market clearing
+    # Market clearing conditions
+    ~ B = aggr_a # bond market
+    ~ C = y # goods market
+    ~ (1-tau)*w = n**sigma_l # labour market
 
     # Exogenous processes
     ~ lower_bound_a = lower_bound_aSS*(lower_bound_aLag/lower_bound_aSS)**rho_a*exp(e_a) # exogenous borrowing limit
     ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar) # exogenous borrowing wedge
 
 steady_state:
-    # Fixed steady state values
+    # Fixed values for steady state
     fixed_values:
-        # Parameters:
-        beta: 0.97 # discount factor
+        # Parameters
+        beta: 0.977 # discount factor
         sigma_c: 2. # intertemporal elasticity of substitution
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         theta: 10. # elasticity of substitution
         psi: 100. # parameter on the costs of price adjustment
+        omega: 0.33 # price inertia
         phi_pi: 1.5 # Taylor rule coefficient on inflation
         phi_y: 0.1 # Taylor rule coefficient on output
         rho: 0.8 # persistence in notional nominal interest rate
+        da: 0.025 # step size in MPC calculation
+        lower_bound_a: amin # borrowing limit
         rho_a: 0.3 # persistence of borrowing limit shock
         rho_Rbar: 0.3 # persistence of borrowing wedge shock
-        lower_bound_a: -1 # borrowing limit
-        da: 0.025 # step size in MPC calculation
-
-        # Variables
+        
+        # Variables 
+        y: 1.0 # output
         pi: 1.0 # inflation
+        pitilde: pi # price indexation
         piw: 1.0 # wage inflation
-        B: 1.5 # government bond supply
+        B: 1.55 # government bond supply
+        Rbar: 1e-8 # intermediation cost
         w: (theta-1)/theta # real wage (equal to marginal costs of the firm)
-        n: w**(1/sigma_l) # labor supply
-        div: 1 - w*n # dividends
-        Rbar: 0.01 # intermediation cost
     
     # Initial guesses for steady state
     init_guesses:
@@ -127,6 +139,5 @@ steady_state:
         Rr: R # steady state real rate on positive bond holdings 
         Rn: R # steady state notional nominal rate
         Rrminus: Rr + Rbar # steady state real rate on negative bond holdings
-        tau: ((Rr-1)*B)/(w*n) # steady state tax rate
         WaPrime: egm_init(a_grid, skills_stationary) # initialise marginal continuation value
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Author: Andreas Koundouros, University of Bonn
+Author: Andreas Koundouros
 Date: 04.05.2023
 
 This file contains custom functions for plotting results from the main file.
@@ -20,62 +20,42 @@ from grgrlib import grbar3d
 import matplotlib.cm as cm
 import plotly.graph_objects as go
 
+# Import custom functions
+from custom_functions import make_policy_df
+
 ###############################################################################
 ###############################################################################
 # Function for plotting the functions of a single policy
 def plot_single_policy(model,
                        policy,
                        policy_name,
-                       save_plots,
+                       save,
                        path,
+                       path_exact,
+                       policy_df=None,
                        borr_cutoff=None,
                        x_threshold=None):
-    # Preliminaries
-    a_grid = model['context']['a_grid'] # Get asset grid
-    policy_arr = np.array(a_grid) # Initialise container for policies
-    policy_columns = ['grid'] # Initialise name constainer
-    
-    # Loop through skill grid to get policy functions for each skill level
-    for no_states in range(model['distributions']['dist']['skills']['n']):
-        one_policy = model['steady_state']['decisions'][f'{policy}'][no_states]
-        
-        if policy_arr.size == 0:
-            policy_arr = one_policy
-        else:
-            policy_arr = np.column_stack((policy_arr, one_policy))
-            
-        policy_columns.append(f'\u03B8_{no_states}')
-    
-    # Create data frames for plotting
-    policy_df = pd.DataFrame(policy_arr, 
-                             columns = policy_columns)
-    
-    # Cutoff if borrowing limit does not coincide with lowest asset grid point
-    if borr_cutoff != None:
-        policy_df.loc[policy_df['grid'] < borr_cutoff, :] = np.nan
-    
-    # Cutoff x axis if desired
-    if x_threshold != None:
-        policy_df.loc[policy_df['grid'] > x_threshold, :] = np.nan
+    # Get policies 
+    if not isinstance(policy_df, pd.DataFrame):
+        policy_df = make_policy_df(model, policy, borr_cutoff, x_threshold)
         
     fig_policy =  px.line(policy_df, # Create plot
                           x = 'grid',
-                          y = policy_columns,
+                          y = policy_df.columns.tolist(),
                           title = '',
                           color_discrete_sequence=px.colors.qualitative.G10[:policy_df.shape[1]]) 
-    fig_policy.update_layout(xaxis_title='Bonds Holdings Today', 
-                             yaxis_title=f'{policy_name}',
-                             plot_bgcolor = 'whitesmoke', 
-                             margin=dict(l=15, r=15, t=5, b=5),
-                             font=dict(family="Times New Roman",
-                                       size=20,
-                                       color="black"),
-                             margin=dict(l=15, r=15, t=50, b=5), 
-                             legend_title='')
+    fig_policy.update_layout(xaxis_title='Bond Holdings Today', 
+                              yaxis_title=f'{policy_name}',
+                              plot_bgcolor = 'whitesmoke', 
+                              font=dict(family="Times New Roman",
+                                        size=20,
+                                        color="black"),
+                              margin=dict(l=15, r=15, t=50, b=5), 
+                              legend_title='')  
     fig_policy.show()
     
-    if save_plots == True:
-        path_plot = os.path.join(path, f'stst_policies_{policy}.svg')
+    if save == True:
+        path_plot = os.path.join(path, f'stst_policies_{policy}_{path_exact}.svg')
         fig_policy.write_image(path_plot)
     
 
@@ -86,6 +66,7 @@ def plot_selected_policies(list_of_policies,
                             model,
                             save_plots,
                             path,
+                            path_exact,
                             borr_cutoff=None,
                             x_threshold=None):
     # Loop through list of selected policies
@@ -95,7 +76,7 @@ def plot_selected_policies(list_of_policies,
             policy_name = sublist[1] # extract policy name
             
             plot_single_policy(model, policy, policy_name, 
-                               save_plots, path, 
+                               save_plots, path, path_exact,
                                borr_cutoff, x_threshold)
             
         else: 
@@ -288,6 +269,8 @@ def plot_single_transition(model,
                            variable, 
                            var_name, 
                            horizon, 
+                           save_plots, 
+                           path,
                            percent=100):   
     time = list(range(0, horizon, 1)) # Time vector
     
@@ -297,10 +280,10 @@ def plot_single_transition(model,
     stst = x_trans[-1, var_index] # Find steady state (by definition, last
     # value in transition is the steady state value)
     
-    if variable[0] in ['R', 'Rn', 'Rr']:
+    if variable[0] in ['R', 'Rn', 'Rr', 'Rminus']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                (x_trans[:horizon,var_index] - stst)])
-    elif variable[0] in ['D_o_Y', 'lower_bound_a']:
+    elif variable[0] in ['D', 'DY', 'lower_bound_a']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                x_trans[:horizon,var_index]])
     else:
@@ -329,11 +312,17 @@ def plot_single_transition(model,
     fig.update_traces(line=dict(width=3))
     fig.show() # Show plot
     
+    if save_plots == True:
+        path_plot = os.path.join(path, f'transition_{variable[0]}.svg')
+        fig.write_image(path_plot)
+    
 def plot_double_transition(model, 
                            x_trans, 
                            variables, 
                            var_names, 
                            horizon, 
+                           save_plots, 
+                           path,
                            percent=100):
     time = list(range(0, horizon, 1)) # Time vector
     
@@ -342,22 +331,25 @@ def plot_double_transition(model,
     stst = x_trans[-1, var_indices] # Find steady state (by definition, last
     # value in transition is the steady state value)
     
-    if variables[0] in ['R', 'Rn', 'Rr'] and variables[1] in ['R', 'Rn', 'Rr']:
+    if variables[0] in ['R', 'Rn', 'Rr', 'Rminus'] and variables[1] in ['R', 'Rn', 'Rr', 'Rminus']:
         x_double_transition = np.column_stack([time, # Concatenate IRFs and time vector
-                                               percent*(x_trans[:horizon,var_indices] - stst)])
+                                               percent*(x_trans[:horizon,var_indices] - 1.0)])
+        
     x_double_transition_df = pd.DataFrame(x_double_transition, # Turn into data frame
                                           columns = ['Quarters', f'{var_names[0]}', f'{var_names[1]}'])
+    
     fig = px.line(x_double_transition_df, # make plot
                   x = 'Quarters',
                   y = [f'{var_names[0]}', f'{var_names[1]}'],
                   color_discrete_map={f'{var_names[0]}': px.colors.qualitative.G10[0],
-                                      f'{var_names[1]}': px.colors.qualitative.G10[1]})
+                                      f'{var_names[1]}': px.colors.qualitative.G10[1]}).update_traces(selector={"name": f'{var_names[1]}'}, 
+                                                                                                      line={"dash": "dash"})
     fig.update_layout(title='', # empty title
                        xaxis_title='Quarters', # x-axis labeling
                        yaxis_title='', # y-axis labeling
                        legend=dict(orientation="h", # horizontal legend
-                                   yanchor="bottom", y=1.02, 
-                                   xanchor="right", x=1), 
+                                   yanchor="top", y=0.99, 
+                                   xanchor="right", x=0.99), 
                        legend_title=None, 
                        plot_bgcolor='whitesmoke', 
                        margin=dict(l=15, r=15, t=5, b=5),
@@ -367,6 +359,11 @@ def plot_double_transition(model,
     fig.update_traces(line=dict(width=3))
     fig.show() # Show plot
     
+    if save_plots == True:
+        path_plot = os.path.join(path, 
+                                 f'transition_{variables[0]}_{variables[1]}.svg')
+        fig.write_image(path_plot)
+    
 ###############################################################################
 ###############################################################################
 # Function for plotting the transition of a list of selected variables
@@ -374,11 +371,13 @@ def plot_selected_transition(list_of_variables,
                              model, 
                              x_trans, 
                              horizon, 
+                             save_results, 
+                             full_path_results,
                              percent=100):
     # Loop through list of selected variables
     for sublist in list_of_variables:
         if 'R' in sublist:
-            percent=400
+            percent=100
         
         if len(sublist) == 2:
             variable = sublist[0] # extract variable
@@ -387,7 +386,10 @@ def plot_selected_transition(list_of_variables,
             plot_single_transition(model, x_trans, # plot single transition of a 
                                    # given variable from the list
                                    variable, variable_name, 
-                                   horizon, percent)
+                                   horizon, 
+                                   save_results, 
+                                   full_path_results,
+                                   percent)
         elif len(sublist) == 4:
             variables = [sublist[0], sublist[2]] # extract variable
             variable_names = [sublist[1], sublist[3]] # extract variable name
@@ -395,6 +397,9 @@ def plot_selected_transition(list_of_variables,
             plot_double_transition(model, x_trans, # plot double transition of a 
                                    # given variable from the list
                                    variables, variable_names, 
-                                   horizon, percent)
+                                   horizon, 
+                                   save_results, 
+                                   full_path_results,
+                                   percent)
         else: 
             print('Error with the dimensions of the variable list.')
