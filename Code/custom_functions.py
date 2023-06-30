@@ -18,79 +18,85 @@ import econpizza as ep
 
 ###############################################################################
 ###############################################################################
-# Custom functions
+def get_model(full_path_code, baseline):
+    """Paths to models.
+    
+    This function returns, for the given path where the models are and the 
+    type of model chosen the full path to the model and the model type. The 
+    latter is useful for creating paths to the results.
+    
+    
+    Parameters:
+    ----------
+    full_path_code          : full path to the codes
+    baseline                : True if baseline HANK w/o endogenous labour 
+                              supply is chosen and False if the HANK w/ 
+                              endogenous labour supply is chosen
+    
+    
+    Returns:
+    ----------
+    full_path_hank          : full path to the model dictionary
+    model_type              : string indicating whether the model is the 
+                              baseline model or the one w/ endogenous labour
+                              supply
+    """
+    # Baseline model
+    if baseline == True:
+        full_path_hank = os.path.join(full_path_code, 'hank_baseline.yml')
+        model_type = 'Baseline'
+    
+    # Model with endogenous labour supply
+    elif baseline == False:
+        full_path_hank = os.path.join(full_path_code, 'hank_end_labour.yml')
+        model_type = 'End_labour'
+        
+    # Return path to model and model type
+    return full_path_hank, model_type
 
 ###############################################################################
-# Function to create path for results depending on the model and the shock
-def path_results(full_path_hank, 
-                full_path_code,
-                shock_limit):
-    os.chdir('..') 
-    full_path_ms = os.getcwd()
-    if full_path_hank.endswith('hank_without_end_labour.yml'):
-        if shock_limit == True:
-            relative_path_results = os.path.join('Results', 
-                                                 'Baseline',
-                                                 'Shock_Limit')
-        elif shock_limit == False:
-            relative_path_results = os.path.join('Results', 
-                                                 'Baseline',
-                                                 'Shock_Wedge')
-    
-    elif full_path_hank.endswith('hank_with_end_labour.yml'):
-        if shock_limit == True:
-            relative_path_results = os.path.join('Results', 
-                                                 'Endogenous_L',
-                                                 'Shock_Limit')
-        elif shock_limit == False:
-            relative_path_results = os.path.join('Results', 
-                                                 'Endogenous_L',
-                                                 'Shock_Wedge')
-    
-    full_path_results = os.path.join(full_path_ms, relative_path_results)
-    os.chdir(full_path_code)
-    
-    # Return path for results
-    return full_path_results
-
+###############################################################################
+# Function to create path to results depending on the model and on the shock
 def path_to_results(full_path_code,
+                    model_type,
                     shock_to_borrowing_constraint,
                     shock_permanent):
     os.chdir('..') 
     full_path_ms = os.getcwd()
     
+    # Differentiate according to chosen model and shock
     if shock_to_borrowing_constraint == True:
         if shock_permanent == True:
             relative_path_results = os.path.join('Results', 
-                                                 'Baseline',
+                                                 model_type,
                                                  'Shock_Limit',
                                                  'Permanent')
         elif shock_permanent == False:
             relative_path_results = os.path.join('Results', 
-                                                 'Baseline',
+                                                 model_type,
                                                  'Shock_Limit',
                                                  'Transitory')
             
     if shock_to_borrowing_constraint == False:
         if shock_permanent == True:
             relative_path_results = os.path.join('Results', 
-                                                 'Baseline',
+                                                 model_type,
                                                  'Shock_Wedge',
                                                  'Permanent')
         elif shock_permanent == False:
             relative_path_results = os.path.join('Results', 
-                                                 'Baseline',
+                                                 model_type,
                                                  'Shock_Wedge',
                                                  'Transitory')
 
     full_path_results = os.path.join(full_path_ms, relative_path_results)
-    os.chdir(full_path_code)
+    os.chdir(full_path_code) # Reset the working directory correctly 
     
-    # Return path for results
+    # Return path to results
     return full_path_results
 
-
-
+###############################################################################
+###############################################################################
 def return_models_permanent(full_path_hank, 
                             shock_to_borrowing_constraint, 
                             persistence_borrowing_limit=None,
@@ -99,125 +105,133 @@ def return_models_permanent(full_path_hank,
                             persistence_borrowing_wedge=None,
                             initial_wedge=None,
                             terminal_wedge=None):
+    """Models with Permanent Shocks.
+    
+    This function returns two models, one with the initial conditions and one
+    with the final conditions, depending on the shock chosen (shock to the 
+    borrowing limit or to the interest rate wedge) and depending on parameters.
+    
+    Parameters:
+    ----------
+    full_path_hank          : full path to the model dictionary
+    
+    
+    Returns:
+    ----------
+    hank_model_initial      : initial model
+    hank_model_terminal     : terminal model
+    """
     # Get model as dictionary
     hank_dict = ep.parse(full_path_hank)
     
-    if shock_to_borrowing_constraint == True and initial_borrowing_limit != None and terminal_borrowing_limit != None:
-        # Create model with initial borrowing limit
-        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
+    if shock_to_borrowing_constraint == True:
+        # Settings for interest rate wedge
+        hank_dict['steady_state']['fixed_values']['rho_Rbar'] = persistence_borrowing_wedge
+        hank_dict['steady_state']['fixed_values']['Rbar'] = initial_wedge
         
-        hank_dict['steady_state']['fixed_values']['lower_bound_a'] = initial_borrowing_limit
+        # Set persistence of shock to the borrowing limit
+        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
+        
+        # Create model with initial borrowing limit
+        hank_dict['steady_state']['fixed_values']['borr_limit'] = initial_borrowing_limit
         hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {initial_borrowing_limit}')
         hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {terminal_borrowing_limit}')
-
-        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
-
-        hank_model_initial = ep.load(hank_dict) # Load initial model
+        
+        # Load initial model
+        hank_model_initial = ep.load(hank_dict)
 
         # Create model with terminal borrowing limit
-        hank_dict['steady_state']['fixed_values']['lower_bound_a'] = terminal_borrowing_limit
-        hank_model_terminal = ep.load(hank_dict) # Load terminal model
+        hank_dict['steady_state']['fixed_values']['borr_limit'] = terminal_borrowing_limit
+        
+        ############
+        ############ If desired, set new bond supply in terminal steady state
+        #hank_dict['steady_state']['fixed_values']['B'] = 1.65
+        
+        # Load terminal model
+        hank_model_terminal = ep.load(hank_dict)
     
-    elif shock_to_borrowing_constraint == False and initial_wedge != None and terminal_wedge != None:
-        # Create model with initial borrowing wedge
+    elif shock_to_borrowing_constraint == False:
+        # Settings for borrowing limit
+        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
+        hank_dict['steady_state']['fixed_values']['borr_limit'] = initial_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {initial_borrowing_limit}')
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {terminal_borrowing_limit}')
+        
+        # Set persistence of shock to the interest rate wedge
         hank_dict['steady_state']['fixed_values']['rho_Rbar'] = persistence_borrowing_wedge
         
+        # Create model with initial borrowing wedge
         hank_dict['steady_state']['fixed_values']['Rbar'] = initial_wedge
-        hank_model_initial = ep.load(hank_dict) # Load initial model
+        
+        # Load initial model
+        hank_model_initial = ep.load(hank_dict)
 
         # Create model with terminal borrowing wedge
         hank_dict['steady_state']['fixed_values']['Rbar'] = terminal_wedge
-        hank_model_terminal = ep.load(hank_dict) # Load terminal model
         
+        # Load terminal model
+        hank_model_terminal = ep.load(hank_dict)
+        
+    # Return initial and terminal models
     return hank_model_initial, hank_model_terminal
 
-
-
-
-
-def return_models_transitory(full_path_hank,
+###############################################################################
+###############################################################################
+def return_models_transitory(full_path_hank, 
                              shock_to_borrowing_constraint, 
                              persistence_borrowing_limit=None,
                              stst_borrowing_limit=None,
+                             terminal_borrowing_limit=None,
                              persistence_borrowing_wedge=None,
-                             stst_borrowing_wedge=None):
+                             stst_wedge=None):
     # Get model as dictionary
     hank_dict = ep.parse(full_path_hank)
     
-    if shock_to_borrowing_constraint == True and stst_borrowing_limit != None:
-        # Create model
-        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
-        
-        hank_dict['steady_state']['fixed_values']['lower_bound_a'] = stst_borrowing_limit
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {stst_borrowing_limit}')
-        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
-
-        hank_model = ep.load(hank_dict) # Load initial model
-        
-    elif shock_to_borrowing_constraint == False and stst_borrowing_wedge != None:
-        # Create model
+    if shock_to_borrowing_constraint == True:
+        # Settings for interest rate wedge
         hank_dict['steady_state']['fixed_values']['rho_Rbar'] = persistence_borrowing_wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = stst_borrowing_wedge
-        hank_model = ep.load(hank_dict) # Load initial model
+        hank_dict['steady_state']['fixed_values']['Rbar'] = stst_wedge
+        
+        # Set persistence of shock to the borrowing limit
+        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
+        
+        # Create model with initial borrowing limit
+        hank_dict['steady_state']['fixed_values']['borr_limit'] = stst_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {stst_borrowing_limit}')
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {terminal_borrowing_limit}')
+        
+        # Load model
+        hank_model = ep.load(hank_dict)
+        
+    elif shock_to_borrowing_constraint == False:
+        # Settings for borrowing limit
+        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
+        hank_dict['steady_state']['fixed_values']['borr_limit'] = stst_borrowing_limit
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {stst_borrowing_limit}')
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {terminal_borrowing_limit}')
+        
+        # Set persistence of shock to the interest rate wedge
+        hank_dict['steady_state']['fixed_values']['rho_Rbar'] = persistence_borrowing_wedge
+        
+        # Create model with initial borrowing wedge
+        hank_dict['steady_state']['fixed_values']['Rbar'] = stst_wedge
+        
+        # Load initial model
+        hank_model = ep.load(hank_dict)
     
+    # Return the model
     return hank_model
 
-
-
 ###############################################################################
-# Function to make models
-def make_models(full_path_hank, shock_limit):
-    if shock_limit == True:
-        if full_path_hank.endswith('hank_without_end_labour.yml'):
-            initial_borrowing_limit = -1.2 # initial borrowing limit
-            terminal_borrowing_limit = -0.94 # terminal borrowing limit
-        elif full_path_hank.endswith('hank_with_end_labour.yml'):
-            initial_borrowing_limit = -1 # initial borrowing limit
-            terminal_borrowing_limit = -0.7 # terminal borrowing limit
-        
-        # Fix persistence in the shock to the borrowing limit
-        persistence_borrowing_limit = 0.3
-        
-        # Get model as dictionary
-        hank_dict = ep.parse(full_path_hank)
-
-        # Create model with initial borrowing limit
-        hank_dict['steady_state']['fixed_values']['lower_bound_a'] = initial_borrowing_limit
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {initial_borrowing_limit}')
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {terminal_borrowing_limit}')
-
-        hank_dict['steady_state']['fixed_values']['rho_a'] = persistence_borrowing_limit
-        hank_dict['definitions'] = hank_dict['definitions'].replace('rho_a = 0.3', f'rho_a = {persistence_borrowing_limit}')
-
-        hank_model_initial = ep.load(hank_dict) # Load initial model
-
-        # Create model with terminal borrowing limit
-        hank_dict['steady_state']['fixed_values']['lower_bound_a'] = terminal_borrowing_limit
-        hank_model_terminal = ep.load(hank_dict) # Load terminal model
-        
-    elif shock_limit == False:
-        # Get model as dictionary
-        hank_dict = ep.parse(full_path_hank)
-
-        # Create model with initial borrowing wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = 1e-8
-        hank_model_initial = ep.load(hank_dict) # Load initial model
-
-        # Create model with terminal borrowing wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = 0.01
-        hank_model_terminal = ep.load(hank_dict) # Load terminal model
-        
-        terminal_borrowing_limit = -1.1
-    
-    return (hank_model_initial, 
-            hank_model_terminal, terminal_borrowing_limit)
-
 ###############################################################################
 # Function to find the closest on-grid asset grid point for a given off-grid 
 # value
 def find_closest_grid_point(ar_borrowing_limit, 
                             asset_grid):
-    import jax.numpy as jnp
     array_distances = jnp.abs(asset_grid - ar_borrowing_limit)
     
     indx_min_distance = jnp.argmin(array_distances)
@@ -226,6 +240,7 @@ def find_closest_grid_point(ar_borrowing_limit,
     
     return closest_grid_point, indx_min_distance
 
+###############################################################################
 ###############################################################################
 # Function to get policies as data frane
 def make_policy_df(model,
@@ -238,7 +253,7 @@ def make_policy_df(model,
     policy_columns = ['grid'] # Initialise name constainer
     
     # Loop through skill grid to get policy functions for each skill level
-    for no_states in range(model['distributions']['dist']['skills']['n']):
+    for no_states in range(model['distributions']['dist']['skills']['n']): # Note: here, n refers to the number of skill grid points
         one_policy = model['steady_state']['decisions'][f'{policy}'][no_states]
         
         if policy_arr.size == 0:
@@ -264,98 +279,155 @@ def make_policy_df(model,
 
 ###############################################################################
 # Function to compare initial and terminal steady state
-def make_stst_comparison(hank_model_init, # model with initial borrowing limit
-                         hank_model_term, # model with terminal borrowing limit
-                         save_tables, # if table is supposed to be saved
-                         path, # path to save table
-                         percent=100):
-    round_func_4 = lambda x: round(float(x), 4) # Rounding functions
+def stst_overview(models,
+                  save_results, 
+                  full_path_results,
+                  percent=100):
+    """Steady state overview.
     
-    hank_stst_df = pd.DataFrame(hank_model_init['stst'].items(), 
-                                columns = ['Variable', 'Initial'])
-    hank_stst_df['Initial'] = hank_stst_df['Initial'].apply(round_func_4)
+    This function creates a data frame which holds the steady state values of
+    the one or two models passed to the function.
     
-    hank_stst_df_terminal = pd.DataFrame(hank_model_term['stst'].items(),
-                                         columns = ['Variable', 'Terminal'])
-    hank_stst_df_terminal['Terminal'] = hank_stst_df_terminal['Terminal'].apply(round_func_4)
+    If one model is passed, the function creates a table with the steady state 
+    values.
     
-    # Merge steady states into one data frame
-    full_stst_analysis = pd.merge(hank_stst_df, hank_stst_df_terminal, 
-                                  on = 'Variable', how = 'left')
+    If two models are passed, the function creates a table with both steady 
+    states side-by-side and adds a column which calculates the difference 
+    between the two steady states. It can also distinguish (manually) between 
+    variables for which it needs to take the change in absolute terms or in 
+    percentage terms.
+    """
+    # Create a rounding function for convenience
+    round_func_4 = lambda x: round(float(x), 4)
+        
+    # Distinguish between the case of one model...:
+    if len(models) == 1:
+        model = models[0]
+        stst_df = pd.DataFrame(model['stst'].items(), 
+                                    columns = ['Variable', 'Steady State'])
+        stst_df['Steady State'] = stst_df['Steady State'].apply(round_func_4)
+        
+        # Add some more features of the steady states
+        a_grid = model['context']['a_grid']
+        
+        # Distributions
+        distribution_skills_and_assets = model['steady_state']['distributions'][0]
+        distribution_assets = 100*jnp.sum(distribution_skills_and_assets, 
+                                          axis = 0)
+        
+        # Add fraction of indebted households
+        row_share_indebted = {'Variable': 'Frac. of Borrowers',
+                              'Steady State': jnp.sum(jnp.where(a_grid < 0, 
+                                                                        distribution_assets, 
+                                                                        0)).round(2).item()}
+        row_share_indebted_df = pd.DataFrame([row_share_indebted])
+        stst_df = pd.concat([stst_df, row_share_indebted_df], 
+                                 ignore_index=True)
+        
+        # Add fraction of households at borrowing limit    
+        row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
+                           'Steady State': distribution_assets[0].round(2).item()}
+        row_share_limit_df = pd.DataFrame([row_share_limit])
+        stst_df = pd.concat([stst_df, row_share_limit_df], 
+                                       ignore_index=True)
+        
+        # Add fraction of households at 0 assets 
+        row_share_zero = {'Variable': 'Frac. at Zero Assets',
+                          'Steady State': jnp.sum(jnp.where(a_grid == 0, 
+                                                            distribution_assets, 
+                                                            0)).round(2).item()}
+        row_share_zero_df = pd.DataFrame([row_share_zero])
+        stst_df = pd.concat([stst_df, row_share_zero_df], 
+                                       ignore_index=True)
     
-    # Add some more features of the steady states
-    a_grid_init = hank_model_init['context']['a_grid']
-    
-    # Initial steady state 
-    distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
-    distribution_assets_initial = 100*jnp.sum(distribution_skills_and_assets_initial, 
-                                      axis = 0)
-    
-    # Terminal steady state 
-    distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
-    distribution_assets_terminal = 100*jnp.sum(distribution_skills_and_assets_terminal, 
-                                      axis = 0)
-    
-    # Add fraction of indebted households
-    row_share_indebted = {'Variable': 'Frac. of Borrowers',
-                          'Initial': jnp.sum(jnp.where(a_grid_init < 0, 
+    # ...and two models:
+    elif len(models) == 2:
+        hank_model_init = models[0]
+        hank_model_term = models[1]
+        
+        stst_df = pd.DataFrame(hank_model_init['stst'].items(), 
+                                    columns = ['Variable', 'Initial'])
+        stst_df['Initial'] = stst_df['Initial'].apply(round_func_4)
+        
+        term_stst_df = pd.DataFrame(hank_model_term['stst'].items(),
+                                             columns = ['Variable', 'Terminal'])
+        term_stst_df['Terminal'] = term_stst_df['Terminal'].apply(round_func_4)
+        
+        # Merge steady states into one data frame
+        stst_df = pd.merge(stst_df, term_stst_df, 
+                           on = 'Variable', how = 'left')
+        
+        # Add some more features of the steady states
+        a_grid_init = hank_model_init['context']['a_grid']
+        
+        # Initial steady state 
+        distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
+        distribution_assets_initial = percent*jnp.sum(distribution_skills_and_assets_initial, 
+                                          axis = 0)
+        
+        # Terminal steady state 
+        distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
+        distribution_assets_terminal = percent*jnp.sum(distribution_skills_and_assets_terminal, 
+                                          axis = 0)
+        
+        # Add fraction of indebted households
+        row_share_indebted = {'Variable': 'Frac. of Borrowers',
+                              'Initial': jnp.sum(jnp.where(a_grid_init < 0, 
+                                                                        distribution_assets_initial, 
+                                                                        0)).round(2).item(),
+                              'Terminal': jnp.sum(jnp.where(a_grid_init < 0, 
+                                                                        distribution_assets_terminal, 
+                                                                        0)).round(2).item()}
+        row_share_indebted_df = pd.DataFrame([row_share_indebted])
+        stst_df = pd.concat([stst_df, row_share_indebted_df], 
+                                       ignore_index=True)
+        
+        # Add fraction of households at borrowing limit    
+        row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
+                           'Initial': distribution_assets_initial[0].round(2).item(),
+                           'Terminal': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
+        row_share_limit_df = pd.DataFrame([row_share_limit])
+        stst_df = pd.concat([stst_df, row_share_limit_df], 
+                                       ignore_index=True)
+        
+        # Add fraction of households at 0 assets 
+        row_share_zero = {'Variable': 'Frac. at Zero Assets',
+                          'Initial': jnp.sum(jnp.where(a_grid_init == 0, 
                                                                     distribution_assets_initial, 
                                                                     0)).round(2).item(),
-                          'Terminal': jnp.sum(jnp.where(a_grid_init < 0, 
-                                                                    distribution_assets_terminal, 
-                                                                    0)).round(2).item()}
-    row_share_indebted_df = pd.DataFrame([row_share_indebted])
-    full_stst_analysis = pd.concat([full_stst_analysis, row_share_indebted_df], 
-                                   ignore_index=True)
-    
-    # Add fraction of households at borrowing limit    
-    row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
-                       'Initial': distribution_assets_initial[0].round(2).item(),
-                       'Terminal': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
-    row_share_limit_df = pd.DataFrame([row_share_limit])
-    full_stst_analysis = pd.concat([full_stst_analysis, row_share_limit_df], 
-                                   ignore_index=True)
-    
-    # Add fraction of households at 0 assets 
-    row_share_zero = {'Variable': 'Frac. at Zero Assets',
-                      'Initial': jnp.sum(jnp.where(a_grid_init == 0, 
-                                                                distribution_assets_initial, 
-                                                                0)).round(2).item(),
-                      'Terminal': jnp.sum(jnp.where(a_grid_init == 0, 
-                                                                 distribution_assets_terminal, 
-                                                                 0)).round(2).item()}
-    row_share_zero_df = pd.DataFrame([row_share_zero])
-    full_stst_analysis = pd.concat([full_stst_analysis, row_share_zero_df], 
-                                   ignore_index=True)
-    
-    # Add column which calculates changes in percent between the steady states
-    full_stst_analysis['Change'] = 0
+                          'Terminal': jnp.sum(jnp.where(a_grid_init == 0, 
+                                                                     distribution_assets_terminal, 
+                                                                     0)).round(2).item()}
+        row_share_zero_df = pd.DataFrame([row_share_zero])
+        stst_df = pd.concat([stst_df, row_share_zero_df], 
+                                       ignore_index=True)
+        
+        # Add column which calculates changes in percent between the steady states
+        stst_df['Change'] = 0
 
-    # Calculate changes based on variable type
-    for index, row in full_stst_analysis.iterrows():
-        try:
-            if row['Variable'] in ['D', 'DY', 'gr_liquid', 'lower_bound_a', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rminus', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets']:
-                # Absolute change for specific variables
-                full_stst_analysis.at[index, 'Change'] = row['Terminal'] - row['Initial']
-            else:
-                # Percentage change for other variables
-                full_stst_analysis.at[index, 'Change'] = percent * ((row['Terminal'] - row['Initial']) / row['Initial'])
-        # In case of division by zero, insert NaN
-        except ZeroDivisionError:
-            full_stst_analysis.at[index, 'Change'] = np.nan
+        # Calculate changes based on variable type
+        for index, row in stst_df.iterrows():
+            try:
+                if row['Variable'] in ['tau', 'D', 'DY', 'gr_liquid', 'borr_limit', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rminus', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets']:
+                    # Absolute change for specific variables
+                    stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
+                else:
+                    # Percentage change for other variables
+                    stst_df.at[index, 'Change'] = percent * ((row['Terminal'] - row['Initial']) / row['Initial'])
+            # In case of division by zero, insert NaN
+            except ZeroDivisionError:
+                stst_df.at[index, 'Change'] = np.nan
 
-    # Round changes
-    full_stst_analysis['Change'] = full_stst_analysis['Change'].apply(round_func_4)
+        # Round changes
+        stst_df['Change'] = stst_df['Change'].apply(round_func_4)
     
-    # Save table for LaTeX
-    if save_tables == True and 'n' in hank_model_init['steady_state']['decisions'].keys():
-        stst_table_path = os.path.join(path, 'stst_comparison_labour.tex')
-        full_stst_analysis.to_latex(stst_table_path, 
-                                    label = 'tab:stst_labour', index = False)
-    elif save_tables == True and 'n' not in hank_model_init['steady_state']['decisions'].keys():
-        stst_table_path = os.path.join(path, 'stst_comparison.tex')
-        full_stst_analysis.to_latex(stst_table_path, 
-                                    label = 'tab:stst', index = False)
+    # Save table in TeX
+    if save_results == True:
+        stst_table_path = os.path.join(full_path_results, 
+                                       'stst_comparison.tex')
+        stst_df.to_latex(stst_table_path, 
+                              label = 'tab:stst', index = False)
     
     # Return resulting data frame
-    return full_stst_analysis
+    return stst_df
+    
