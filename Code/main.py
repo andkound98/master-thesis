@@ -76,7 +76,7 @@ full_path_hank, model_type = get_model(full_path_code, baseline)
 
 # Set 'shock_to_borrowing_constraint' to True for a shock to the borrowing 
 # constraint and to False for a shock to the interest rate wedge
-shock_to_borrowing_constraint = False 
+shock_to_borrowing_constraint = True 
 
 # Set 'shock_permanent' to True for a permanent shock and to False for a 
 # transitory shock
@@ -212,7 +212,8 @@ variables_to_plot = [['C', 'Consumption'],
                      ['borr_limit', 'Borrowing Limit'],
                      ['Rbar', 'Interest Rate Wedge'],
                      ['Rrminus', 'Interest Rate on Neg. Assets'],
-                     ['R', 'Nominal Interest Rate', 'Rn', 'Notional Interest Rate'], 
+                     ['R', 'Nominal Interest Rate', 
+                      'Rn', 'Notional Interest Rate'], 
                      ['Rr', 'Ex-Post Real Interest Rate'], 
                      ['div', 'Dividends'],
                      ['tau', 'Taxes'],

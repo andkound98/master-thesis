@@ -41,15 +41,24 @@ def get_model(full_path_code, baseline):
                               baseline model or the one w/ endogenous labour
                               supply
     """
+    os.chdir('..') 
+    full_path_ms = os.getcwd()
+    
     # Baseline model
     if baseline == True:
-        full_path_hank = os.path.join(full_path_code, 'hank_baseline.yml')
+        full_path_hank = os.path.join(full_path_ms, 
+                                      'Models', 
+                                      'hank_baseline.yml')
         model_type = 'Baseline'
     
     # Model with endogenous labour supply
     elif baseline == False:
-        full_path_hank = os.path.join(full_path_code, 'hank_end_labour.yml')
+        full_path_hank = os.path.join(full_path_ms, 
+                                      'Models', 
+                                      'hank_end_labour.yml')
         model_type = 'End_labour'
+        
+    os.chdir(full_path_code) # Reset the working directory correctly 
         
     # Return path to model and model type
     return full_path_hank, model_type
