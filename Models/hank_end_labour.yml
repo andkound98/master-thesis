@@ -1,0 +1,172 @@
+# Author: Andreas Koundouros [koundouros.andreas@gmail.com]
+---
+name: 'hank_end_labour'
+description: 'One-Asset HANK model with Endogenous Labour Supply and with Shocks to the Borrowing Constraint and the Interest Rate Wedge'
+functions_file: 'hank_functions.py'
+
+###############################################################################
+###############################################################################
+# DEFINITIONS BLOCK
+
+definitions: |
+    from jax.numpy import log, maximum
+    from econpizza.tools import percentile, jax_print
+    
+    amax = 70
+    an = 70
+    amin = 0
+    rho_a = 0.3
+    amin_terminal = 0
+    a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
+    
+variables: [ div, mc, y, y_prod, w, pi, pitilde, piw, R, Rn, Rr, Rrminus, Rbar, tau, C, N, B, D, DY, gr_liquid, borr_limit, MPC ] # Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C,
+parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_r, chi, rho_a, rho_Rbar, db, omega ]
+shocks: [ e_a, e_Rbar ]
+
+###############################################################################
+###############################################################################
+# HOUSEHOLD BLOCK
+
+distributions:
+  dist:
+    skills:
+      type: exogenous_rouwenhorst
+      rho: 0.95
+      sigma: 0.5
+      n: 8
+    a: 
+      type: endogenous_generic
+      n: a_grid_n
+
+# Decision problem of households
+decisions:
+  # EGM step
+  inputs: [VaPrime]
+  calls: |
+    trans = transfers(skills_stationary, div, tau, skills_grid)
+    we = wages(w, skills_grid) # effective wage
+    VaPrimeExp = skills_transition @ VaPrime
+    Va, a, c, n, mpc = egm_step_labour(VaPrimeExp, a_grid, we, trans, Rr, Rrminus, beta, sigma_c, sigma_l, chi, db, borr_limit)
+    n = labor_supply(n, skills_grid) # effective labour supply
+  outputs: [a,c,n,mpc]
+
+###############################################################################
+###############################################################################
+# AGGREGATE BLOCK
+
+aux_equations: |
+    # Aggregation
+    aggr_a = jnp.sum(dist*a, axis=(0,1)) # asset holdings
+    aggr_c = jnp.sum(dist*c, axis=(0,1)) # consumption 
+    aggr_n = jnp.sum(dist*n, axis=(0,1)) # labour hours
+    aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # MPC
+    aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
+    
+    # Shares
+    # top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
+    # top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
+    # top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
+    # top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    # top25a = 1 - percentile(a, dist, .75) # wealth share of top-10% 
+    # top25c = 1 - percentile(c, dist, .75) # consumption share of top-10% 
+    # bot25a = percentile(a, dist, .25) # wealth share of bottom-25% 
+    # bot25c = percentile(c, dist, .25) # consumption share of bottom-25% 
+    
+equations:
+    # Aggregation
+    ~ C = aggr_c # aggregate consumption
+    ~ MPC = aggr_mpc # aggregate MPC
+    ~ D = aggr_debt # household debt
+    ~ DY = D/y # household debt-to-GDP
+    ~ gr_liquid = B + D # gross liquid assets
+    
+    # Definitions
+    # ~ Top1C = top1c
+    # ~ Top1A = top1a
+    # ~ Top10C = top10c
+    # ~ Top10A = top10a
+    # ~ Top25C = top25c
+    # ~ Top25A = top25a
+    # ~ Bot25C = bot25c
+    # ~ Bot25A = bot25a
+
+    # Firms
+    ~ y_prod = z*N # production
+    ~ div = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - w*N # firm dividends
+    ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - Rbar*aggr_debt # output (i.e. GDP)
+    ~ psi*(pi/pitildeLag - 1)*pi/pitildeLag = (1-theta) + theta*mc + psi*piPrime/R*(piPrime/pitilde - 1)*piPrime/pitilde*y_prodPrime/y_prod # NKPC
+    ~ pitilde = piSS**omega * pi**(1-omega) # price indexation
+    ~ piw = w/wLag # real wage inflation
+    ~ mc = w/z # marginal costs
+
+    # Fiscal authority
+    ~ tau = (Rr-1)*B # balanced government budget 
+    
+    # Monetary authority
+    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
+    ~ R = maximum(1, Rn) # ZLB on nominal interest rates
+    ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
+    ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
+    
+    # Market clearing conditions
+    ~ B = aggr_a # bond market
+    ~ C = y # goods market
+    ~ N = aggr_n # labour market
+
+    # Exogenous processes
+    ~ borr_limit = borr_limitSS*(borr_limitLag/borr_limitSS)**rho_a*exp(e_a) # borrowing limit
+    ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar) # interest rate wedge
+
+###############################################################################
+###############################################################################
+# STEADY STATE BLOCK
+
+steady_state:
+    # Calibrated values
+    fixed_values:
+        # Parameters
+        
+        # Households 
+        beta: 0.9766 # discount factor
+        sigma_c: 2. # intertemporal elasticity of substitution
+        sigma_l: 2. # inverse Frisch elasticity of labour supply
+        chi: 10. # utility weight on disutility of labor
+        db: 0.025 # step size in MPC calculation
+        
+        # Firms
+        z: 1.0 # technology
+        theta: 10. # elasticity of substitution
+        psi: 100. # parameter on the costs of price adjustment
+        omega: 0.33 # price inertia
+        
+        # Policy
+        rho: 0.8 # persistence in notional nominal interest rate
+        phi_pi: 1.5 # Taylor rule coefficient on inflation
+        phi_y: 0.1 # Taylor rule coefficient on output
+        
+        # Exogenous processes
+        borr_limit: amin # borrowing limit
+        rho_a: 0.3 # persistence of borrowing limit shock
+        Rbar: 1e-8 # intermediation cost
+        rho_Rbar: 0.3 # persistence of interest rate wedge shock
+
+        # Variables
+        pi: 1.0 # inflation
+        pitilde: 1.0
+        piw: 1.0 # wage inflation
+        B: 1. # bond supply
+        mc: (theta-1)/theta # marginal costs
+        w: mc*z # wage
+
+    # Initial guesses
+    init_guesses:
+        N: 1.0 # aggregate labour supply
+        div: 1 - w*N # dividends
+        R: 1.005 # steady state nominal rate
+        Rr: R # steady state real rate
+        Rn: R # steady state notional nominal rate
+        Rrminus: Rr + Rbar
+        tau: (Rr-1)*B # steady state taues
+        we: wages(w, skills_grid)
+        T: transfers(skills_stationary, div, tau, skills_grid)
+        VaPrime: egm_init_labour(a_grid, we, Rr, Rrminus, sigma_c, T) # initialise value function
