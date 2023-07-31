@@ -17,7 +17,7 @@ definitions: |
     amax = 150 # Maximum asset grid point
     an = 250 # Initial number of asset grid points 
     amin = 0 # Initial borrowing constraint
-    rho_phi = 0.5 # Persistence in shock to borrowing constraint
+    rho_phi = 0.7 # Persistence in shock to borrowing constraint
     amin_terminal = 0 # Terminal borrowing constraint
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
@@ -155,7 +155,7 @@ steady_state:
         phi_y: 0.15 # Taylor rule coefficient on output
         
         # Exogenous processes
-        rho_phi: 0.5 # persistence of borrowing limit shock
+        rho_phi: 0.7 # persistence of borrowing limit shock
         rho_Rbar: 0.3 # persistence of interest rate wedge shock
         rho_beta: 0.5 # persistence of discount factor shock
         

@@ -126,6 +126,171 @@ def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, Rminus, beta, sigma_c, sigma
     # calculate new MUC for next EGM step
     Wa = Rfull * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
     
+    uc = (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
+    uce = skills_grid[:, None] * uc
+    
+    # return new MUC, asset holdings, consumption and MPCs
+    return Wa, a, c, mpc
+
+def egm_step_old(Wa_p, a_grid, skills_grid, w, n, T, R, beta, sigma_c, sigma_l, da, lower_bound_a):    
+    """One Step of the Endogenous Gridpoint Method (EGM).
+    
+    This function takes a single backward step via EGM. It is iterated on 
+    backwards in order to obtain optimal consumption and asset holding 
+    policies.
+    
+    Parameters:
+    ----------
+    Wa_p        : next period's marginal continuation value
+    a_grid      : asset grid
+    skills_grid : skills grid
+    w           : wage 
+    n           : labour hours
+    T           : dividends net of taxes
+    R           : real interest rate
+    beta        : discount factor
+    sigma_c     : risk aversion
+    sigma_l     : inverse Frisch elasticity of labour supply
+    db          : step size in MPC calculation
+    lower_bound_a:borrowing limit 
+
+    Returns:
+    ----------
+    Wa          : this period's marginal continuation value
+    a           : asset policy
+    c           : consumption policy
+    mpc         : marginal propensity to consume
+    """
+
+    # MUC as implied by next periods value function
+    ux_nextgrid = beta * Wa_p
+    
+    # calculate labor income
+    labor_inc = skills_grid[:, None]*n*w 
+
+    # next period's consumption from MUC and MU of labor
+    c_nextgrid = ux_nextgrid**(-1/sigma_c) + labor_inc/(1 + sigma_l)
+    
+    # get consumption in grid space
+    lhs = c_nextgrid - labor_inc + a_grid[None, :] - T[:, None]
+    rhs = R * a_grid
+    c = interpolate(lhs, rhs, c_nextgrid)
+
+    # get todays distribution of assets
+    a = rhs + labor_inc + T[:, None] - c
+    
+    # find lower bound on-grid
+    lower_bound_a, _ = find_closest_grid_point(lower_bound_a, a_grid) 
+    
+    # fix consumption and labor for constrained households at the current 
+    # borrowing limit
+    c = jnp.where(a < lower_bound_a, 
+                  labor_inc + rhs + T[:, None] - lower_bound_a, 
+                  c)
+    a = jnp.where(a < lower_bound_a, 
+                  lower_bound_a, 
+                  a)
+    
+    # Calculate the marginal propensity to consume (MPC) out of a small
+    # increase (given by db) of in liquid wealth
+    mpc = (interpolate(a, (a + da), c) - c) / da
+    
+    # Ensure that MPC is at most 1
+    mpc = jnp.where(mpc > 1.0, 
+                    1.0, 
+                    mpc)
+    
+    # calculate new MUC for next EGM step
+    Wa = R * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
+    
+    uc = (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
+    uce = skills_grid[:, None] * uc
+    
+    # return new MUC, asset holdings, consumption and MPCs
+    return Wa, a, c, mpc
+
+###############################################################################
+# Function for a single EGM step
+def egm_step_nominal(Wa_p, a_grid, skills_grid, w, n, T, R, Rminus, beta, sigma_c, sigma_l, da, lower_bound_a, P):    
+    """One Step of the Endogenous Gridpoint Method (EGM).
+    
+    This function takes a single backward step via EGM. It is iterated on 
+    backwards in order to obtain optimal consumption and asset holding 
+    policies.
+    
+    Parameters:
+    ----------
+    Wa_p        : next period's marginal continuation value
+    a_grid      : asset grid
+    skills_grid : skills grid
+    w           : wage 
+    n           : labour hours
+    T           : dividends net of taxes
+    R           : real interest rate
+    beta        : discount factor
+    sigma_c     : risk aversion
+    sigma_l     : inverse Frisch elasticity of labour supply
+    db          : step size in MPC calculation
+    lower_bound_a:borrowing limit 
+
+    Returns:
+    ----------
+    Wa          : this period's marginal continuation value
+    a           : asset policy
+    c           : consumption policy
+    mpc         : marginal propensity to consume
+    """
+
+    # MUC as implied by next periods value function
+    ux_nextgrid = beta * P * Wa_p
+    
+    # calculate labor income
+    labor_inc = skills_grid[:, None]*n*w
+
+    # next period's consumption from MUC and MU of labor
+    c_nextgrid = ux_nextgrid**(-1/sigma_c) + labor_inc/(1 + sigma_l)
+    
+    # Get full interest rate schedule
+    Rfull = jnp.where(a_grid < 0,
+                      Rminus,
+                      R)
+    
+    # get consumption in grid space
+    lhs = P*c_nextgrid - P*labor_inc + a_grid[None, :] - P*T[:, None]
+    rhs = Rfull * a_grid
+    c = interpolate(lhs, rhs, c_nextgrid)
+
+    # get todays distribution of assets
+    a = rhs + P*labor_inc + P*T[:, None] - P*c
+    
+    # find lower bound on-grid
+    lower_bound_a, _ = find_closest_grid_point(lower_bound_a, a_grid)
+    
+    lower_bound_a = P*lower_bound_a
+    
+    # fix consumption and labor for constrained households at the current 
+    # borrowing limit
+    c = jnp.where(a < lower_bound_a, 
+                  P*labor_inc + rhs + P*T[:, None] - lower_bound_a, 
+                  c)
+    a = jnp.where(a < lower_bound_a, 
+                  lower_bound_a, 
+                  a)
+    
+    # Calculate the marginal propensity to consume (MPC) out of a small
+    # increase (given by db) of in liquid wealth
+    mpc = (interpolate(a, (a + da), c) - c) / da
+    
+    # Ensure that MPC is at most 1
+    mpc = jnp.where(mpc > 1.0, 
+                    1.0, 
+                    mpc)
+    
+    # calculate new MUC for next EGM step
+    Wa = Rfull * (c - labor_inc/(1 + sigma_l)) ** (-sigma_c)
+    
+    Wa = Wa / P 
+    
     # return new MUC, asset holdings, consumption and MPCs
     return Wa, a, c, mpc
 
@@ -495,7 +660,7 @@ def create_grid(amax, n, amin, rho_a, amin_terminal, T=200):
     
     for tt in range(T-1): # iterate forward by using the transition process of 
     # the borrowing limit
-        path_borrowing_limit[tt+1] = round(amin_terminal*(path_borrowing_limit[tt]/amin_terminal)**rho_a, 8)
+        path_borrowing_limit[tt+1] = round(amin_terminal*(path_borrowing_limit[tt]/amin_terminal)**rho_a, 6)
     
     path_borrowing_limit = [num for num in path_borrowing_limit if num < amin_terminal]
     path_borrowing_limit.append(amin_terminal) # ensure that terminal borrowing limit is included 

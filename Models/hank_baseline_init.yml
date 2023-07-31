@@ -16,9 +16,9 @@ definitions: |
     # Create custom grid
     amax = 150 # Maximum asset grid point
     an = 250 # Initial number of asset grid points 
-    amin = 0 # Initial borrowing constraint
+    amin = -2.352 # Initial borrowing constraint
     rho_phi = 0.5 # Persistence in shock to borrowing constraint
-    amin_terminal = 0 # Terminal borrowing constraint
+    amin_terminal = -2.18 # Terminal borrowing constraint
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
@@ -130,11 +130,11 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.99056 # discount factor
+        beta: 0.9906 # discount factor
         sigma_c: 2. # coefficient of relative risk aversion
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         
-        phi: amin # borrowing limit
+        phi: -2.18 # borrowing limit
         Rbar: 1e-8 # intermediation cost
         db: 0.01 # step size in MPC calculation
         
@@ -156,8 +156,8 @@ steady_state:
         
         # Exogenous processes
         rho_phi: 0.5 # persistence of borrowing limit shock
-        rho_Rbar: 0.3 # persistence of interest rate wedge shock
-        rho_beta: 0.5 # persistence of discount factor shock
+        rho_Rbar: 0.2 # persistence of interest rate wedge shock
+        rho_beta: 0.3 # persistence of discount factor shock
         
         # Auxiliary equations
         w: mc*z # wage

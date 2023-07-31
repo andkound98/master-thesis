@@ -14,17 +14,17 @@ definitions: |
     from econpizza.tools import percentile, jax_print
     
     # Create custom grid
-    amax = 150 # Maximum asset grid point
-    an = 250 # Initial number of asset grid points 
+    amax = 130 # Maximum asset grid point
+    an = 300 # Number of asset grid points 
     amin = 0 # Initial borrowing constraint
-    rho_phi = 0.5 # Persistence in shock to borrowing constraint
+    rho_a = 0.3 # Persistence in shock to borrowing constraint
     amin_terminal = 0 # Terminal borrowing constraint
-    a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
+    a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
-variables: [ beta, div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid ] # Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C
-parameters: [ sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, rho_beta, omega ]
-shocks: [ e_phi, e_Rbar, e_beta ]
+variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, borr_limit, MPC, D, DY, gr_liquid ] # Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C
+parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_a, rho_Rbar, db, omega ]
+shocks: [ e_a, e_Rbar ]
 
 ###############################################################################
 ###############################################################################
@@ -36,9 +36,9 @@ distributions:
     # Productivity grid 
     skills:
       type: exogenous_rouwenhorst
-      rho: 0.966 # persistence in labour productivity
+      rho: 0.95 # persistence in labour productivity
       sigma: 0.5 # variance of shocks to labour productivity
-      n: 8 # number of productivity grid points
+      n: 14 # number of productivity grid points
     # Asset grid
     a: 
       type: endogenous_generic
@@ -51,7 +51,7 @@ decisions:
   calls: |
     tfs = transfers(skills_stationary, div, tau, skills_grid) # transfers (dividends minus taxes)
     WaPrimeExp = skills_transition @ WaPrime # expected future marginal continuation value
-    Wa, a, c, mpc = egm_step(WaPrimeExp, a_grid, skills_grid, w, N, tfs, Rr, Rrminus, beta, sigma_c, sigma_l, db, phi)
+    Wa, a, c, mpc = egm_step(WaPrimeExp, a_grid, skills_grid, w, N, tfs, Rr, Rrminus, beta, sigma_c, sigma_l, db, borr_limit)
   outputs: [a,c,mpc]
 
 ###############################################################################
@@ -102,23 +102,25 @@ equations:
     
     # Fiscal authority
     ~ tau = (Rr-1)*B # balanced government budget 
+    #~ tau*w*N = (Rr-1)*B # balanced government budget 
     
     # Monetary authority
     ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
     ~ R = maximum(1, Rn) # ZLB on nominal interest rates
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
     ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
+    #~ Rrminus = (RLag + Rbar)/pi # ex-post real return on negative asset holdings
 
     # Market clearing conditions
     ~ B = aggr_a # bond market
     ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - Rbar*aggr_debt # output (i.e. GDP)
     ~ C = y # goods market
     ~ w = N**sigma_l # labour market
+    #~ (1-tau)*w = N**sigma_l # labour market
 
     # Exogenous processes
-    ~ phi = phiSS*(phiLag/phiSS)**rho_phi*exp(e_phi) # borrowing limit
+    ~ borr_limit = borr_limitSS*(borr_limitLag/borr_limitSS)**rho_a*exp(e_a) # borrowing limit
     ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar) # interest rate wedge
-    ~ beta = betaSS*(betaLag/betaSS)**rho_beta*exp(e_beta) # discount factor
 
 ###############################################################################
 ###############################################################################
@@ -130,34 +132,33 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.99056 # discount factor
-        sigma_c: 2. # coefficient of relative risk aversion
+        beta: 0.98424 # discount factor
+        sigma_c: 2. # intertemporal elasticity of substitution
         sigma_l: 2. # inverse Frisch elasticity of labour supply
-        
-        phi: amin # borrowing limit
-        Rbar: 1e-8 # intermediation cost
         db: 0.01 # step size in MPC calculation
         
         # Firms
         z: 1.0 # technology
-        theta: 6. # elasticity of substitution
+        theta: 10. # elasticity of substitution
         mc: (theta-1)/theta # marginal costs (equals the inverse of steady state markup)
         psi: 100. # parameter on the costs of price adjustment
-        omega: 0.44 # price inertia
+        omega: 0. # price inertia
         
         # Fiscal Policy
-        B: 5.21 # government bond supply
+        B: 2.33 # government bond supply
         
         # Monetary Policy
         pi: 1.0 # inflation
+        pitilde: pi # price indexation
         rho: 0.8 # persistence in notional nominal interest rate
-        phi_pi: 2. # Taylor rule coefficient on inflation
+        phi_pi: 1.25 # Taylor rule coefficient on inflation
         phi_y: 0.15 # Taylor rule coefficient on output
         
         # Exogenous processes
-        rho_phi: 0.5 # persistence of borrowing limit shock
-        rho_Rbar: 0.3 # persistence of interest rate wedge shock
-        rho_beta: 0.5 # persistence of discount factor shock
+        borr_limit: amin # borrowing limit
+        rho_a: 0.3 # persistence of borrowing limit shock
+        Rbar: 1e-8 # intermediation cost
+        rho_Rbar: 0.25 # persistence of interest rate wedge shock
         
         # Auxiliary equations
         w: mc*z # wage

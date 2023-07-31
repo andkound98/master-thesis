@@ -130,7 +130,7 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.99056 # discount factor
+        beta: 0.9842 # discount factor
         sigma_c: 2. # coefficient of relative risk aversion
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         
@@ -146,7 +146,7 @@ steady_state:
         omega: 0.44 # price inertia
         
         # Fiscal Policy
-        B: 5.21 # government bond supply
+        B: 2.24 # government bond supply
         
         # Monetary Policy
         pi: 1.0 # inflation
