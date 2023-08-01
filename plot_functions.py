@@ -707,7 +707,6 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
                                     save_results,
                                     exact_path,
                                     x_threshold=None,
-                                    borr_cutoff=True,
                                     borr_lim=None,
                                     percent=100):
     # Get disaggregated dynamics
@@ -796,14 +795,14 @@ def plot_policy_impact(hank_model_initial, hank_model_terminal,
     plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
                                     x_transition, 'c', 'Consumption', 
                                     save_results, exact_path,
-                                    x_threshold=x_threshold, borr_cutoff=borr_cutoff, 
+                                    x_threshold=x_threshold,
                                     borr_lim=borr_lim)
 
     # Change in asset choice on impact over the distribution of assets
     plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
                                     x_transition, 'a', 'Assets', 
                                     save_results, exact_path,
-                                    x_threshold=x_threshold, borr_cutoff=borr_cutoff, 
+                                    x_threshold=x_threshold,
                                     borr_lim=borr_lim)
 
     # Change in labour choice on impact over the distribution of assets
@@ -811,7 +810,7 @@ def plot_policy_impact(hank_model_initial, hank_model_terminal,
         plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
                                         x_transition, 'n', 'Labour Supply', 
                                         save_results, exact_path,
-                                        x_threshold=x_threshold, borr_cutoff=borr_cutoff, 
+                                        x_threshold=x_threshold,
                                         borr_lim=borr_lim)
     except KeyError:
         pass
@@ -820,83 +819,127 @@ def plot_policy_impact(hank_model_initial, hank_model_terminal,
 ###############################################################################
 ###############################################################################
 # Function to compare the transitions of some selected variables 
-def compare_selected_transition(variables_to_plot, 
-                                x_1, 
-                                x_2, 
-                                horizon, 
-                                legend,
-                                save_results, 
-                                comparison,
-                                percent=100,
-                                title=True):
+def compare_selected_transitions(list_of_transition_dfs,
+                                 variables_to_plot, 
+                                 horizon, 
+                                 legend,
+                                 save_results, 
+                                 comparison,
+                                 percent=100,
+                                 title=True):
     time = list(range(0, horizon, 1)) # Time vector
-    
+
     # Loop through list of selected variables
     for sublist in variables_to_plot:
-        variable = sublist[0] # extract variable
-
-        if title == True:
-            variable_name = sublist[1] # extract variable name
-        if title != True:
-            variable_name = ''
+        if len(sublist) == 3:
+        
+            variable = sublist[0] # extract variable
+    
+            if title == True:
+                variable_name = sublist[1] # extract variable name
+            if title != True:
+                variable_name = ''
+                
+            unit = sublist[2] # extract unit
             
-        unit = sublist[2] # extract unit
+            transition_df = pd.DataFrame({'Quarters': time})
+            
+            if variable in ['R', 'Rn', 'Rr', 'Rrminus']:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name = f'{variable}_{legend[i]}'
+                    new_col = 4*percent*(df[f'{variable}'][:horizon] - 1.0)
+                    transition_df[col_name] = new_col.reset_index(drop=True)
+    
+            elif variable in ['Rbar']:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name = f'{variable}_{legend[i]}'
+                    new_col = 4*percent*(df[f'{variable}'][:horizon])
+                    transition_df[col_name] = new_col.reset_index(drop=True)
+                
+            elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid']:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name = f'{variable}_{legend[i]}'
+                    new_col = df[f'{variable}'][:horizon]
+                    transition_df[col_name] = new_col.reset_index(drop=True)
+                
+            else:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name = f'{variable}_{legend[i]}'
+                    new_col = percent*((df[f'{variable}'][:horizon] - df[f'{variable}'][0]) / df[f'{variable}'][0])
+                    transition_df[col_name] = new_col.reset_index(drop=True)
         
-        if variable in ['R', 'Rn', 'Rr', 'Rminus']:
-            x_double_transition = np.column_stack([time, # Concatenate IRFs and time vector
-                                                   4*percent*(x_1[f'{variable}'][:horizon] - 1.0),
-                                                   4*percent*(x_2[f'{variable}'][:horizon] - 1.0)])
-        elif variable in ['Rbar']:
-            x_double_transition = np.column_stack([time, # Concatenate IRF and time vector
-                                                   4*percent*x_1[f'{variable}'][:horizon],
-                                                   4*percent*x_2[f'{variable}'][:horizon]])
-        elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid']:
-            x_double_transition = np.column_stack([time, # Concatenate IRF and time vector
-                                                   x_1[f'{variable}'][:horizon],
-                                                   x_2[f'{variable}'][:horizon]])
-        else:
-            stst_1 = x_1[f'{variable}'][0] # Find (initial) steady state
-            stst_2 = x_2[f'{variable}'][0] # Find (initial) steady state
-            x_double_transition = np.column_stack([time, # Concatenate IRF and time vector
-                                                   percent*((x_1[f'{variable}'][:horizon] - stst_1)/stst_1),
-                                                   percent*((x_2[f'{variable}'][:horizon] - stst_2)/stst_2)])
-        
-        x_double_transition_df = pd.DataFrame(x_double_transition, # Turn into data frame
-                                              columns = ['Quarters', 
-                                                         f'{legend[0]}',
-                                                         f'{legend[1]}'])
+        elif len(sublist) == 5:
+            
+            variable1 = sublist[0] # extract variable
+            variable2 = sublist[2] # extract variable
+            
+            variable_name1 = sublist[1] # extract variable name
+            variable_name2 = sublist[1] # extract variable name
+                
+            unit = sublist[-1] # extract unit
+            
+            transition_df = pd.DataFrame({'Quarters': time})
+            
+            if variable1 in ['R', 'Rn', 'Rr', 'Rrminus'] and variable2 in ['R', 'Rn', 'Rr', 'Rrminus']:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name1 = f'{variable1}_{legend[i]}'
+                    new_col1 = 4*percent*(df[f'{variable1}'][:horizon] - 1.0)
+                    transition_df[col_name1] = new_col1.reset_index(drop=True)
+                    
+                    col_name2 = f'{variable2}_{legend[i]}'
+                    new_col2 = 4*percent*(df[f'{variable2}'][:horizon] - 1.0)
+                    transition_df[col_name2] = new_col2.reset_index(drop=True)
+            
+            else:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name1 = f'{variable1}_{legend[i]}'
+                    new_col1 = percent*((df[f'{variable1}'][:horizon] - df[f'{variable1}'][0]) / df[f'{variable1}'][0])
+                    transition_df[col_name1] = new_col1.reset_index(drop=True)
+                    
+                    col_name2 = f'{variable2}_{legend[i]}'
+                    new_col2 = percent*((df[f'{variable2}'][:horizon] - df[f'{variable2}'][0]) / df[f'{variable2}'][0])
+                    transition_df[col_name2] = new_col2.reset_index(drop=True)
         
         # Plot
-        fig = px.line(x_double_transition_df,
+        fig = px.line(transition_df,
                       x = 'Quarters',
-                      y = [f'{legend[0]}', f'{legend[1]}'],
-                      color_discrete_map={f'{legend[0]}': px.colors.qualitative.D3[7],
-                                          f'{legend[1]}': px.colors.qualitative.D3[0]}).update_traces(selector={"name": f'{legend[0]}'}, 
-                                                                                                         line={"dash": "dash"})
+                      y = transition_df.columns.tolist(), 
+                      color_discrete_sequence=px.colors.qualitative.D3[:transition_df.shape[1]-1])
+        if transition_df.shape[1] == 3:
+            fig.update_traces(selector={"name": f'{variable}_{legend[0]}'},line={"dash": "dash"})
+        elif transition_df.shape[1] == 5:
+            fig.update_traces(selector={"name": f'{variable2}_{legend[0]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable2}_{legend[1]}'},line={"dash": "dash"})
+            variable_name = ''
         
-        if variable == 'C':
+        if 'C' in sublist or transition_df.shape[1] == 5:
             fig.update_layout(title=f'{variable_name}', # empty title
                                xaxis_title='Quarters', # x-axis labeling
                                yaxis_title=f'{unit}', # y-axis labeling
-                               legend=dict(yanchor="top", y=0.99, 
-                                           xanchor="right", x=0.99), 
-                               legend_title=None, 
+                               legend=dict(yanchor="bottom", y=0.02, 
+                                           xanchor="right", x=0.98), 
+                               legend_title='', 
                                plot_bgcolor='whitesmoke', 
                                margin=dict(l=15, r=15, t=5, b=5),
                                font=dict(family="Times New Roman", # adjust font
                                          size=20,
                                          color="black"))
-        if variable != 'C':
-            fig.update_layout(title='', # empty title
+            if variable_name != '':
+                fig.update_layout(margin=dict(l=15, r=15, t=50, b=5))
+                
+        if 'C' not in sublist:
+            fig.update_layout(title=f'{variable_name}', # empty title
                                xaxis_title='Quarters', # x-axis labeling
-                               yaxis_title=f'{variable_name}', # y-axis labeling
+                               yaxis_title=f'{unit}', # y-axis labeling
                                showlegend=False,
-                               legend_title=None, 
                                plot_bgcolor='whitesmoke', 
                                margin=dict(l=15, r=15, t=5, b=5),
                                font=dict(family="Times New Roman", # adjust font
                                          size=20,
                                          color="black"))
+            if variable_name != '':
+                fig.update_layout(margin=dict(l=15, r=15, t=50, b=5))
+            
         fig.update_traces(line=dict(width=3))
         fig.show() # Show plot
         
