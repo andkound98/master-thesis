@@ -15,7 +15,7 @@ definitions: |
     
     # Create custom grid
     amax = 150 # Maximum asset grid point
-    an = 250 # Initial number of asset grid points 
+    an = 200 # Initial number of asset grid points 
     amin = 0 # Initial borrowing constraint
     rho_phi = 0.5 # Persistence in shock to borrowing constraint
     amin_terminal = 0 # Terminal borrowing constraint
@@ -23,7 +23,7 @@ definitions: |
 
 # Variables and parameters for household and aggrgeate blocks
 variables: [ beta, div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid ] # Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C
-parameters: [ sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, rho_beta, omega ]
+parameters: [ sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, rho_beta, omega, iota ]
 shocks: [ e_phi, e_Rbar, e_beta ]
 
 ###############################################################################
@@ -104,7 +104,7 @@ equations:
     ~ tau = (Rr-1)*B # balanced government budget 
     
     # Monetary authority
-    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
+    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
     ~ R = maximum(1, Rn) # ZLB on nominal interest rates
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
     ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings

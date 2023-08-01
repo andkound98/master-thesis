@@ -57,17 +57,22 @@ def get_exact_results_path(settings):
 # Set model and shock parameters according to settings
 def get_parametrisation(settings):
     # Parametrisation in case of baseline model of section 3
-    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock':
+    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'distortionaryT' or settings['Model'] == 'wagePC':
         shock_model_parameters = {'initial_borrowing_limit': -2.353,
                                   'terminal_borrowing_limit': -2.18,
                                   'initial_wedge': 1e-8,
                                   'terminal_wedge': 0.00206,
                                   'terminal_beta': 0.992}
+        # shock_model_parameters = {'initial_borrowing_limit': -2.688,
+        #                           'terminal_borrowing_limit': -2.353,
+        #                           'initial_wedge': 1e-8,
+        #                           'terminal_wedge': 0.00206,
+        #                           'terminal_beta': 0.992}
     
     # Parametrisation in case of extended model with CRRA preferences of section 6.2
     if settings['Model'] == 'end_L':
-        shock_model_parameters = {'initial_borrowing_limit': -1.51,
-                                  'terminal_borrowing_limit': -1.39,
+        shock_model_parameters = {'initial_borrowing_limit': -1.7955,
+                                  'terminal_borrowing_limit': -1.655,
                                   'initial_wedge': 1e-8,
                                   'terminal_wedge': 0.0025,
                                   'terminal_beta': 0.9906}
@@ -383,7 +388,7 @@ def stst_overview(models,
         # Calculate changes based on variable type
         for index, row in stst_df.iterrows():
             try:
-                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rminus', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets']:
+                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rrminus', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets']:
                     # Absolute change for specific variables
                     stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
                 else:
@@ -411,9 +416,10 @@ def stst_overview(models,
 ###############################################################################
 ###############################################################################
 # Function to pickle transitions
-def store_transition(model, 
-                     x_trans, 
-                     exact_path):
+def save_transition(model, 
+                    x_trans, 
+                    save_results,
+                    exact_path):
     # Transform JAX array into Numpy array
     nparr = jax.device_get(x_trans)
     
@@ -429,34 +435,82 @@ def store_transition(model,
                         f'x_trans_{exact_path}.pkl')
     
     # Save data frame as pickle
-    transition_df.to_pickle(path)
+    if save_results == True:
+        transition_df.to_pickle(path)
+    else: 
+        pass
 
 ###############################################################################
 ###############################################################################
 # Function to obtain pickled transitions
 def get_transitions(comparison):
-    # Get first transition
-    transition_1 = comparison['transition_1']
-    path_1 = os.path.join(os.getcwd(),
-                          'Results',
-                          f'x_trans_{transition_1}.pkl')
-    try:
-        x_1_df = pd.read_pickle(path_1)
-    except FileNotFoundError:
-        raise FileNotFoundError(f'No transition yet saved under the name {transition_1}.')
+    # Create empty list of data frames with desired transitions
+    list_of_transitions = []
     
-    # Get second transition
-    transition_2 = comparison['transition_2']
-    path_2 = os.path.join(os.getcwd(),
-                          'Results',
-                          f'x_trans_{transition_2}.pkl')
-    try:
-        x_2_df = pd.read_pickle(path_2)
-    except FileNotFoundError:
-        raise FileNotFoundError(f'No transition yet saved under the name {transition_2}.')
+    # Get the values of the comparison dictionary as a list
+    comparison_list = list(comparison.values())
     
-    # Return the data frames of the chosen transitions
-    return x_1_df, x_2_df
+    # Iterate through desired transitions to obtain the pickled data frames
+    for tt in range(len(comparison_list)):
+        transition = comparison_list[tt]
+        path = os.path.join(os.getcwd(),
+                            'Results',
+                            f'x_trans_{transition}.pkl')
+        try:
+            x_df = pd.read_pickle(path)
+            list_of_transitions.append(x_df)
+        except FileNotFoundError:
+            raise FileNotFoundError(f'No transition yet saved under the name {transition}.')
+            
+    # Return the data frames of the chosen transitions as a list of data frames
+    return list_of_transitions
+
+
+
+
+def get_labels(comparison):
+    correspondence = {'baseline_beta_permanent': 'Baseline Model; Shock to \u03B2',
+                      'baseline_limit_permanent': 'Baseline Model; Shock to \u03C6',
+                      'baseline_wedge_permanent': 'Baseline Model; Shock to \u03BA',
+                      'distortionaryT_beta_permanent': '',
+                      'distortionaryT_limit_permanent': '',
+                      'distortionaryT_wedge_permanent': '',
+                      'end_L_beta_permanent': '',
+                      'end_L_limit_permanent': 'End. LS; Shock to \u03C6',
+                      'end_L_wedge_permanent': '',
+                      'fast_shock_beta_permanent': '',
+                      'fast_shock_limit_permanent': '',
+                      'fast_shock_wedge_permanent': '',
+                      'low_B_beta_permanent': '',
+                      'low_B_limit_permanent': '',
+                      'low_B_wedge_permanent': '',
+                      'low_beta_beta_permanent': '',
+                      'low_beta_limit_permanent': '',
+                      'low_beta_wedge_permanent': '',
+                      'slow_shock_beta_permanent': '',
+                      'slow_shock_limit_permanent': '',
+                      'slow_shock_wedge_permanent': ''}
+    
+    # Create empty list of data frames with desired transitions
+    list_of_labels = []
+    
+    # Get the values of the comparison dictionary as a list
+    comparison_list = list(comparison.values())
+    
+    for component in comparison_list:
+        label = correspondence[component]
+        list_of_labels.append(label)
+        
+    return list_of_labels
+        
+    
+
+
+
+
+
+
+
 
 
 def check_for_negative_entries(array_impl_obj):

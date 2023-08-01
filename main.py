@@ -41,7 +41,7 @@ from custom_functions import (get_model_path,
                               get_parametrisation,
                               return_models_permanent,
                               stst_overview,
-                              store_transition)
+                              save_transition)
 
 # Custom functions for plotting
 from plot_functions import (plot_full_stst, 
@@ -64,10 +64,11 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Settings
 
 # List of models
-models = ['baseline', # baseline model (section 3)
+models = [#'baseline', # baseline model (section 3)
+          #'distortionaryT',
           #'slow_shock', # baseline model with slow deleveraging (section 6.1)
           #'fast_shock', # baseline model with fast deleveraging (section 6.1)
-          #'end_L', # extended model with endogenous labour supply (section 6.2)
+          'end_L', # extended model with endogenous labour supply (section 6.2)
           #'low_beta', # baseline model with a low beta calibration (appendix)
           #'low_B' # baseline model with a low B calibration (appendix)
           ]
@@ -82,6 +83,7 @@ shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4
 for model in models:
     # Set model
     set_model = model
+    
     for shock in shocks:
         # Set shock
         set_shock = shock
@@ -118,13 +120,7 @@ for model in models:
                                                                           shock_model_parameters)
         
         if not settings['Shock'].startswith('limit') == True:
-            shock_model_parameters['terminal_borrowing_limit'] = shock_model_parameters['initial_borrowing_limit']
-        
-        # import econpizza as ep
-        # hank_dict = ep.parse('/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Models/hank_baseline_init.yml')
-        # hank_model_initial = ep.load(hank_dict)
-        # hank_dict = ep.parse('/Users/andreaskoundouros/Documents/Uni-Masterarbeit/master-thesis/Models/hank_baseline_term.yml')
-        # hank_model_terminal = ep.load(hank_dict)
+            shock_model_parameters['terminal_borrowing_limit'] = None
         
         #######################################################################
         # STEADY STATES
@@ -199,17 +195,18 @@ for model in models:
                            x_transition,
                            save_results, exact_path,
                            borr_lim=shock_model_parameters['terminal_borrowing_limit'],
-                           x_threshold=150, borr_cutoff=False)
+                           x_threshold=150)
         
         plot_policy_impact(hank_model_initial, hank_model_terminal, 
                            x_transition,
                            save_results, exact_path,
                            borr_lim=shock_model_parameters['terminal_borrowing_limit'],
-                           x_threshold=1, borr_cutoff=False)
+                           x_threshold=1)
         
         #######################################################################
         # Save transition as pickle for convenience
-        store_transition(hank_model_terminal, x_transition, exact_path)
+        save_transition(hank_model_terminal, x_transition, 
+                        save_results, exact_path)
 
 ###############################################################################
 ##############################################################################

@@ -15,7 +15,7 @@ definitions: |
     
     # Create custom grid
     amax = 150 # Maximum asset grid point
-    an = 250 # Initial number of asset grid points 
+    an = 200 # Initial number of asset grid points 
     amin = 0 # Initial borrowing constraint
     rho_phi = 0.3 # Persistence in shock to borrowing constraint
     amin_terminal = 0 # Terminal borrowing constraint

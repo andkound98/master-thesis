@@ -15,16 +15,16 @@ definitions: |
     
     # Create custom grid
     amax = 150 # Maximum asset grid point
-    an = 250 # Number of asset grid points 
+    an = 200 # Number of asset grid points 
     amin = 0 # Initial borrowing constraint
-    rho_a = 0.5 # Persistence in shock to borrowing constraint
+    rho_phi = 0.5 # Persistence in shock to borrowing constraint
     amin_terminal = 0 # Terminal borrowing constraint
-    a_grid, a_grid_n = create_grid(amax, an, amin, rho_a, amin_terminal)
+    a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
     
 # Variables and parameters for household and aggrgeate blocks
 variables: [ beta, div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rrminus, Rbar, C, N, B, D, DY, gr_liquid, phi, MPC ] # Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C,
 parameters: [ sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, chi, rho_phi, rho_Rbar, db, omega, rho_beta ]
-shocks: [ e_a, e_Rbar, e_beta ]
+shocks: [ e_phi, e_Rbar, e_beta ]
 
 ###############################################################################
 ###############################################################################
@@ -119,7 +119,7 @@ equations:
     ~ N = aggr_n # labour market
 
     # Exogenous processes
-    ~ phi = phiSS*(phiLag/phiSS)**rho_phi*exp(e_a) # borrowing limit
+    ~ phi = phiSS*(phiLag/phiSS)**rho_phi*exp(e_phi) # borrowing limit
     ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar) # interest rate wedge
     ~ beta = betaSS*(betaLag/betaSS)**rho_beta*exp(e_beta) # discount factor
 
@@ -133,10 +133,10 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.98805 # discount factor
+        beta: 0.98798 # discount factor
         sigma_c: 2. # coefficient of relative risk aversion
         sigma_l: 2. # inverse Frisch elasticity of labour supply
-        chi: 2. # utility weight on disutility of labor
+        chi: 1. # weight on disutility of labor
         
         phi: amin # borrowing limit
         Rbar: 1e-8 # intermediation cost
@@ -150,7 +150,7 @@ steady_state:
         omega: 0.44 # price inertia
         
         # Fiscal Policy
-        B: 4.53 # government bond supply
+        B: 5.39 # government bond supply
         
         # Monetary Policy
         pi: 1.0 # inflation
