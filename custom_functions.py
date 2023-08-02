@@ -57,41 +57,32 @@ def get_exact_results_path(settings):
 # Set model and shock parameters according to settings
 def get_parametrisation(settings):
     # Parametrisation in case of baseline model of section 3
-    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'distortionaryT' or settings['Model'] == 'wagePC':
-        shock_model_parameters = {'initial_borrowing_limit': -2.353,
-                                  'terminal_borrowing_limit': -2.18,
+    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock':
+        shock_model_parameters = {'initial_borrowing_limit': -2.3485,
+                                  'terminal_borrowing_limit': -2.1775,
                                   'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.00206,
-                                  'terminal_beta': 0.992}
-        # shock_model_parameters = {'initial_borrowing_limit': -2.688,
-        #                           'terminal_borrowing_limit': -2.353,
-        #                           'initial_wedge': 1e-8,
-        #                           'terminal_wedge': 0.00206,
-        #                           'terminal_beta': 0.992}
+                                  'terminal_wedge': 0.00203}
     
     # Parametrisation in case of extended model with CRRA preferences of section 6.2
     if settings['Model'] == 'end_L':
-        shock_model_parameters = {'initial_borrowing_limit': -1.7955,
+        shock_model_parameters = {'initial_borrowing_limit': -1.7956,
                                   'terminal_borrowing_limit': -1.655,
                                   'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.0025,
-                                  'terminal_beta': 0.9906}
+                                  'terminal_wedge': 0.00277}
         
     # Parametrisation in case of baseline model with a low beta calibration
     if settings['Model'] == 'low_beta':
-        shock_model_parameters = {'initial_borrowing_limit': -2.362,
-                                  'terminal_borrowing_limit': -2.1883,
+        shock_model_parameters = {'initial_borrowing_limit': -2.3567,
+                                  'terminal_borrowing_limit': -2.1846,
                                   'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.0025,
-                                  'terminal_beta': 0.9906}
+                                  'terminal_wedge': 0.00201}
     
     # Parametrisation in case of baseline model with a high B calibration
     if settings['Model'] == 'low_B':
-        shock_model_parameters = {'initial_borrowing_limit': -1.55,
-                                  'terminal_borrowing_limit': -1.425,
+        shock_model_parameters = {'initial_borrowing_limit': -1.54946,
+                                  'terminal_borrowing_limit': -1.4238,
                                   'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.002,
-                                  'terminal_beta': 0.99}
+                                  'terminal_wedge': 0.00316}
         
     # Return shock and model parametrisation
     return shock_model_parameters
@@ -469,27 +460,18 @@ def get_transitions(comparison):
 
 
 def get_labels(comparison):
-    correspondence = {'baseline_beta_permanent': 'Baseline Model; Shock to \u03B2',
-                      'baseline_limit_permanent': 'Baseline Model; Shock to \u03C6',
-                      'baseline_wedge_permanent': 'Baseline Model; Shock to \u03BA',
-                      'distortionaryT_beta_permanent': '',
-                      'distortionaryT_limit_permanent': '',
-                      'distortionaryT_wedge_permanent': '',
-                      'end_L_beta_permanent': '',
+    correspondence = {'baseline_limit_permanent': 'Baseline; Shock to \u03C6',
+                      'baseline_wedge_permanent': 'Baseline; Shock to \u03BA',
                       'end_L_limit_permanent': 'End. LS; Shock to \u03C6',
-                      'end_L_wedge_permanent': '',
-                      'fast_shock_beta_permanent': '',
-                      'fast_shock_limit_permanent': '',
-                      'fast_shock_wedge_permanent': '',
-                      'low_B_beta_permanent': '',
-                      'low_B_limit_permanent': '',
-                      'low_B_wedge_permanent': '',
-                      'low_beta_beta_permanent': '',
-                      'low_beta_limit_permanent': '',
-                      'low_beta_wedge_permanent': '',
-                      'slow_shock_beta_permanent': '',
-                      'slow_shock_limit_permanent': '',
-                      'slow_shock_wedge_permanent': ''}
+                      'end_L_wedge_permanent': 'End. LS; Shock to \u03BA',
+                      'fast_shock_limit_permanent': 'Fast Shock; Shock to \u03C6',
+                      'fast_shock_wedge_permanent': 'Fast Shock; Shock to \u03BA',
+                      'low_B_limit_permanent': 'Low B; Shock to \u03C6',
+                      'low_B_wedge_permanent': 'Low B; Shock to \u03BA',
+                      'low_beta_limit_permanent': 'Low \u03B2; Shock to \u03C6',
+                      'low_beta_wedge_permanent': 'Low \u03B2; Shock to \u03BA',
+                      'slow_shock_limit_permanent': 'Slow Shock; Shock to \u03C6',
+                      'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA'}
     
     # Create empty list of data frames with desired transitions
     list_of_labels = []
@@ -500,37 +482,42 @@ def get_labels(comparison):
     for component in comparison_list:
         label = correspondence[component]
         list_of_labels.append(label)
-        
+    
+    # Return list of labels
     return list_of_labels
         
-    
 
 
-
-
-
-
-
-
-
-def check_for_negative_entries(array_impl_obj):
+def check_for_negative_values(array_impl_obj):
     # Convert input into a numpy array
     array = jnp.asarray(array_impl_obj)
 
     # Check for negative entries
     negative_indices = jnp.argwhere(array < 0)
-
+    
+    # Raise error if negative entries were found
     if negative_indices.size > 0:
-        # Collect all negative value occurrences
-        negative_values = [(index[0], index[1], index[2], array[tuple(index)]) for index in negative_indices]
-
-        # Print warning message
-        warning_messages = ['Warning: Negative value(s) found.' for index, _, _, value in negative_values]
-        for warning_message in warning_messages:
-            print(warning_message)
-
-        return negative_values
+        return negative_indices
+        raise ValueError('Warning: Negative values found in the consumption responses.')
     
     else:
-        print('No negative values found in the array.')
-        return None
+        print('No negative values found in the consumption responses.')
+
+
+def get_agg_and_dist_transitions_and_check_c(terminal_model,
+                                             initial_stst,
+                                             initial_distr):
+    # Get transition of aggregate variables
+    agg_x, _ = terminal_model.find_path(init_state = initial_stst.values(),
+                                        init_dist = initial_distr)
+    
+    # Get transition of cross-sectional outcomes
+    dist_x = terminal_model.get_distributions(trajectory = agg_x,
+                                              init_dist = initial_distr)
+    
+    # Check cross-sectional dynamics of consumption for negative entries
+    check_for_negative_values(dist_x['c'])
+    
+    # Return aggregate and cross-sectional transitions
+    return agg_x, dist_x
+    

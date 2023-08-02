@@ -629,8 +629,8 @@ def plot_double_transition(model,
     fig.update_layout(title='', # empty title
                        xaxis_title='Quarters', # x-axis labeling
                        yaxis_title=f'{unit}', # y-axis labeling
-                       legend=dict(yanchor="top", y=0.99, 
-                                   xanchor="right", x=0.99), 
+                       legend=dict(yanchor="bottom", y=0.02, 
+                                   xanchor="right", x=0.98), 
                        legend_title=None, 
                        plot_bgcolor='whitesmoke', 
                        margin=dict(l=15, r=15, t=5, b=5),
@@ -741,11 +741,6 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
     impact = {'grid': np.array(hank_model_terminal['context']['a_grid']),
               'impact': diff_stst}
     impact_df = pd.DataFrame(impact)
-    
-    # Cut off x axis at borrowing limit in period 1
-    if borr_cutoff == True:
-        cutoff = x_transition[:,hank_model_terminal['variables'].index('phi')][1] # Find borrowing limit which applies period 1
-        impact_df.loc[impact_df['grid'] < (round(float(cutoff),8)), :] = np.nan
 
     # Cut off x axis at threshold
     if x_threshold != None:
@@ -789,7 +784,7 @@ def plot_policy_impact(hank_model_initial, hank_model_terminal,
                        x_transition,
                        save_results, exact_path,
                        borr_lim,
-                       x_threshold=150, borr_cutoff=True):
+                       x_threshold=150):
     
     # Change in consumption choice on impact over the distribution of assets
     plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
@@ -846,25 +841,25 @@ def compare_selected_transitions(list_of_transition_dfs,
             
             if variable in ['R', 'Rn', 'Rr', 'Rrminus']:
                 for i, df in enumerate(list_of_transition_dfs):
-                    col_name = f'{variable}_{legend[i]}'
+                    col_name = f'{legend[i]}'
                     new_col = 4*percent*(df[f'{variable}'][:horizon] - 1.0)
                     transition_df[col_name] = new_col.reset_index(drop=True)
     
             elif variable in ['Rbar']:
                 for i, df in enumerate(list_of_transition_dfs):
-                    col_name = f'{variable}_{legend[i]}'
+                    col_name = f'{legend[i]}'
                     new_col = 4*percent*(df[f'{variable}'][:horizon])
                     transition_df[col_name] = new_col.reset_index(drop=True)
                 
             elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid']:
                 for i, df in enumerate(list_of_transition_dfs):
-                    col_name = f'{variable}_{legend[i]}'
+                    col_name = f'{legend[i]}'
                     new_col = df[f'{variable}'][:horizon]
                     transition_df[col_name] = new_col.reset_index(drop=True)
                 
             else:
                 for i, df in enumerate(list_of_transition_dfs):
-                    col_name = f'{variable}_{legend[i]}'
+                    col_name = f'{legend[i]}' #col_name = f'{variable}_{legend[i]}'
                     new_col = percent*((df[f'{variable}'][:horizon] - df[f'{variable}'][0]) / df[f'{variable}'][0])
                     transition_df[col_name] = new_col.reset_index(drop=True)
         
@@ -874,7 +869,7 @@ def compare_selected_transitions(list_of_transition_dfs,
             variable2 = sublist[2] # extract variable
             
             variable_name1 = sublist[1] # extract variable name
-            variable_name2 = sublist[1] # extract variable name
+            variable_name2 = sublist[3] # extract variable name
                 
             unit = sublist[-1] # extract unit
             
@@ -882,21 +877,21 @@ def compare_selected_transitions(list_of_transition_dfs,
             
             if variable1 in ['R', 'Rn', 'Rr', 'Rrminus'] and variable2 in ['R', 'Rn', 'Rr', 'Rrminus']:
                 for i, df in enumerate(list_of_transition_dfs):
-                    col_name1 = f'{variable1}_{legend[i]}'
+                    col_name1 = f'{variable_name1}; {legend[i]}'
                     new_col1 = 4*percent*(df[f'{variable1}'][:horizon] - 1.0)
                     transition_df[col_name1] = new_col1.reset_index(drop=True)
                     
-                    col_name2 = f'{variable2}_{legend[i]}'
+                    col_name2 = f'{variable_name2}; {legend[i]}'
                     new_col2 = 4*percent*(df[f'{variable2}'][:horizon] - 1.0)
                     transition_df[col_name2] = new_col2.reset_index(drop=True)
             
             else:
                 for i, df in enumerate(list_of_transition_dfs):
-                    col_name1 = f'{variable1}_{legend[i]}'
+                    col_name1 = f'{variable_name1}; {legend[i]}'
                     new_col1 = percent*((df[f'{variable1}'][:horizon] - df[f'{variable1}'][0]) / df[f'{variable1}'][0])
                     transition_df[col_name1] = new_col1.reset_index(drop=True)
                     
-                    col_name2 = f'{variable2}_{legend[i]}'
+                    col_name2 = f'{variable_name2}; {legend[i]}'
                     new_col2 = percent*((df[f'{variable2}'][:horizon] - df[f'{variable2}'][0]) / df[f'{variable2}'][0])
                     transition_df[col_name2] = new_col2.reset_index(drop=True)
         
@@ -904,15 +899,28 @@ def compare_selected_transitions(list_of_transition_dfs,
         fig = px.line(transition_df,
                       x = 'Quarters',
                       y = transition_df.columns.tolist(), 
-                      color_discrete_sequence=px.colors.qualitative.D3[:transition_df.shape[1]-1])
-        if transition_df.shape[1] == 3:
-            fig.update_traces(selector={"name": f'{variable}_{legend[0]}'},line={"dash": "dash"})
-        elif transition_df.shape[1] == 5:
-            fig.update_traces(selector={"name": f'{variable2}_{legend[0]}'},line={"dash": "dash"})
-            fig.update_traces(selector={"name": f'{variable2}_{legend[1]}'},line={"dash": "dash"})
+                      color_discrete_sequence=px.colors.qualitative.D3[:transition_df.shape[1]-1]).update_traces(line=dict(width=3))
+        if len(sublist) == 3 and transition_df.shape[1] == 3:
+            fig.update_traces(selector={"name": f'{legend[0]}'},line={"dash": "dash"})
+        elif len(sublist) == 3 and transition_df.shape[1] == 4:
+            fig.update_traces(selector={"name": f'{legend[0]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{legend[2]}'},line={"dash": "dot"})
+        elif len(sublist) == 5 and transition_df.shape[1] == 5:
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[0]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[1]}'},line={"dash": "dash"})
             variable_name = ''
+        elif len(sublist) == 5 and transition_df.shape[1] == 7:
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[0]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[1]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[2]}'},line={"dash": "dash"})
+            variable_name = ''
+            
+        if variable_name != '':
+            top_space = 50
+        elif variable_name == '':
+            top_space = 5
         
-        if 'C' in sublist or transition_df.shape[1] == 5:
+        if 'C' in sublist:
             fig.update_layout(title=f'{variable_name}', # empty title
                                xaxis_title='Quarters', # x-axis labeling
                                yaxis_title=f'{unit}', # y-axis labeling
@@ -920,27 +928,35 @@ def compare_selected_transitions(list_of_transition_dfs,
                                            xanchor="right", x=0.98), 
                                legend_title='', 
                                plot_bgcolor='whitesmoke', 
-                               margin=dict(l=15, r=15, t=5, b=5),
+                               margin=dict(l=15, r=15, t=top_space, b=5),
                                font=dict(family="Times New Roman", # adjust font
                                          size=20,
                                          color="black"))
-            if variable_name != '':
-                fig.update_layout(margin=dict(l=15, r=15, t=50, b=5))
-                
-        if 'C' not in sublist:
+
+        elif 'C' not in sublist and transition_df.shape[1] != 5:
             fig.update_layout(title=f'{variable_name}', # empty title
                                xaxis_title='Quarters', # x-axis labeling
                                yaxis_title=f'{unit}', # y-axis labeling
                                showlegend=False,
                                plot_bgcolor='whitesmoke', 
-                               margin=dict(l=15, r=15, t=5, b=5),
+                               margin=dict(l=15, r=15, t=top_space, b=5),
                                font=dict(family="Times New Roman", # adjust font
                                          size=20,
                                          color="black"))
-            if variable_name != '':
-                fig.update_layout(margin=dict(l=15, r=15, t=50, b=5))
-            
-        fig.update_traces(line=dict(width=3))
+        
+        if transition_df.shape[1] == 5 or transition_df.shape[1] == 7:
+            fig.update_layout(title=None, # empty title
+                               xaxis_title='Quarters', # x-axis labeling
+                               yaxis_title=f'{unit}', # y-axis labeling
+                               legend=dict(yanchor="bottom", y=0.02, 
+                                           xanchor="right", x=0.98), 
+                               legend_title='', 
+                               plot_bgcolor='whitesmoke', 
+                               margin=dict(l=15, r=15, t=top_space, b=5),
+                               font=dict(family="Times New Roman", # adjust font
+                                         size=20,
+                                         color="black"))
+
         fig.show() # Show plot
         
         # Save plot

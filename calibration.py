@@ -179,8 +179,8 @@ data = pd.merge(FRED_data,
 
 # Define steady state output of the HANK model (needed for conversion into 
 # units of the model)
-ySS = 0.9440   #0.9129 # 0.9410
-#ySS = 0.7938 
+ySS = 0.9129 # 0.9410
+#ySS = 0.5310
 
 # Deflate Government Bonds and divide by deflated ANNUALISED GDP, then convert
 # to quarterly; finally, obtain it in terms of the steady-state model output

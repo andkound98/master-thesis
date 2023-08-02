@@ -2,19 +2,21 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 21.06.2023
+Date: 25.08.2023
 
-This file contains the main code for my Master Thesis "Financial Constraints 
-and Household Heterogeneity in the Macroeconomy", supervised by Prof. Dr. Keith
-Kuester and Dr. Gregor Böhl at the University of Bonn, submitted on the 25th
-of August 2023.
+This file contains the main code for my Master Thesis with the title:
+    
+   "Financial Constraints and Household Heterogeneity in the Macroeconomy", 
 
-The code herein reproduces the results found in my master thesis.
+supervised by Prof. Dr. Keith Kuester and Dr. Gregor Böhl at the University of 
+Bonn and submitted on 25th August 2023.
 
-After setting the corresponding choices, the code loads, adjust and 
-solves the model(s), computes the full non-linear perfect foresight transition 
-paths and plots various informative plots about the steady state(s) and
-transitions. If desired, the results are stored in respective folders.
+The code herein reproduces the results found in the thesis. It allows the user
+to select one or more of the possible combinations of models and shocks. Having
+set the respective choices, the code loads, adjusts and solves the initial
+and terminal models, computes the fully non-linear perfect-foresight transition 
+paths and plots various informative plots about the steady states and
+transitions. If desired, the results are stored in the folder 'Results'.
 """
 
 ###############################################################################
@@ -28,7 +30,7 @@ import plotly.io as pio # plotting
 ###############################################################################
 # Set working directory to folder 'master_thesis' to execute this file
 if not os.getcwd().endswith('master-thesis'):
-    raise Exception('Set working directory to folder \'master_thesis\'!')
+    raise Exception(f'Set working directory to folder \'master_thesis\'! Currently it is {os.getcwd()}')
 
 ###############################################################################
 ###############################################################################
@@ -41,6 +43,7 @@ from custom_functions import (get_model_path,
                               get_parametrisation,
                               return_models_permanent,
                               stst_overview,
+                              get_agg_and_dist_transitions_and_check_c,
                               save_transition)
 
 # Custom functions for plotting
@@ -50,11 +53,14 @@ from plot_functions import (plot_full_stst,
                             plot_selected_transition,
                             plot_policy_impact)
 
+# Import lists of variables to plot
+from list_variables_to_plot import dict_of_variables
+
 ###############################################################################
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = False # True: results (tables and plots) are saved
+save_results = True # True: results (tables and plots) are saved
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -64,19 +70,17 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Settings
 
 # List of models
-models = [#'baseline', # baseline model (section 3)
-          #'distortionaryT',
-          #'slow_shock', # baseline model with slow deleveraging (section 6.1)
-          #'fast_shock', # baseline model with fast deleveraging (section 6.1)
+models = ['baseline', # baseline model (section 3)
+          'slow_shock', # baseline model with slow deleveraging (section 6.1)
+          'fast_shock', # baseline model with fast deleveraging (section 6.1)
           'end_L', # extended model with endogenous labour supply (section 6.2)
-          #'low_beta', # baseline model with a low beta calibration (appendix)
-          #'low_B' # baseline model with a low B calibration (appendix)
+          'low_beta', # baseline model with a low beta calibration (appendix E.1)
+          'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
 # List of shocks
-shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4)
-         #'wedge_permanent', # permanent shock to the interest rate wedge (section 5)
-         #'beta_permanent'  # permanent shock to the discount factor (appendix)
+shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4.1)
+         'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
          ]
 
 # Loop thorugh model-shock combinations to obtain results
@@ -158,8 +162,12 @@ for model in models:
         hank_model_initial_dist = hank_model_initial['steady_state']['distributions'].copy()
         
         # Find perfect foresight transition to terminal steady state
-        x_transition, _ = hank_model_terminal.find_path(init_state = hank_model_initial_stst.values(),
-                                                        init_dist = hank_model_initial_dist)
+        # x_transition, _ = hank_model_terminal.find_path(init_state = hank_model_initial_stst.values(),
+        #                                                 init_dist = hank_model_initial_dist)
+        
+        x_transition, _ = get_agg_and_dist_transitions_and_check_c(hank_model_terminal,
+                                                                   hank_model_initial_stst,
+                                                                   hank_model_initial_dist)
             
         #######################################################################
         #######################################################################
@@ -177,7 +185,6 @@ for model in models:
                   bunch=True, horizon=200)
         
         # Plot transitions of selected aggregate variables
-        from list_variables_to_plot import dict_of_variables # Import lists of variables to plot
         plot_selected_transition(dict_of_variables['aggregate'], hank_model_terminal, 
                                  x_transition, horizon, 
                                  save_results, exact_path, title=True)
@@ -186,9 +193,9 @@ for model in models:
         # Distributional dynamics
         
         # Plot transitions of selected distributional variables
-        # plot_selected_transition(dict_of_variables['cross_sec'], hank_model_terminal, 
-        #                          x_transition, horizon, 
-        #                          save_results, exact_path, title=True)
+        plot_selected_transition(dict_of_variables['cross_sec'], hank_model_terminal, 
+                                  x_transition, horizon, 
+                                  save_results, exact_path, title=True)
         
         # Plot policies on impact
         plot_policy_impact(hank_model_initial, hank_model_terminal, 

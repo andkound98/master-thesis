@@ -32,7 +32,7 @@ from custom_functions import (get_model_path,
                               get_parametrisation,
                               return_models_permanent,
                               stst_overview,
-                              store_transition)
+                              save_transition)
 
 # Custom functions for plotting
 from plot_functions import (plot_full_stst, 
@@ -133,4 +133,4 @@ plot_selected_transition(dict_of_variables['aggregate'], hank_model_terminal,
 
 #######################################################################
 # Save transition as pickle for convenience
-store_transition(hank_model_terminal, x_transition, exact_path)
+#store_transition(hank_model_terminal, x_transition, exact_path)

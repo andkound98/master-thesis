@@ -15,15 +15,15 @@ definitions: |
     
     # Create custom grid
     amax = 150 # Maximum asset grid point
-    an = 250 # Initial number of asset grid points 
-    amin = -2.352 # Initial borrowing constraint
+    an = 200 # Initial number of asset grid points 
+    amin = -2.3485 # Initial borrowing constraint
     rho_phi = 0.5 # Persistence in shock to borrowing constraint
-    amin_terminal = -2.18 # Terminal borrowing constraint
+    amin_terminal = -2.1775 # Terminal borrowing constraint
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
 variables: [ beta, div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid ] # Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C
-parameters: [ sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, rho_beta, omega ]
+parameters: [ sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, rho_beta, omega, iota ]
 shocks: [ e_phi, e_Rbar, e_beta ]
 
 ###############################################################################
@@ -104,7 +104,7 @@ equations:
     ~ tau = (Rr-1)*B # balanced government budget 
     
     # Monetary authority
-    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/yLag)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
+    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
     ~ R = maximum(1, Rn) # ZLB on nominal interest rates
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
     ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
@@ -130,11 +130,11 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.9906 # discount factor
+        beta: 0.99056 # discount factor
         sigma_c: 2. # coefficient of relative risk aversion
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         
-        phi: -2.352 # borrowing limit
+        phi: -2.3485 # borrowing limit
         Rbar: 1e-8 # intermediation cost
         db: 0.01 # step size in MPC calculation
         
@@ -156,8 +156,8 @@ steady_state:
         
         # Exogenous processes
         rho_phi: 0.5 # persistence of borrowing limit shock
-        rho_Rbar: 0.2 # persistence of interest rate wedge shock
-        rho_beta: 0.3 # persistence of discount factor shock
+        rho_Rbar: 0.3 # persistence of interest rate wedge shock
+        rho_beta: 0.5 # persistence of discount factor shock
         
         # Auxiliary equations
         w: mc*z # wage
