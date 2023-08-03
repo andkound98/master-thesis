@@ -60,7 +60,7 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: results (tables and plots) are saved
+save_results = False # True: save results (tables and plots)
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -71,16 +71,16 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 
 # Choose model(s)
 models = ['baseline', # baseline model (section 3)
-          #'slow_shock', # baseline model with slow deleveraging (section 6.1)
-          #'fast_shock', # baseline model with fast deleveraging (section 6.1)
-          #'end_L', # extended model with endogenous labour supply (section 6.2)
-          #'low_beta', # baseline model with a low beta calibration (appendix E.1)
-          #'low_B' # baseline model with a low B calibration (appendix E.2)
+          'slow_shock', # baseline model with slow deleveraging (section 6.1)
+          'fast_shock', # baseline model with fast deleveraging (section 6.1)
+          'end_L', # extended model with endogenous labour supply (section 6.2)
+          'low_beta', # baseline model with a low beta calibration (appendix E.1)
+          'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
 # Choose shock(s)
 shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4.1)
-         #'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
+         'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
          ]
 
 # Choose asymmetry 

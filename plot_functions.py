@@ -10,17 +10,17 @@ This file contains custom functions for plotting results from the main file.
 ###############################################################################
 ###############################################################################
 # Import packages
-import os
-import plotly.express as px
+import os # path management
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-import jax
+#import jax
 import jax.numpy as jnp
-from grgrlib import grbar3d
-from grgrlib import figurator, grplot
-import matplotlib.cm as cm
+from grgrlib import grplot
+import plotly.express as px
+import matplotlib
+import matplotlib.pyplot as plt
 import plotly.graph_objects as go
+from grgrlib import grbar3d
 
 # Import custom functions
 from custom_functions import (make_policy_df,
@@ -42,11 +42,11 @@ def plot_full_stst(hank_model,
                         exact_path,
                         state,
                         x_threshold=50, 
-                        y_threshold=1.5)
+                        y_threshold=2)
     
     # Plot steady state policies over assets depending on skill
-    policies_to_plot = [['a', 'Asset Holdings'],
-                        ['c', 'Consumption']]
+    policies_to_plot = [['a', 'Bonds/IOUs'],
+                        ['c', 'Consumption Units']]
     if settings['Model'] == 'end_L':
         policies_to_plot.append(['n', 'Labour Supply'])
         
@@ -99,12 +99,13 @@ def plot_single_policy(hank_model,
                                    borr_cutoff,
                                    x_threshold)
     
-    fig_policy =  px.line(policy_df, # Create plot
+    # Plot
+    fig_policy =  px.line(policy_df,
                           x = 'grid',
                           y = policy_df.columns.tolist(),
-                          title = '',
                           color_discrete_sequence=px.colors.qualitative.D3[:policy_df.shape[1]]) 
-    fig_policy.update_layout(xaxis_title='Bond Holdings Today', 
+    fig_policy.update_layout(title=None, 
+                             xaxis_title='Bond/IOU Holdings', 
                               yaxis_title=f'{policy_name}',
                               plot_bgcolor = 'whitesmoke', 
                               font=dict(family="Times New Roman",
@@ -117,49 +118,7 @@ def plot_single_policy(hank_model,
     if y_range != None:
         fig_policy.update_yaxes(range=y_range) # Fix range of y-axis
     
-    # if policy == 'mpc' and group_mpc == True:
-    #     a_grid = hank_model['context']['a_grid']
-    #     dist = hank_model['steady_state']['distributions'][0]
-    #     mpc = hank_model['steady_state']['decisions']['mpc']
-        
-    #     borr_mpc = jnp.sum(jnp.where(a_grid<0,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid<0, dist, 0))
-        
-    #     lend_mpc = jnp.sum(jnp.where(a_grid>=0,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid>=0, dist, 0))
-        
-    #     fig_policy.update_layout(annotations=[dict(x=-0.8, 
-    #                                                y=0.7,
-    #                                                text=f'MPC(b<0) = {round(borr_mpc,2)}',
-    #                                                font=dict(family="Times New Roman",
-    #                                                          size=20,
-    #                                                          color="black")),
-    #                                           dict(x=1, 
-    #                                                y=0.7,
-    #                                                text=f'MPC(b≥0) = {round(lend_mpc,2)}',
-    #                                                font=dict(family="Times New Roman",
-    #                                                          size=20,
-    #                                                          color="black"))])
-        
-        # if constraint_mpc != None:
-        #     const_mpc = jnp.sum(jnp.where(a_grid<constraint_mpc,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid<constraint_mpc, dist, 0))
-        #     fig_policy.update_layout(annotations=[dict(x=-0.8, 
-        #                                                y=0.7,
-        #                                                text=f'MPC(b<0) = {round(borr_mpc,2)}',
-        #                                                font=dict(family="Times New Roman",
-        #                                                          size=20,
-        #                                                          color="black")),
-        #                                           dict(x=1, 
-        #                                                y=0.7,
-        #                                                text=f'MPC(b≥0) = {round(lend_mpc,2)}',
-        #                                                font=dict(family="Times New Roman",
-        #                                                          size=20,
-        #                                                          color="black")),
-        #                                           dict(x=a_grid[0]+0.8, 
-        #                                                y=0.9,
-        #                                                text=f'MPC(b< \u03C6 \') = {round(const_mpc,2)}',
-        #                                                font=dict(family="Times New Roman",
-        #                                                          size=20,
-        #                                                          color="black"))])
-    
+    # Show plot
     fig_policy.show()
     
     # Save plot
@@ -224,7 +183,7 @@ def plot_stst_dist_3d(model,
     a_grid = model['context']['a_grid']
     full_dist = model['steady_state']['distributions'][0]
     
-    # 3D plot of distribution
+    # Plot
     fig_dist_skills_and_assets, _ = grbar3d(percent*full_dist,
                                             xedges=jnp.arange(1, 
                                                               (len(full_dist)+1)), 
@@ -234,8 +193,8 @@ def plot_stst_dist_3d(model,
     
     # Label axes
     fig_dist_skills_and_assets.set_xlabel('Productivity')
-    fig_dist_skills_and_assets.set_ylabel('Bond Holdings')
-    fig_dist_skills_and_assets.set_zlabel('Share')
+    fig_dist_skills_and_assets.set_ylabel('Bond/IOU Holdings')
+    fig_dist_skills_and_assets.set_zlabel('Percent')
     
     # Adjust perspective
     fig_dist_skills_and_assets.view_init(azim=120)
@@ -281,7 +240,9 @@ def bar_plot_asset_dist(hank_model,
     bar_positions = np.array(a_grid) - np.array(bar_widths) / 2
     
     # Generate a color sequence using a colormap
-    cmap = cm.get_cmap('twilight_shifted')  # Choose a colormap
+    #cmap = cm.get_cmap('twilight_shifted')  # Choose a colormap
+    #cmap = matplotlib.colormaps.get_cmap('twilight_shifted')  # Choose a colormap
+    cmap = matplotlib.colormaps.get_cmap('twilight_shifted')  # Choose a colormap
     colours = [cmap(i / len(a_grid)) for i in range(len(a_grid))]
     
     # Get lowest grid point with positive frequency 
@@ -292,23 +253,36 @@ def bar_plot_asset_dist(hank_model,
     pos_y = y[y>0]
     pos_y.reset_index(drop=True, inplace=True)
     
-    fig = go.Figure() # make plot
+    # Empty plot
+    fig = go.Figure() 
+    
+    # Fill plot step-by-step
     for i in range(len(a_grid)):
-        if y[i] > y_threshold: # replace value over y-axis threshold by threshold
+        if i == 0: # make the very first bar oversized so that it becomes clear in the figure
+            x_position = bar_positions[i] - bar_widths[i + 150] / 2
+            fig.add_trace(go.Bar(
+                x=[x_position],
+                y=np.array(y_threshold),
+                width=bar_widths[i+120],
+                marker=dict(color=colours[i])))
+        
+        elif y[i] > y_threshold: # replace value over y-axis threshold by threshold
             fig.add_trace(go.Bar(
                 x=[bar_positions[i]],
                 y=np.array(y_threshold),
                 width=bar_widths[i],
                 marker=dict(color=colours[i])))
+            
         else:
             fig.add_trace(go.Bar(
                 x=[bar_positions[i]],
                 y=[y[i]],
                 width=bar_widths[i],
                 marker=dict(color=colours[i])))
-        
-    fig.update_layout(xaxis_title='Bond Holdings', 
-                      yaxis_title='Share',
+
+    fig.update_layout(title=None, 
+                      xaxis_title='Bond/IOU Holdings', 
+                      yaxis_title='Percent',
                       plot_bgcolor='whitesmoke', 
                       font=dict(family="Times New Roman",
                                 size=20,
@@ -343,6 +317,8 @@ def bar_plot_asset_dist(hank_model,
                                                                size=20,
                                                                color="black"))])
     fig.update_yaxes(range=[0., y_threshold]) # Fix range of y-axis
+    
+    # Show plot
     fig.show()
     
     # Save plot
@@ -391,13 +367,14 @@ def plot_compare_stst(hank_model_initial,
     if x_threshold != None:
         dists_df.loc[dists_df['grid'] > x_threshold, :] = np.nan
     
-    fig_dists = px.line(dists_df, # Create plot
+    # Plot
+    fig_dists = px.line(dists_df, 
                         x = 'grid', 
                         y = ['Initial', 'Terminal'],
                         title='', 
                         color_discrete_sequence=[px.colors.qualitative.D3[0], 
                                                  px.colors.qualitative.D3[1]])
-    fig_dists.update_layout(xaxis_title='Bond Holdings',
+    fig_dists.update_layout(xaxis_title='Bond/IOU Holdings',
                             yaxis_title='Share', 
                             plot_bgcolor = 'whitesmoke', 
                             font=dict(family="Times New Roman",
@@ -408,8 +385,11 @@ def plot_compare_stst(hank_model_initial,
                                         xanchor="right", x=0.99), 
                             legend_title=None)
     fig_dists.update_traces(line=dict(width=2))
+    
+    # Show plot
     fig_dists.show()
-
+    
+    # Save plot
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
@@ -455,7 +435,7 @@ def plot_compare_stst(hank_model_initial,
                       title='', 
                       color_discrete_sequence=[px.colors.qualitative.D3[0], 
                                                px.colors.qualitative.D3[1]])
-    fig_acc.update_layout(xaxis_title='Bond Holdings',
+    fig_acc.update_layout(xaxis_title='Bond/IOU Holdings',
                             yaxis_title='Asset Accumulation', 
                             plot_bgcolor = 'whitesmoke', 
                             font=dict(family="Times New Roman",
@@ -585,7 +565,8 @@ def plot_double_transition(model,
                                                      f'{var_names[0]}', 
                                                      f'{var_names[1]}'])
     
-    fig = px.line(x_double_transition_df, # make plot
+    # Plot
+    fig = px.line(x_double_transition_df, 
                   x = 'Quarters',
                   y = [f'{var_names[0]}', f'{var_names[1]}'],
                   color_discrete_map={f'{var_names[0]}': px.colors.qualitative.D3[0],
@@ -603,7 +584,9 @@ def plot_double_transition(model,
                                  size=20,
                                  color="black"))
     fig.update_traces(line=dict(width=3))
-    fig.show() # Show plot
+    
+    # Show plot
+    fig.show()
     
     # Save plot
     if save_results == True:
@@ -717,7 +700,7 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
                        y = 'impact', 
                        title='', 
                        color_discrete_sequence=[px.colors.qualitative.D3[0]])
-    fig_impact.update_layout(xaxis_title='Bond Holdings', 
+    fig_impact.update_layout(xaxis_title='Bond/IOU Holdings', 
                               yaxis_title=f'{policy_name}',
                               plot_bgcolor = 'whitesmoke', 
                               font=dict(family="Times New Roman",
@@ -731,7 +714,8 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
     if borr_lim != None:
         fig_impact.add_vline(x=borr_lim,
                              line_width=3, line_dash="dash", line_color="red")
-
+    
+    # Show plot
     fig_impact.show()
     
     # Save plot
@@ -772,7 +756,7 @@ def plot_policy_impact(hank_model_initial, hank_model_terminal,
                                         save_results, exact_path,
                                         x_threshold=x_threshold,
                                         borr_lim=borr_lim)
-    except KeyError:
+    except KeyError: # If there is no labour supply policy, pass
         pass
         
             
@@ -921,8 +905,9 @@ def compare_selected_transitions(list_of_transition_dfs,
                                font=dict(family="Times New Roman", # adjust font
                                          size=20,
                                          color="black"))
-
-        fig.show() # Show plot
+    
+        # Show plot
+        fig.show()
         
         # Save plot
         if save_results == True:
