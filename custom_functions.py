@@ -50,7 +50,10 @@ def get_exact_results_path(settings):
     comp2 = settings['Shock']
     
     # Return exact path to results  
-    return f'{comp1}_{comp2}'
+    if settings['Asymmetry'] == True:
+        return f'{comp1}_{comp2}_asymmetric'
+    else:
+        return f'{comp1}_{comp2}'
 
 ###############################################################################
 ###############################################################################
@@ -93,7 +96,8 @@ def get_parametrisation(settings):
 # steady state and the second one corresponds to the terminal steady state
 def return_models_permanent(model_path, 
                             settings, 
-                            shock_model_parameters):
+                            shock_model_parameters,
+                            asym=False):
     # Get model as dictionary
     hank_dict = ep.parse(model_path)
     
@@ -166,7 +170,11 @@ def return_models_permanent(model_path,
         hank_model_terminal = ep.load(hank_dict)
         
     # Return initial model and terminal model
-    return hank_model_initial, hank_model_terminal
+    if asym == False: # Standard case
+        return hank_model_initial, hank_model_terminal
+    
+    elif asym == True: # Asymmetric case
+        return hank_model_terminal, hank_model_initial
 
 ###############################################################################
 ###############################################################################
