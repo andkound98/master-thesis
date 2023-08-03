@@ -122,7 +122,6 @@ equations:
     # Exogenous processes
     ~ phi = phiSS*(phiLag/phiSS)**rho_phi*exp(e_phi) # borrowing limit
     ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar) # interest rate wedge
-    ~ beta = betaSS*(betaLag/betaSS)**rho_beta*exp(e_beta) # discount factor
 
 ###############################################################################
 ###############################################################################
