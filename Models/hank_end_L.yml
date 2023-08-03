@@ -22,7 +22,7 @@ definitions: |
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
     
 # Variables and parameters for household and aggrgeate blocks
-variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rrminus, Rbar, C, N, B, D, DY, gr_liquid, phi, MPC, spread, Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C, ]
+variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rrminus, Rbar, C, N, B, D, DY, gr_liquid, phi, MPC, Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C, ]
 parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, chi, rho_phi, rho_Rbar, db, omega ]
 shocks: [ e_phi, e_Rbar ]
 
@@ -112,7 +112,6 @@ equations:
     ~ R = maximum(1, Rn) # ZLB on nominal interest rates
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
     ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
-    ~ spread = Rrminus - Rr # interest rate wedge
     
     # Market clearing conditions
     ~ B = aggr_a # bond market

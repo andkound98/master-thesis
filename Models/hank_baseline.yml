@@ -1,4 +1,5 @@
-# Author: Andreas Koundouros [koundouros.andreas@gmail.com]
+# Author: Andreas Koundouros [koundouros.andreas@gmail.com] 
+# Based on example model from Gregor Böhl
 ---
 name: 'hank_baseline'
 description: 'One-Asset HANK model with Shocks to the Borrowing Constraint and the Interest Rate Wedge'
@@ -22,7 +23,7 @@ definitions: |
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
-variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid, spread, Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C ]
+variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid, Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C ]
 parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, omega ]
 shocks: [ e_phi, e_Rbar ]
 
@@ -108,7 +109,6 @@ equations:
     ~ R = maximum(1, Rn) # ZLB on nominal interest rates
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
     ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
-    ~ spread = Rrminus - Rr # interest rate wedge
 
     # Market clearing conditions
     ~ B = aggr_a # bond market
