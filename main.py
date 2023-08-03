@@ -30,7 +30,7 @@ import plotly.io as pio # plotting
 ###############################################################################
 # Set working directory to folder 'master_thesis' to execute this file
 if not os.getcwd().endswith('master-thesis'):
-    raise Exception(f'Set working directory to folder \'master_thesis\'! Currently it is {os.getcwd()}')
+    raise Exception(f'Set working directory to folder \'master_thesis\'! Currently it is \'{os.getcwd()}\'')
 
 ###############################################################################
 ###############################################################################
@@ -54,7 +54,7 @@ from plot_functions import (plot_full_stst,
                             plot_policy_impact)
 
 # Import lists of variables to plot
-from list_variables_to_plot import dict_of_variables
+from list_variables_to_plot import dict_of_variables_to_plot
 
 ###############################################################################
 # Preliminaries
@@ -69,7 +69,7 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 ###############################################################################
 # Settings
 
-# List of models
+# Choose model(s)
 models = ['baseline', # baseline model (section 3)
           'slow_shock', # baseline model with slow deleveraging (section 6.1)
           'fast_shock', # baseline model with fast deleveraging (section 6.1)
@@ -78,10 +78,13 @@ models = ['baseline', # baseline model (section 3)
           'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
-# List of shocks
+# Choose shock(s)
 shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4.1)
          'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
          ]
+
+# Choose asymmetry 
+asymmetry = False # True: credit easing
 
 # Loop thorugh model-shock combinations to obtain results
 for model in models:
@@ -94,7 +97,8 @@ for model in models:
         
         # Get current settings
         settings = {'Model': set_model, 
-                    'Shock': set_shock}
+                    'Shock': set_shock,
+                    'Asymmetry': asymmetry}
 
         # Get path to model based on settings
         model_path = get_model_path(settings)
@@ -121,7 +125,8 @@ for model in models:
         # Make analysis according to which shock is chosen
         hank_model_initial, hank_model_terminal = return_models_permanent(model_path,
                                                                           settings,
-                                                                          shock_model_parameters)
+                                                                          shock_model_parameters,
+                                                                          asym = asymmetry)
         
         if not settings['Shock'].startswith('limit') == True:
             shock_model_parameters['terminal_borrowing_limit'] = None
@@ -151,7 +156,7 @@ for model in models:
         plot_compare_stst(hank_model_initial, hank_model_terminal,
                           save_results, exact_path,
                           shock_model_parameters['terminal_borrowing_limit'], 
-                          x_threshold=25)
+                          x_threshold=50)
         
         #######################################################################
         # TRANSITION
@@ -160,10 +165,6 @@ for model in models:
         # Initial seady state as starting point of transition
         hank_model_initial_stst = hank_model_initial['stst'].copy()
         hank_model_initial_dist = hank_model_initial['steady_state']['distributions'].copy()
-        
-        # Find perfect foresight transition to terminal steady state
-        # x_transition, _ = hank_model_terminal.find_path(init_state = hank_model_initial_stst.values(),
-        #                                                 init_dist = hank_model_initial_dist)
         
         x_transition, _ = get_agg_and_dist_transitions_and_check_c(hank_model_terminal,
                                                                    hank_model_initial_stst,
@@ -180,12 +181,14 @@ for model in models:
         #######################################################################
         # Aggregate dynamics
         
-        # If desired, plot transition of all aggregate variables (over entire horizon)       
+        # If desired, plot transition of all aggregate variables     
         plot_all(x_transition, hank_model_initial['variables'], 
-                  bunch=True, horizon=200)
+                  bunch=True, # Bunch plots together 
+                  horizon=200) # Entire horizon to check correct convergence
         
         # Plot transitions of selected aggregate variables
-        plot_selected_transition(dict_of_variables['aggregate'], hank_model_terminal, 
+        plot_selected_transition(dict_of_variables_to_plot['aggregate'], 
+                                 hank_model_terminal, 
                                  x_transition, horizon, 
                                  save_results, exact_path, title=True)
         
@@ -193,9 +196,10 @@ for model in models:
         # Distributional dynamics
         
         # Plot transitions of selected distributional variables
-        plot_selected_transition(dict_of_variables['cross_sec'], hank_model_terminal, 
-                                  x_transition, horizon, 
-                                  save_results, exact_path, title=True)
+        plot_selected_transition(dict_of_variables_to_plot['cross_sec'], 
+                                 hank_model_terminal, 
+                                 x_transition, horizon, 
+                                 save_results, exact_path, title=True)
         
         # Plot policies on impact
         plot_policy_impact(hank_model_initial, hank_model_terminal, 

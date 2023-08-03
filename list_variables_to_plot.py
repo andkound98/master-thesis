@@ -32,5 +32,5 @@ distributional_variables = [['Top10C', 'Top10% Consumption Share', '%'],
                             ['Bot25A', 'Bottom25% Assets Share', '%']]
 
 # Create dictionary of the two lists
-dict_of_variables = {'aggregate': aggregate_variables,
-                     'cross_sec': distributional_variables}
+dict_of_variables_to_plot = {'aggregate': aggregate_variables,
+                             'cross_sec': distributional_variables}
