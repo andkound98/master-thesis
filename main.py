@@ -60,7 +60,7 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = False # True: save results (tables and plots)
+save_results = True # True: save results (tables and plots)
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -190,7 +190,7 @@ for model in models:
         plot_selected_transition(dict_of_variables_to_plot['aggregate'], 
                                  hank_model_terminal, 
                                  x_transition, horizon, 
-                                 save_results, exact_path, title=True)
+                                 save_results, exact_path, title=False)
         
         #######################################################################
         # Distributional dynamics
@@ -199,7 +199,7 @@ for model in models:
         plot_selected_transition(dict_of_variables_to_plot['cross_sec'], 
                                  hank_model_terminal, 
                                  x_transition, horizon, 
-                                 save_results, exact_path, title=True)
+                                 save_results, exact_path, title=False)
         
         # Plot policies on impact
         plot_policy_impact(hank_model_initial, hank_model_terminal, 

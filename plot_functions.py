@@ -375,7 +375,7 @@ def plot_compare_stst(hank_model_initial,
                         color_discrete_sequence=[px.colors.qualitative.D3[0], 
                                                  px.colors.qualitative.D3[1]])
     fig_dists.update_layout(xaxis_title='Bond/IOU Holdings',
-                            yaxis_title='Share', 
+                            yaxis_title='Percent', 
                             plot_bgcolor = 'whitesmoke', 
                             font=dict(family="Times New Roman",
                                              size=20,
@@ -525,7 +525,7 @@ def plot_single_transition(model,
                                  color="black"))
     if var_name != '':
         fig.update_layout(margin=dict(l=15, r=15, t=50, b=5))
-    fig.update_traces(line=dict(width=3))
+    fig.update_traces(line=dict(width=4))
     fig.show() # Show plot
     
     # Save plot
@@ -583,7 +583,7 @@ def plot_double_transition(model,
                        font=dict(family="Times New Roman", # adjust font
                                  size=20,
                                  color="black"))
-    fig.update_traces(line=dict(width=3))
+    fig.update_traces(line=dict(width=4))
     
     # Show plot
     fig.show()
@@ -708,7 +708,7 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
                                         color="black"),
                               margin=dict(l=15, r=15, t=5, b=5), 
                               legend_title='') 
-    fig_impact.update_traces(line=dict(width=3))
+    fig_impact.update_traces(line=dict(width=4))
     
     # Add terminal borrowing limit as vertical line
     if borr_lim != None:
@@ -848,7 +848,7 @@ def compare_selected_transitions(list_of_transition_dfs,
         fig = px.line(transition_df,
                       x = 'Quarters',
                       y = transition_df.columns.tolist(), 
-                      color_discrete_sequence=px.colors.qualitative.D3[:transition_df.shape[1]-1]).update_traces(line=dict(width=3))
+                      color_discrete_sequence=px.colors.qualitative.D3[:transition_df.shape[1]-1]).update_traces(line=dict(width=4))
         if len(sublist) == 3 and transition_df.shape[1] == 3:
             fig.update_traces(selector={"name": f'{legend[0]}'},line={"dash": "dash"})
         elif len(sublist) == 3 and transition_df.shape[1] == 4:
