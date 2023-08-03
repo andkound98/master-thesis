@@ -173,7 +173,7 @@ def return_models_permanent(model_path,
     if asym == False: # Standard case
         return hank_model_initial, hank_model_terminal
     
-    elif asym == True: # Asymmetric case
+    if asym == True: # Asymmetric case
         return hank_model_terminal, hank_model_initial
 
 ###############################################################################
@@ -338,6 +338,7 @@ def stst_overview(models,
         
         # Add some more features of the steady states
         a_grid_init = hank_model_init['context']['a_grid']
+        a_grid_term = hank_model_term['context']['a_grid']
         
         # Initial steady state 
         distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
@@ -348,6 +349,53 @@ def stst_overview(models,
         distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
         distribution_assets_terminal = percent*jnp.sum(distribution_skills_and_assets_terminal, 
                                           axis = 0)
+        
+        #a_grid = hank_model['context']['a_grid']
+        #dist = hank_model['steady_state']['distributions'][0]
+        mpc_init = hank_model_init['steady_state']['decisions']['mpc']
+        mpc_term = hank_model_term['steady_state']['decisions']['mpc']
+        
+        borr_mpc_init = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_initial, 0))
+        borr_mpc_term = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_terminal, 0))
+        
+        current_limit_index = jnp.argmax(distribution_skills_and_assets_initial > 0)
+        current_limit = a_grid_init[current_limit_index]
+
+        # Find the value in arr1 which is 10 entries away from 'current_limit'
+        target_index = current_limit_index + 10
+        target_value = a_grid_init[target_index]
+        
+        constr_mpc_init = jnp.sum(jnp.where(a_grid_init<target_value,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<target_value, distribution_skills_and_assets_initial, 0))
+        
+        current_limit_index = jnp.argmax(distribution_skills_and_assets_terminal > 0)
+        current_limit = a_grid_term[current_limit_index]
+
+        # Find the value in arr1 which is 10 entries away from 'current_limit'
+        target_index = current_limit_index + 10
+        target_value = a_grid_term[target_index]
+        
+        constr_mpc_term = jnp.sum(jnp.where(a_grid_term<target_value,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_term<target_value, distribution_skills_and_assets_terminal, 0))
+        
+        lend_mpc_init = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_initial, 0))
+        lend_mpc_term = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_terminal, 0))
+        
+        # Add MPC of indebted households
+        row_mpc_indebted = {'Variable': 'MPC of Borrowers',
+                              'Initial': round(borr_mpc_init,2),
+                              'Terminal': round(borr_mpc_term,2)}
+        row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
+        stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
+                                       ignore_index=True)
+        
+        # Add MPC of households very close to the constraint
+        
+        # Add MPC of lending households
+        row_mpc_lending = {'Variable': 'MPC of Lenders',
+                              'Initial': round(lend_mpc_init,2),
+                              'Terminal': round(lend_mpc_term,2)}
+        row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
+        stst_df = pd.concat([stst_df, row_mpc_lending_df], 
+                                       ignore_index=True)
         
         # Add fraction of indebted households
         row_share_indebted = {'Variable': 'Frac. of Borrowers',
@@ -387,7 +435,7 @@ def stst_overview(models,
         # Calculate changes based on variable type
         for index, row in stst_df.iterrows():
             try:
-                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rrminus', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets']:
+                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders']:
                     # Absolute change for specific variables
                     stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
                 else:
@@ -529,3 +577,36 @@ def get_agg_and_dist_transitions_and_check_c(terminal_model,
     # Return aggregate and cross-sectional transitions
     return agg_x, dist_x
     
+def shorten_asset_dist(hank_model, 
+                       x_threshold,
+                       percent=100):
+    # Get asset grid
+    a_grid = hank_model['context']['a_grid']
+    
+    # Distribution over skills and assets
+    distribution_skills_and_assets = hank_model['steady_state']['distributions'][0]
+    
+    # Distribution over assets
+    distribution_assets = np.column_stack([a_grid, 
+                                           percent*jnp.sum(distribution_skills_and_assets, 
+                                                           axis = 0)])
+    distribution_assets_df = pd.DataFrame(distribution_assets, 
+                                          columns = ['grid', 'distribution'])
+
+    # Filter the data frame based on the threshold
+    filtered_df = distribution_assets_df[distribution_assets_df['grid'] < x_threshold]
+
+    # Calculate the sum of shares for grid points above or equal to the threshold
+    sum_share = distribution_assets_df[distribution_assets_df['grid'] >= x_threshold]['distribution'].sum()
+
+    # Create a new row with the threshold and the sum of shares
+    threshold_row = pd.DataFrame({'grid': [x_threshold], 'distribution': [sum_share]})
+
+    # Concatenate the filtered data frame with the threshold row
+    short_asset_dist = pd.concat([filtered_df, threshold_row])
+
+    # Reset the index of the new data frame
+    short_asset_dist.reset_index(drop=True, inplace=True)
+    
+    # Return shortened distribution
+    return short_asset_dist

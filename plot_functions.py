@@ -23,7 +23,8 @@ import matplotlib.cm as cm
 import plotly.graph_objects as go
 
 # Import custom functions
-from custom_functions import make_policy_df
+from custom_functions import (make_policy_df,
+                              shorten_asset_dist)
 
 ###############################################################################
 ###############################################################################
@@ -40,7 +41,7 @@ def plot_full_stst(hank_model,
                         save_results,
                         exact_path,
                         state,
-                        x_threshold=65, 
+                        x_threshold=50, 
                         y_threshold=1.5)
     
     # Plot steady state policies over assets depending on skill
@@ -116,48 +117,48 @@ def plot_single_policy(hank_model,
     if y_range != None:
         fig_policy.update_yaxes(range=y_range) # Fix range of y-axis
     
-    if policy == 'mpc' and group_mpc == True:
-        a_grid = hank_model['context']['a_grid']
-        dist = hank_model['steady_state']['distributions'][0]
-        mpc = hank_model['steady_state']['decisions']['mpc']
+    # if policy == 'mpc' and group_mpc == True:
+    #     a_grid = hank_model['context']['a_grid']
+    #     dist = hank_model['steady_state']['distributions'][0]
+    #     mpc = hank_model['steady_state']['decisions']['mpc']
         
-        borr_mpc = jnp.sum(jnp.where(a_grid<0,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid<0, dist, 0))
+    #     borr_mpc = jnp.sum(jnp.where(a_grid<0,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid<0, dist, 0))
         
-        lend_mpc = jnp.sum(jnp.where(a_grid>=0,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid>=0, dist, 0))
+    #     lend_mpc = jnp.sum(jnp.where(a_grid>=0,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid>=0, dist, 0))
         
-        fig_policy.update_layout(annotations=[dict(x=-0.8, 
-                                                   y=0.7,
-                                                   text=f'MPC(b<0) = {round(borr_mpc,2)}',
-                                                   font=dict(family="Times New Roman",
-                                                             size=20,
-                                                             color="black")),
-                                              dict(x=1, 
-                                                   y=0.7,
-                                                   text=f'MPC(b≥0) = {round(lend_mpc,2)}',
-                                                   font=dict(family="Times New Roman",
-                                                             size=20,
-                                                             color="black"))])
+    #     fig_policy.update_layout(annotations=[dict(x=-0.8, 
+    #                                                y=0.7,
+    #                                                text=f'MPC(b<0) = {round(borr_mpc,2)}',
+    #                                                font=dict(family="Times New Roman",
+    #                                                          size=20,
+    #                                                          color="black")),
+    #                                           dict(x=1, 
+    #                                                y=0.7,
+    #                                                text=f'MPC(b≥0) = {round(lend_mpc,2)}',
+    #                                                font=dict(family="Times New Roman",
+    #                                                          size=20,
+    #                                                          color="black"))])
         
-        if constraint_mpc != None:
-            const_mpc = jnp.sum(jnp.where(a_grid<constraint_mpc,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid<constraint_mpc, dist, 0))
-            fig_policy.update_layout(annotations=[dict(x=-0.8, 
-                                                       y=0.7,
-                                                       text=f'MPC(b<0) = {round(borr_mpc,2)}',
-                                                       font=dict(family="Times New Roman",
-                                                                 size=20,
-                                                                 color="black")),
-                                                  dict(x=1, 
-                                                       y=0.7,
-                                                       text=f'MPC(b≥0) = {round(lend_mpc,2)}',
-                                                       font=dict(family="Times New Roman",
-                                                                 size=20,
-                                                                 color="black")),
-                                                  dict(x=a_grid[0]+0.8, 
-                                                       y=0.9,
-                                                       text=f'MPC(b< \u03C6 \') = {round(const_mpc,2)}',
-                                                       font=dict(family="Times New Roman",
-                                                                 size=20,
-                                                                 color="black"))])
+        # if constraint_mpc != None:
+        #     const_mpc = jnp.sum(jnp.where(a_grid<constraint_mpc,dist*mpc,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid<constraint_mpc, dist, 0))
+        #     fig_policy.update_layout(annotations=[dict(x=-0.8, 
+        #                                                y=0.7,
+        #                                                text=f'MPC(b<0) = {round(borr_mpc,2)}',
+        #                                                font=dict(family="Times New Roman",
+        #                                                          size=20,
+        #                                                          color="black")),
+        #                                           dict(x=1, 
+        #                                                y=0.7,
+        #                                                text=f'MPC(b≥0) = {round(lend_mpc,2)}',
+        #                                                font=dict(family="Times New Roman",
+        #                                                          size=20,
+        #                                                          color="black")),
+        #                                           dict(x=a_grid[0]+0.8, 
+        #                                                y=0.9,
+        #                                                text=f'MPC(b< \u03C6 \') = {round(const_mpc,2)}',
+        #                                                font=dict(family="Times New Roman",
+        #                                                          size=20,
+        #                                                          color="black"))])
     
     fig_policy.show()
     
@@ -238,42 +239,6 @@ def plot_stst_dist_3d(model,
     
     # Adjust perspective
     fig_dist_skills_and_assets.view_init(azim=120)
-
-###############################################################################
-###############################################################################
-def shorten_asset_dist(hank_model, 
-                       x_threshold,
-                       percent=100):
-    # Get asset grid
-    a_grid = hank_model['context']['a_grid']
-    
-    # Distribution over skills and assets
-    distribution_skills_and_assets = hank_model['steady_state']['distributions'][0]
-    
-    # Distribution over assets
-    distribution_assets = np.column_stack([a_grid, 
-                                           percent*jnp.sum(distribution_skills_and_assets, 
-                                                           axis = 0)])
-    distribution_assets_df = pd.DataFrame(distribution_assets, 
-                                          columns = ['grid', 'distribution'])
-
-    # Filter the data frame based on the threshold
-    filtered_df = distribution_assets_df[distribution_assets_df['grid'] < x_threshold]
-
-    # Calculate the sum of shares for grid points above or equal to the threshold
-    sum_share = distribution_assets_df[distribution_assets_df['grid'] >= x_threshold]['distribution'].sum()
-
-    # Create a new row with the threshold and the sum of shares
-    threshold_row = pd.DataFrame({'grid': [x_threshold], 'distribution': [sum_share]})
-
-    # Concatenate the filtered data frame with the threshold row
-    short_asset_dist = pd.concat([filtered_df, threshold_row])
-
-    # Reset the index of the new data frame
-    short_asset_dist.reset_index(drop=True, inplace=True)
-    
-    # Return shortened distribution
-    return short_asset_dist
 
 ###############################################################################
 ###############################################################################
@@ -364,8 +329,8 @@ def bar_plot_asset_dist(hank_model,
                                         font=dict(family="Times New Roman",
                                                   size=20,
                                                   color="black")),
-                                   dict(x=(pos_a_grid.tail(1).iloc[0]-(bar_positions[i]/7)),
-                                                     y=y_threshold*(1/8),
+                                   dict(x=(pos_a_grid.tail(1).iloc[0]-(bar_positions[i]/8)),
+                                                     y=y_threshold*(1/5),
                                                      text=f'Pr[b≥{round(pos_a_grid.tail(1).iloc[0],2)}] = {round(pos_y.tail(1).iloc[0],2)}',
                                                      showarrow=False,
                                                      arrowhead=1,
@@ -442,7 +407,7 @@ def plot_compare_stst(hank_model_initial,
                             legend=dict(yanchor="top", y=0.99, 
                                         xanchor="right", x=0.99), 
                             legend_title=None)
-    fig_dists.update_traces(line=dict(width=3))
+    fig_dists.update_traces(line=dict(width=2))
     fig_dists.show()
 
     if save_results == True:
@@ -460,7 +425,7 @@ def plot_compare_stst(hank_model_initial,
     
     # Asset accumulation in the initial steady state
     asset_acc_init = make_policy_df(hank_model_initial, 'a', 
-                                    borr_cutoff=None, x_threshold=x_threshold)
+                                    borr_cutoff=None, x_threshold=x_threshold+10)
     asset_acc_init[asset_acc_init.columns[1:]] = asset_acc_init[asset_acc_init.columns[1:]].sub(a_grid_init, 
                                                                                                 axis='rows')
     asset_acc_long = asset_acc_init.iloc[:, 1:]
@@ -471,7 +436,7 @@ def plot_compare_stst(hank_model_initial,
     # Asset accumulation in the terminal steady state
     asset_acc_term = make_policy_df(hank_model_terminal, 'a', 
                                     borr_cutoff=phi, 
-                                    x_threshold=x_threshold)
+                                    x_threshold=x_threshold+10)
     asset_acc_term[asset_acc_term.columns[1:]] = asset_acc_term[asset_acc_term.columns[1:]].sub(a_grid_init, 
                                                                                                 axis='rows')
     asset_acc_long = asset_acc_term.iloc[:, 1:]
@@ -500,7 +465,7 @@ def plot_compare_stst(hank_model_initial,
                             legend=dict(yanchor="top", y=0.99, 
                                         xanchor="right", x=0.99), 
                             legend_title=None)
-    fig_acc.update_traces(line=dict(width=3))
+    fig_acc.update_traces(line=dict(width=2))
     fig_acc.show() # Show plot
     
     # Save plot

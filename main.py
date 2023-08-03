@@ -4,7 +4,7 @@
 Author: Andreas Koundouros
 Date: 25.08.2023
 
-This file contains the main code for my Master Thesis with the title:
+This file contains the main code for my master thesis with the title:
     
    "Financial Constraints and Household Heterogeneity in the Macroeconomy", 
 
@@ -25,7 +25,7 @@ transitions. If desired, the results are stored in the folder 'Results'.
 # Import packages
 import os # path management
 import time as tm # timing
-import plotly.io as pio # plotting
+import plotly.io as pio # plot settings
     
 ###############################################################################
 # Set working directory to folder 'master_thesis' to execute this file
@@ -71,16 +71,16 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 
 # Choose model(s)
 models = ['baseline', # baseline model (section 3)
-          'slow_shock', # baseline model with slow deleveraging (section 6.1)
-          'fast_shock', # baseline model with fast deleveraging (section 6.1)
-          'end_L', # extended model with endogenous labour supply (section 6.2)
-          'low_beta', # baseline model with a low beta calibration (appendix E.1)
-          'low_B' # baseline model with a low B calibration (appendix E.2)
+          #'slow_shock', # baseline model with slow deleveraging (section 6.1)
+          #'fast_shock', # baseline model with fast deleveraging (section 6.1)
+          #'end_L', # extended model with endogenous labour supply (section 6.2)
+          #'low_beta', # baseline model with a low beta calibration (appendix E.1)
+          #'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
 # Choose shock(s)
 shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4.1)
-         'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
+         #'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
          ]
 
 # Choose asymmetry 
@@ -156,7 +156,7 @@ for model in models:
         plot_compare_stst(hank_model_initial, hank_model_terminal,
                           save_results, exact_path,
                           shock_model_parameters['terminal_borrowing_limit'], 
-                          x_threshold=50)
+                          x_threshold=15)
         
         #######################################################################
         # TRANSITION
