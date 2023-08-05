@@ -378,25 +378,7 @@ def stst_overview(models,
         
         lend_mpc_init = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_initial, 0))
         lend_mpc_term = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_terminal, 0))
-        
-        # Add MPC of indebted households
-        row_mpc_indebted = {'Variable': 'MPC of Borrowers',
-                              'Initial': round(borr_mpc_init,2),
-                              'Terminal': round(borr_mpc_term,2)}
-        row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
-        stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
-                                       ignore_index=True)
-        
-        # Add MPC of households very close to the constraint
-        
-        # Add MPC of lending households
-        row_mpc_lending = {'Variable': 'MPC of Lenders',
-                              'Initial': round(lend_mpc_init,2),
-                              'Terminal': round(lend_mpc_term,2)}
-        row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
-        stst_df = pd.concat([stst_df, row_mpc_lending_df], 
-                                       ignore_index=True)
-        
+    
         # Add fraction of indebted households
         row_share_indebted = {'Variable': 'Frac. of Borrowers',
                               'Initial': jnp.sum(jnp.where(a_grid_init < 0, 
@@ -429,13 +411,31 @@ def stst_overview(models,
         stst_df = pd.concat([stst_df, row_share_zero_df], 
                                        ignore_index=True)
         
+        # Add MPC of indebted households
+        row_mpc_indebted = {'Variable': 'MPC of Borrowers',
+                              'Initial': round(borr_mpc_init,2),
+                              'Terminal': round(borr_mpc_term,2)}
+        row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
+        stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
+                                       ignore_index=True)
+        
+        # Add MPC of households very close to the constraint
+        
+        # Add MPC of lending households
+        row_mpc_lending = {'Variable': 'MPC of Lenders',
+                              'Initial': round(lend_mpc_init,2),
+                              'Terminal': round(lend_mpc_term,2)}
+        row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
+        stst_df = pd.concat([stst_df, row_mpc_lending_df], 
+                                       ignore_index=True)
+        
         # Add column which calculates changes in percent between the steady states
         stst_df['Change'] = 0
 
         # Calculate changes based on variable type
         for index, row in stst_df.iterrows():
             try:
-                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders']:
+                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
                     # Absolute change for specific variables
                     stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
                 else:
