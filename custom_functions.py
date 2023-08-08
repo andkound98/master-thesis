@@ -49,10 +49,30 @@ def get_exact_results_path(settings):
     comp1 = settings['Model']
     comp2 = settings['Shock']
     
-    # Return exact path to results  
     if settings['Asymmetry'] == True:
+        # Define path 
+        path = os.path.join(os.getcwd(), 
+                            'Results', 
+                            f'{comp1}_{comp2}_asymmetric')
+        
+        # Check if the folder exists
+        if not os.path.exists(path):
+        # Create the folder if it doesn't exist
+            os.makedirs(path)
+            
         return f'{comp1}_{comp2}_asymmetric'
+    
     else:
+        # Define path 
+        path = os.path.join(os.getcwd(), 
+                            'Results', 
+                            f'{comp1}_{comp2}')
+        
+        # Check if the folder exists
+        if not os.path.exists(path):
+        # Create the folder if it doesn't exist
+            os.makedirs(path)
+            
         return f'{comp1}_{comp2}'
 
 ###############################################################################
@@ -452,6 +472,7 @@ def stst_overview(models,
     if save_results == True:
         stst_table_path = os.path.join(os.getcwd(),
                                        'Results',
+                                       f'{exact_path}',
                                        f'stst_comparison_{exact_path}.tex')
         stst_df.to_latex(stst_table_path, 
                          label = f'tab:stst_comparison_{exact_path}', 
@@ -479,6 +500,7 @@ def save_transition(model,
     # Get path to save pickle file
     path = os.path.join(os.getcwd(),
                         'Results',
+                        f'{exact_path}',
                         f'x_trans_{exact_path}.pkl')
     
     # Save data frame as pickle
@@ -502,6 +524,7 @@ def get_transitions(comparison):
         transition = comparison_list[tt]
         path = os.path.join(os.getcwd(),
                             'Results',
+                            f'{transition}',
                             f'x_trans_{transition}.pkl')
         try:
             x_df = pd.read_pickle(path)
@@ -553,7 +576,6 @@ def check_for_negative_values(array_impl_obj):
     
     # Raise error if negative entries were found
     if negative_indices.size > 0:
-        return negative_indices
         raise ValueError('Warning: Negative values found in the consumption responses.')
     
     else:

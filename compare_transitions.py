@@ -39,6 +39,8 @@ start = tm.time() # Start timer
 
 save_results = True # True: results (tables and plots) are saved
 
+show_titles_in_plots = False # True: show plot titles
+
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
 ###############################################################################
@@ -65,13 +67,22 @@ list_of_transitions = get_transitions(comparison)
 horizon = 12
 
 # Select variables to plot (with descriptions)
-from list_variables_to_plot import dict_of_variables # Import lists of variables to plot
+from list_variables_to_plot import dict_of_variables_to_plot # Import lists of variables to plot
 
-# Plot the comparison of transitions of selected variables
+# Plot the comparison of transitions of selected aggregate variables
 compare_selected_transitions(list_of_transitions,
-                             dict_of_variables['aggregate'],
+                             dict_of_variables_to_plot['aggregate'],
                              horizon,
                              legend,
                              save_results,
                              comparison,
-                             title=True)
+                             title=show_titles_in_plots)
+
+# Plot the comparison of transitions of selected cross-sectional variables
+compare_selected_transitions(list_of_transitions,
+                             dict_of_variables_to_plot['cross_sec'],
+                             horizon,
+                             legend,
+                             save_results,
+                             comparison,
+                             title=show_titles_in_plots)

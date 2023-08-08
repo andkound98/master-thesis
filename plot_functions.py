@@ -17,7 +17,6 @@ import numpy as np
 import jax.numpy as jnp
 from grgrlib import grplot
 import plotly.express as px
-import matplotlib
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from grgrlib import grbar3d
@@ -42,7 +41,7 @@ def plot_full_stst(hank_model,
                         exact_path,
                         state,
                         x_threshold=50, 
-                        y_threshold=2)
+                        y_threshold=1.5)
     
     # Plot steady state policies over assets depending on skill
     policies_to_plot = [['a', 'Bonds/IOUs'],
@@ -125,6 +124,7 @@ def plot_single_policy(hank_model,
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
+                                 f'{exact_path}',
                                  f'stst_policies_{policy}_{exact_path}_{state}.svg')
         fig_policy.write_image(path_plot)
     
@@ -239,14 +239,13 @@ def bar_plot_asset_dist(hank_model,
     # Calculate the positions of the bars
     bar_positions = np.array(a_grid) - np.array(bar_widths) / 2
     
-    # Generate a color sequence using a colormap
-    #cmap = cm.get_cmap('twilight_shifted')  # Choose a colormap
-    #cmap = matplotlib.colormaps.get_cmap('twilight_shifted')  # Choose a colormap
-    cmap = matplotlib.colormaps.get_cmap('twilight_shifted')  # Choose a colormap
-    colours = [cmap(i / len(a_grid)) for i in range(len(a_grid))]
+    # Colour of the distribution
+    colours = [px.colors.qualitative.D3[0]]*len(a_grid)
     
     # Get lowest grid point with positive frequency 
     pos_a_grid = a_grid[y>0]
+    ll=pos_a_grid.index
+    first_pos_entry_index = ll[0]
     pos_a_grid.reset_index(drop=True, inplace=True)
     
     # Get the frequency of that grid point
@@ -258,12 +257,12 @@ def bar_plot_asset_dist(hank_model,
     
     # Fill plot step-by-step
     for i in range(len(a_grid)):
-        if i == 0: # make the very first bar oversized so that it becomes clear in the figure
-            x_position = bar_positions[i] - bar_widths[i + 150] / 2
+        if i == first_pos_entry_index: # make the very first bar oversized so that it becomes clear in the figure
+            x_position = bar_positions[i] - bar_widths[140] / 2
             fig.add_trace(go.Bar(
                 x=[x_position],
-                y=np.array(y_threshold),
-                width=bar_widths[i+120],
+                y=np.array(y[i]),
+                width=bar_widths[140],
                 marker=dict(color=colours[i])))
         
         elif y[i] > y_threshold: # replace value over y-axis threshold by threshold
@@ -325,6 +324,7 @@ def bar_plot_asset_dist(hank_model,
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
+                                 f'{exact_path}',
                                  f'stst_dist_2d_bar_{exact_path}_{state}.svg')
         fig.write_image(path_plot)
 
@@ -333,6 +333,7 @@ def bar_plot_asset_dist(hank_model,
 # Function for plotting a comparison of two different steady states
 def plot_compare_stst(hank_model_initial,
                       hank_model_terminal,
+                      settings,
                       save_results,
                       exact_path,
                       phi,
@@ -373,7 +374,7 @@ def plot_compare_stst(hank_model_initial,
                         y = ['Initial', 'Terminal'],
                         title='', 
                         color_discrete_sequence=[px.colors.qualitative.D3[0], 
-                                                 px.colors.qualitative.D3[1]])
+                                                 px.colors.qualitative.D3[1]])#.update_traces(selector={"name": 'Initial'},line={"dash": "dash"})
     fig_dists.update_layout(xaxis_title='Bond/IOU Holdings',
                             yaxis_title='Percent', 
                             plot_bgcolor = 'whitesmoke', 
@@ -381,8 +382,9 @@ def plot_compare_stst(hank_model_initial,
                                              size=20,
                                              color="black"), 
                             margin=dict(l=15, r=15, t=5, b=5), 
-                            legend=dict(yanchor="top", y=0.99, 
-                                        xanchor="right", x=0.99), 
+                            legend=dict(yanchor="top", y=0.98, 
+                                        xanchor="right", x=0.98,
+                                        font=dict(size=28)), 
                             legend_title=None)
     fig_dists.update_traces(line=dict(width=2))
     
@@ -393,6 +395,7 @@ def plot_compare_stst(hank_model_initial,
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
+                                 f'{exact_path}',
                                  f'stst_dist_2d_comparison_{exact_path}.svg')
         fig_dists.write_image(path_plot)
     
@@ -403,57 +406,88 @@ def plot_compare_stst(hank_model_initial,
     # Get stationary distribution over productivity levels 
     skills_stationary = hank_model_initial['context']['skills_stationary']
     
-    # Asset accumulation in the initial steady state
-    asset_acc_init = make_policy_df(hank_model_initial, 'a', 
-                                    borr_cutoff=None, x_threshold=x_threshold+10)
-    asset_acc_init[asset_acc_init.columns[1:]] = asset_acc_init[asset_acc_init.columns[1:]].sub(a_grid_init, 
-                                                                                                axis='rows')
-    asset_acc_long = asset_acc_init.iloc[:, 1:]
-    df_array = asset_acc_long.to_numpy()
-    dot_product_init = jnp.dot(df_array, skills_stationary)
-    asset_acc_init['Initial'] = dot_product_init
+    # Plot steady state policies over assets depending on skill
+    policies_to_plot = [['a', 'Asset Accumulation'],
+                        ['c', 'Consumption Units']]
+    if settings['Model'] == 'end_L':
+        policies_to_plot.append(['n', 'Labour Supply'])
+        
+    for sublist in policies_to_plot:
+        policy = sublist[0]
+        policy_name = sublist[1]
+        # Asset accumulation in the initial steady state
+        asset_acc_init = make_policy_df(hank_model_initial, f'{policy}', 
+                                        borr_cutoff=None, x_threshold=x_threshold)
+        
+        if policy == 'a':
+            asset_acc_init[asset_acc_init.columns[1:]] = asset_acc_init[asset_acc_init.columns[1:]].sub(a_grid_init, 
+                                                                                                        axis='rows')
+            
+        asset_acc_long = asset_acc_init.iloc[:, 1:]
+        df_array = asset_acc_long.to_numpy()
+        dot_product_init = jnp.dot(df_array, skills_stationary)
+        asset_acc_init['Initial'] = dot_product_init
+        
+        # Asset accumulation in the terminal steady state
+        asset_acc_term = make_policy_df(hank_model_terminal, f'{policy}', 
+                                        borr_cutoff=phi, 
+                                        x_threshold=x_threshold)
+        
+        if policy == 'a':
+            asset_acc_term[asset_acc_term.columns[1:]] = asset_acc_term[asset_acc_term.columns[1:]].sub(a_grid_init, 
+                                                                                                        axis='rows')
+            
+        asset_acc_long = asset_acc_term.iloc[:, 1:]
+        df_array = asset_acc_long.to_numpy()
+        dot_product_term = jnp.dot(df_array, skills_stationary)
+        asset_acc_term['Terminal'] = dot_product_term
     
-    # Asset accumulation in the terminal steady state
-    asset_acc_term = make_policy_df(hank_model_terminal, 'a', 
-                                    borr_cutoff=phi, 
-                                    x_threshold=x_threshold+10)
-    asset_acc_term[asset_acc_term.columns[1:]] = asset_acc_term[asset_acc_term.columns[1:]].sub(a_grid_init, 
-                                                                                                axis='rows')
-    asset_acc_long = asset_acc_term.iloc[:, 1:]
-    df_array = asset_acc_long.to_numpy()
-    dot_product_term = jnp.dot(df_array, skills_stationary)
-    asset_acc_term['Terminal'] = dot_product_term
+        # Merge data frames
+        acc_df = pd.merge(asset_acc_init, 
+                          asset_acc_term,
+                          on = 'grid', how = 'left')
     
-    # Merge data frames
-    acc_df = pd.merge(asset_acc_init, 
-                      asset_acc_term,
-                      on = 'grid', how = 'left')
-    
-    fig_acc = px.line(acc_df, # Create plot
-                      x = 'grid', 
-                      y = ['Initial', 'Terminal'],
-                      title='', 
-                      color_discrete_sequence=[px.colors.qualitative.D3[0], 
-                                               px.colors.qualitative.D3[1]])
-    fig_acc.update_layout(xaxis_title='Bond/IOU Holdings',
-                            yaxis_title='Asset Accumulation', 
-                            plot_bgcolor = 'whitesmoke', 
-                            font=dict(family="Times New Roman",
-                                             size=20,
-                                             color="black"), 
-                            margin=dict(l=15, r=15, t=5, b=5), 
-                            legend=dict(yanchor="top", y=0.99, 
-                                        xanchor="right", x=0.99), 
-                            legend_title=None)
-    fig_acc.update_traces(line=dict(width=2))
-    fig_acc.show() # Show plot
-    
-    # Save plot
-    if save_results == True:
-        path_plot = os.path.join(os.getcwd(),
-                                 'Results',
-                                 f'stst_asset_acc_comparison_{exact_path}.svg')
-        fig_acc.write_image(path_plot)
+        # Plot
+        fig_acc = px.line(acc_df, 
+                          x = 'grid', 
+                          y = ['Initial', 'Terminal'],
+                          title='', 
+                          color_discrete_sequence=[px.colors.qualitative.D3[0], 
+                                                   px.colors.qualitative.D3[1]])#.update_traces(selector={"name": 'Initial'}, line={"dash": "dash"})
+        
+        if policy == 'a':
+            fig_acc.update_layout(xaxis_title='Bond/IOU Holdings',
+                                    yaxis_title=f'{policy_name}', 
+                                    plot_bgcolor = 'whitesmoke', 
+                                    font=dict(family="Times New Roman",
+                                                     size=20,
+                                                     color="black"), 
+                                    margin=dict(l=15, r=15, t=5, b=5), 
+                                    legend=dict(yanchor="top", y=0.98, 
+                                                xanchor="right", x=0.98,
+                                                font=dict(size=28)), 
+                                    legend_title=None)
+            
+        if policy != 'a':
+            fig_acc.update_layout(xaxis_title='Bond/IOU Holdings',
+                                    yaxis_title=f'{policy_name}', 
+                                    plot_bgcolor = 'whitesmoke', 
+                                    font=dict(family="Times New Roman",
+                                                     size=20,
+                                                     color="black"), 
+                                    margin=dict(l=15, r=15, t=5, b=5), 
+                                    showlegend=False)
+            
+        fig_acc.update_traces(line=dict(width=2))
+        fig_acc.show() # Show plot
+        
+        # Save plot
+        if save_results == True:
+            path_plot = os.path.join(os.getcwd(),
+                                     'Results',
+                                     f'{exact_path}',
+                                     f'stst_{policy}_{exact_path}.svg')
+            fig_acc.write_image(path_plot)
     
 ###############################################################################
 ###############################################################################
@@ -490,24 +524,30 @@ def plot_single_transition(model,
     variable = [variable] # Make variable a list
     var_index = [model['variables'].index(v) for v in variable] # Find variable index
     
-    if variable[0] in ['R', 'Rn', 'Rr', 'Rrminus']:
+    if variable[0] in ['R', 'Rn', 'Rr', 'Rrminus', 'pi']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                4*percent*(x_trans[:horizon,var_index] - 1.0)])
+        yfin = 4*percent*(x_trans[-1,var_index] - 1.0)
     elif variable[0] in ['Rbar']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                4*percent*x_trans[:horizon,var_index]])
+        yfin = 4*percent*x_trans[-1,var_index]
     elif variable[0] in ['beta', 'D', 'DY', 'phi', 'gr_liquid', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                x_trans[:horizon,var_index]])
+        yfin = x_trans[-1,var_index]
     else:
         stst = x_trans[0, var_index] # Find (initial) steady state
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                percent*((x_trans[:horizon,var_index] - stst)/stst)])
+        yfin = percent*((x_trans[-1,var_index] - stst)/stst)
         
     x_single_transition_df = pd.DataFrame(x_single_transition, # Turn into data frame
-                                          columns = ['Quarters', f'{var_name}'])
+                                          columns = ['Quarters', 
+                                                     f'{var_name}'])
     
-    fig = px.line(x_single_transition_df, # make plot
+    # Plot
+    fig = px.line(x_single_transition_df, 
                   x = 'Quarters',
                   y = f'{var_name}',
                   color_discrete_sequence=[px.colors.qualitative.D3[0]])
@@ -523,15 +563,25 @@ def plot_single_transition(model,
                        font=dict(family="Times New Roman", # adjust font
                                  size=20,
                                  color="black"))
+    
+    # More space at heading 
     if var_name != '':
         fig.update_layout(margin=dict(l=15, r=15, t=50, b=5))
+    
     fig.update_traces(line=dict(width=4))
+    
+    # Add line for terminal steady state
+    if round(x_trans[0,var_index],5) != round(x_trans[-1,var_index],5): 
+        fig.add_hline(y=yfin.item(), line_width=3, line_dash="dash", 
+                      line_color="red")
+    
     fig.show() # Show plot
     
     # Save plot
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
+                                 f'{exact_path}',
                                  f'transition_{variable[0]}_{exact_path}.svg')
         fig.write_image(path_plot)
     
@@ -552,13 +602,15 @@ def plot_double_transition(model,
     
     var_indices = [model['variables'].index(v) for v in variables] # Find variable index
     
-    if variables[0] in ['R', 'Rn', 'Rr', 'Rminus'] and variables[1] in ['R', 'Rn', 'Rr', 'Rminus']:
+    if variables[0] in ['R', 'Rn', 'Rr', 'Rminus', 'pi'] and variables[1] in ['R', 'Rn', 'Rr', 'Rminus', 'pi']:
         x_double_transition = np.column_stack([time, # Concatenate IRFs and time vector
                                                4*percent*(x_trans[:horizon,var_indices] - 1.0)])
+        yfin = 4*percent*(x_trans[-1,var_indices[0]] - 1.0)
     else:
         stst = x_trans[0, var_indices] # Find (initial) steady state
         x_double_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                percent*((x_trans[:horizon,var_indices] - stst)/stst)])
+        yfin = percent*((x_trans[-1,var_indices[0]] - stst[0])/stst[0])
         
     x_double_transition_df = pd.DataFrame(x_double_transition, # Turn into data frame
                                           columns = ['Quarters', 
@@ -576,7 +628,8 @@ def plot_double_transition(model,
                        xaxis_title='Quarters', # x-axis labeling
                        yaxis_title=f'{unit}', # y-axis labeling
                        legend=dict(yanchor="bottom", y=0.02, 
-                                   xanchor="right", x=0.98), 
+                                   xanchor="right", x=0.98,
+                                   font=dict(size=28)), 
                        legend_title=None, 
                        plot_bgcolor='whitesmoke', 
                        margin=dict(l=15, r=15, t=5, b=5),
@@ -585,6 +638,11 @@ def plot_double_transition(model,
                                  color="black"))
     fig.update_traces(line=dict(width=4))
     
+    # Add line for terminal steady state
+    if round(x_trans[0,var_indices[0]],5) != round(x_trans[-1,var_indices[0]],5): 
+        fig.add_hline(y=yfin.item(), line_width=3, line_dash="dash", 
+                      line_color="red")
+    
     # Show plot
     fig.show()
     
@@ -592,6 +650,7 @@ def plot_double_transition(model,
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
+                                 f'{exact_path}',
                                  f'transition_{variables[0]}_{variables[1]}_{exact_path}.svg')
         fig.write_image(path_plot)
     
@@ -621,20 +680,21 @@ def plot_selected_transition(list_of_variables,
             
             unit = sublist[2] # extract unit
         
-            plot_single_transition(model, x_trans, # plot single transition of a 
-                                   # given variable from the list
+            plot_single_transition(model, x_trans, # plot single transition of
+                                   # a given variable from the list
                                    variable, variable_name, unit,
                                    horizon, 
                                    save_results, 
                                    exact_path,
                                    percent)
+            
         elif len(sublist) == 5:
             variables = [sublist[0], sublist[2]] # extract variable
             variable_names = [sublist[1], sublist[3]] # extract variable name
             unit = sublist[4] # extract unit
             
-            plot_double_transition(model, x_trans, # plot double transition of a 
-                                   # given variable from the list
+            plot_double_transition(model, x_trans, # plot double transition of
+                                   # a given variable from the list
                                    variables, variable_names, unit,
                                    horizon, 
                                    save_results, 
@@ -676,7 +736,8 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
     if policy == 'a':
         # Get a list of whether - at a given asset grid point - the sign of
         # the policy changed
-        sign_change = jnp.not_equal(jnp.sign(av_period_1_policy), jnp.sign(av_stst_policy)) 
+        sign_change = jnp.not_equal(jnp.sign(av_period_1_policy), 
+                                    jnp.sign(av_stst_policy)) 
         
         # Loop over the percentage change in asset policies to leave out the 
         # cases where the sign of the policy changed (rendering percentage 
@@ -693,6 +754,10 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
     # Cut off x axis at threshold
     if x_threshold != None:
         impact_df.loc[impact_df['grid'] > x_threshold, :] = np.nan
+        
+        if policy == 'a':
+            condition = (-0.5 < impact_df['grid']) & (impact_df['grid'] < 0.5)
+            impact_df.loc[condition, :] = np.nan
 
     # Plot
     fig_impact=px.line(impact_df, 
@@ -722,6 +787,7 @@ def plot_policy_on_impact_over_dist(hank_model_initial,
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
+                                 f'{exact_path}',
                                  f'distr_impact_{policy}_{exact_path}.svg')
         fig_impact.write_image(path_plot)
         
@@ -751,15 +817,39 @@ def plot_policy_impact(hank_model_initial, hank_model_terminal,
 
     # Change in labour choice on impact over the distribution of assets
     try: 
-        plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
+        plot_policy_on_impact_over_dist(hank_model_initial, 
+                                        hank_model_terminal, 
                                         x_transition, 'n', 'Labour Supply', 
                                         save_results, exact_path,
                                         x_threshold=x_threshold,
                                         borr_lim=borr_lim)
     except KeyError: # If there is no labour supply policy, pass
         pass
-        
-            
+
+###############################################################################
+###############################################################################
+# Function to visualise the evolution of the asset distribution over time
+def visualise_dist_over_time(initial_model,
+                             terminal_model,
+                             x_trans,
+                             horizon,
+                             x_threshold,
+                             y_threshold):
+    dist_dyn = terminal_model.get_distributions(trajectory = x_trans,
+                                                init_dist = initial_model['steady_state']['distributions'])
+    dist_init = jnp.sum(initial_model['steady_state']['distributions'][0],axis=0)
+    dist_term = jnp.sum(terminal_model['steady_state']['distributions'][0],axis=0)
+    for tt in range(0,horizon):
+        new_dist = jnp.sum(dist_dyn['dist'][..., tt], axis=0)
+        fig=px.line(x=terminal_model['context']['a_grid'][:x_threshold],
+                    y=[dist_init[:x_threshold],
+                       new_dist[:x_threshold],
+                       dist_term[:x_threshold]])
+        fig.add_vline(x=x_trans[tt,terminal_model['variables'].index('phi')],
+                      line_width=3, line_dash="dash", line_color="red")
+        fig.update_yaxes(range=[0,y_threshold])
+        fig.show()
+
 ###############################################################################
 ###############################################################################
 # Function to compare the transitions of some selected variables 
@@ -788,7 +878,7 @@ def compare_selected_transitions(list_of_transition_dfs,
             
             transition_df = pd.DataFrame({'Quarters': time})
             
-            if variable in ['R', 'Rn', 'Rr', 'Rrminus']:
+            if variable in ['R', 'Rn', 'Rr', 'Rrminus', 'pi']:
                 for i, df in enumerate(list_of_transition_dfs):
                     col_name = f'{legend[i]}'
                     new_col = 4*percent*(df[f'{variable}'][:horizon] - 1.0)
@@ -800,7 +890,7 @@ def compare_selected_transitions(list_of_transition_dfs,
                     new_col = 4*percent*(df[f'{variable}'][:horizon])
                     transition_df[col_name] = new_col.reset_index(drop=True)
                 
-            elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid']:
+            elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
                 for i, df in enumerate(list_of_transition_dfs):
                     col_name = f'{legend[i]}'
                     new_col = df[f'{variable}'][:horizon]
@@ -824,7 +914,7 @@ def compare_selected_transitions(list_of_transition_dfs,
             
             transition_df = pd.DataFrame({'Quarters': time})
             
-            if variable1 in ['R', 'Rn', 'Rr', 'Rrminus'] and variable2 in ['R', 'Rn', 'Rr', 'Rrminus']:
+            if variable1 in ['R', 'Rn', 'Rr', 'Rrminus', 'pi'] and variable2 in ['R', 'Rn', 'Rr', 'Rrminus', 'pi']:
                 for i, df in enumerate(list_of_transition_dfs):
                     col_name1 = f'{variable_name1}; {legend[i]}'
                     new_col1 = 4*percent*(df[f'{variable1}'][:horizon] - 1.0)
@@ -850,18 +940,26 @@ def compare_selected_transitions(list_of_transition_dfs,
                       y = transition_df.columns.tolist(), 
                       color_discrete_sequence=px.colors.qualitative.D3[:transition_df.shape[1]-1]).update_traces(line=dict(width=4))
         if len(sublist) == 3 and transition_df.shape[1] == 3:
-            fig.update_traces(selector={"name": f'{legend[0]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{legend[0]}'},
+                              line={"dash": "dash"})
         elif len(sublist) == 3 and transition_df.shape[1] == 4:
-            fig.update_traces(selector={"name": f'{legend[0]}'},line={"dash": "dash"})
-            fig.update_traces(selector={"name": f'{legend[2]}'},line={"dash": "dot"})
+            fig.update_traces(selector={"name": f'{legend[0]}'},
+                              line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{legend[2]}'},
+                              line={"dash": "dot"})
         elif len(sublist) == 5 and transition_df.shape[1] == 5:
-            fig.update_traces(selector={"name": f'{variable_name2}; {legend[0]}'},line={"dash": "dash"})
-            fig.update_traces(selector={"name": f'{variable_name2}; {legend[1]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[0]}'},
+                              line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[1]}'},
+                              line={"dash": "dash"})
             variable_name = ''
         elif len(sublist) == 5 and transition_df.shape[1] == 7:
-            fig.update_traces(selector={"name": f'{variable_name2}; {legend[0]}'},line={"dash": "dash"})
-            fig.update_traces(selector={"name": f'{variable_name2}; {legend[1]}'},line={"dash": "dash"})
-            fig.update_traces(selector={"name": f'{variable_name2}; {legend[2]}'},line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[0]}'},
+                              line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[1]}'},
+                              line={"dash": "dash"})
+            fig.update_traces(selector={"name": f'{variable_name2}; {legend[2]}'},
+                              line={"dash": "dash"})
             variable_name = ''
             
         if variable_name != '':
@@ -874,7 +972,8 @@ def compare_selected_transitions(list_of_transition_dfs,
                                xaxis_title='Quarters', # x-axis labeling
                                yaxis_title=f'{unit}', # y-axis labeling
                                legend=dict(yanchor="bottom", y=0.02, 
-                                           xanchor="right", x=0.98), 
+                                           xanchor="right", x=0.98,
+                                           font=dict(size=28)), 
                                legend_title='', 
                                plot_bgcolor='whitesmoke', 
                                margin=dict(l=15, r=15, t=top_space, b=5),
@@ -911,10 +1010,24 @@ def compare_selected_transitions(list_of_transition_dfs,
         
         # Save plot
         if save_results == True:
+            # Define path 
+            path = os.path.join(os.getcwd(), 
+                                'Results', 
+                                'compare_transitions')
+            
+            # Check if the folder exists
+            if not os.path.exists(path):
+            # Create the folder if it doesn't exist
+                os.makedirs(path)
+            
             key1 = comparison['transition_1']
             key2 = comparison['transition_2']
-            path_plot = os.path.join(os.getcwd(),
-                                     'Results',
-                                     f'comparison_{variable}_{key1}_{key2}.svg')
+            
+            if len(sublist) == 3:
+                path_plot = os.path.join(path,
+                                         f'comparison_{variable}_{key1}_{key2}.svg')
+            elif len(sublist) ==5:
+                path_plot = os.path.join(path,
+                                         f'comparison_{variable1}_{variable2}_{key1}_{key2}.svg')
             fig.write_image(path_plot)
             

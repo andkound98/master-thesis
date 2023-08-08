@@ -60,7 +60,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = False # True: save results (tables and plots)
+save_results = True # True: save results (tables and plots)
+
+show_titles_in_plots = False # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -153,10 +155,10 @@ for model in models:
                                         save_results, exact_path)
         print(stst_comparison)
         
-        plot_compare_stst(hank_model_initial, hank_model_terminal,
+        plot_compare_stst(hank_model_initial, hank_model_terminal, settings,
                           save_results, exact_path,
                           shock_model_parameters['terminal_borrowing_limit'], 
-                          x_threshold=15)
+                          x_threshold=30)
         
         #######################################################################
         # TRANSITION
@@ -184,13 +186,14 @@ for model in models:
         # If desired, plot transition of all aggregate variables     
         plot_all(x_transition, hank_model_initial['variables'], 
                   bunch=True, # Bunch plots together 
-                  horizon=200) # Entire horizon to check correct convergence
+                  horizon=200) # Entire horizon to check convergence
         
         # Plot transitions of selected aggregate variables
         plot_selected_transition(dict_of_variables_to_plot['aggregate'], 
                                  hank_model_terminal, 
                                  x_transition, horizon, 
-                                 save_results, exact_path, title=True)
+                                 save_results, exact_path, 
+                                 title=show_titles_in_plots)
         
         #######################################################################
         # Distributional dynamics
@@ -199,7 +202,8 @@ for model in models:
         plot_selected_transition(dict_of_variables_to_plot['cross_sec'], 
                                  hank_model_terminal, 
                                  x_transition, horizon, 
-                                 save_results, exact_path, title=True)
+                                 save_results, exact_path, 
+                                 title=show_titles_in_plots)
         
         # Plot policies on impact
         plot_policy_impact(hank_model_initial, hank_model_terminal, 
@@ -212,7 +216,7 @@ for model in models:
                            x_transition,
                            save_results, exact_path,
                            borr_lim=shock_model_parameters['terminal_borrowing_limit'],
-                           x_threshold=1)
+                           x_threshold=10)
         
         #######################################################################
         # Save transition as pickle for convenience
