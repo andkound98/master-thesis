@@ -32,10 +32,12 @@ urldate=long
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{setspace}
+\usepackage{ragged2e}
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 \usepackage{tikz}
 \usepackage{lscape}
+\usepackage{rotating}
 \usepackage{hyperref} % Load after everything else
 \usepackage[symbols, nopostdot, automake, nonumberlist]{glossaries}
 
@@ -524,7 +526,7 @@ Next, the following two subsections aim at clarifying the key mechanisms of the 
 
 In the model, households' main objective is to smooth consumption over time. However, they are subject to idiosyncratic labour productivity risk from \eqref{eq:hh-income-process} and thus fear the possibility of obtaining low labour income, which hurts their consumption. Further, households dread the possibility of reaching the borrowing limit in \eqref{eq:borrowing-limit}, e.g.~after repeatedly being in low productivity states. Being at the debt limit would be particularly harmful for households because it bars them from taking on any additional debt to absorb adverse productivity shocks, forcing them to adjust consumption one-to-one with the reduction in their income (see e.g.~\cite{carroll2021}). 
 
-Clearly, households have an incentive to insure themselves against labour income shocks.\footnote{The chosen \Gls{ghh} preferences eliminate the possibility of households using working hours as insurance against low productivity. Section \ref{sec:sensitivity-end-labour} explores the case where households can adjust labour supply individually.} However, in an environment of incomplete markets, contracts which insure against specific realisations of labour productivity, high or low, are unavailable.\footnote{Incidentally, assuming complete markets and hence the presence of state-contingent claims would reduce the problem to a representative-agent setup, rendering the investigation of the present issues vacuous.} As \textcite{heath2009} remark, households thus resort to self-insurance by means of precautionary savings which they can draw down when confronted with (potentially repeatedly) low labour income. The existence of the borrowing limit further strengthens the wish to save. Crucially, the desire for precautionary savings contributes to the \textit{demand for assets} by households. %\footnote{\textcite{heath2009} understand precautionary savings as a buildup of assets with the purpose of providing a buffer against the risk of low productivity in the future.}
+Clearly, households have an incentive to insure themselves against labour income shocks.\footnote{The chosen \Gls{ghh} preferences eliminate the possibility of households using working hours as insurance against low productivity. Section \ref{sec:sensitivity-end-labour} explores the case where households can adjust labour supply individually.} However, in an environment of incomplete markets, contracts which insure against specific realisations of labour productivity, high or low, are unavailable.\footnote{Incidentally, assuming complete markets and hence the presence of state-contingent claims would reduce the problem to a representative-agent setup, rendering the investigation of the present issues vacuous.} As \textcite{heath2009} remark, households thus resort to self-insurance by means of precautionary savings which they can draw down when confronted with low labour income. The existence of the borrowing limit further strengthens the wish to save. Crucially, the desire for precautionary savings contributes to the \textit{demand for assets} by households. %\footnote{\textcite{heath2009} understand precautionary savings as a buildup of assets with the purpose of providing a buffer against the risk of low productivity in the future.}
 
 Some households, however, do remain in states of low productivity for prolonged periods of time. In order to nevertheless sustain a certain level of consumption, these households have a high willingness to tap into debt to finance the related expenditures, even if this involves owing the borrowed funds and the return $RR_t + \kappa_t$. Thus, these households have a \textit{demand for debt} and are allowed to become indebted as long as $\phi_t < 0$.
 
@@ -576,7 +578,7 @@ Apart from outright limits to borrowing, households may be forced to pay a premi
 
 \textcolor{red}{It might also lead to more \Gls{mpc} heterogeneity.}
 
-Clearly, financial constraints such as the borrowing limit and the interest rate wedge might very well vary across household characteristics (e.g.~income, wealth, credit-worthiness) and asset types (e.g.~credit card debt vs mortgage debt). Importantly however, these constraints can vary over time, reflecting the fact that credit can become more or less abundant in the course of time. For example, \textcite{anenberg2018} empirically document how the limits to mortgage loan amounts do not only differ across borrower types but also that they evolve over time.\footnote{\textcite{anenberg2018} use a frontier estimation approach to show \textit{inter alia} how lending constraints became looser in the run-up to the Great Recession and tightened during and after the crisis.} Section \ref{sec:limit} and \ref{sec:wedge} aim to capture the effects of the exogenous component of such variation over time in order to make causal statements about the mechanisms induced by a credit crunch.\footnote{In general, financial constraints and their changes over time are of course endogenous. The model here abstracts from this and sets the constraints exogenously. This allows to study the effects of exogenous variation of the borrowing limit and the interest rate wedge. In a more comprehensive model, both constraints would be the result of the optimisation of some agents, e.g.~financial institutions.}
+Clearly, financial constraints such as the borrowing limit and the interest rate wedge might very well vary across household characteristics (e.g.~income, wealth, credit-worthiness) and asset types (e.g.~credit card debt vs mortgage debt). Importantly however, these constraints can vary over time, reflecting the fact that credit can become more or less abundant in the course of time. For example, \textcite{anenberg2018} empirically document how the limits to mortgage loan amounts do not only differ across borrower types but also that they evolve over time.\footnote{\textcite{anenberg2018} use a frontier estimation approach to show \textit{inter alia} how lending constraints became looser in the run-up to the Great Recession and tightened during and after the crisis.} Section \ref{sec:limit} and \ref{sec:wedge} aim to capture the effects of the exogenous component of such variation over time in order to make causal statements about the mechanisms induced by a credit crunch.\footnote{In general, financial constraints and their changes over time are of course endogenous. The model here abstracts from this and sets the constraints exogenously. This allows to study the effects of exogenous variation of these constraints. In a more comprehensive model, $\phi_t$ and $\kappa_t$ would be the result of the optimisation of some agents, e.g.~financial institutions.}
 
 In summary, the present model features household subject to idiosyncratic risk. Some households are "lucky", while others turn out to be "unlucky". The former lend to the latter, which is mutually beneficial. The real interest rate plays the decisive role of intermediating between the two sides. Finally, borrowers and lenders crucially differ in their consumption behaviour.
 
@@ -593,9 +595,9 @@ This section closes the model with a corporate sector and a government which con
 \subsubsection{Firms}
 \label{sec:model-firms}
 
-The corporate sector of the model is kept minimal and close to the standard \Gls{nk} literature. My modelling approach is close to the one in \textcite{mckay2016}, but makes use of some ingredients from \textcite{gust2017wp}. More specifically, I assume that a representative and perfectly competitive firm produces the final good by using the inputs from a continuum of monopolistically competitive intermediate-goods firms which produce using labour from households as single input. The intermediate-goods firms can set prices but in doing so are subject to convex price adjustment costs à la \textcite{rotemberg1982}. 
+The corporate sector of the model is kept minimal and close to the standard \Gls{nk} literature. My modelling approach is close to the one in \textcite{mckay2016}, but makes use of some ingredients from \textcite{gust2017wp}. More specifically, I assume that a representative and perfectly competitive firm produces the final good by using the inputs from a continuum of monopolistically competitive intermediate-goods firms which employ households' labour and set prices subject to convex price adjustment costs à la \textcite{rotemberg1982}. 
 
-Appendix \ref{sec-app:full-derivations-firms} formally states the firms' maximisation problems and solves for the equations which determine their optimal behaviour. Here, I simply state the equations relevant for the model implementation. First, aggregate production of the final good, $y_t^f$, occurs according to the following simple production function:
+Appendix \ref{sec-app:full-derivations-firms} formally states the firms' maximisation problems and solves for the equations which determine their optimal behaviour. Here, I simply state the equations relevant for the model implementation. First, production of the final good, $y_t^f$, occurs according to the following simple production function:
 \begin{equation}
     y_t^f = z N_t, \label{eq:firms-production}
 \end{equation}
@@ -729,6 +731,7 @@ $N_b$ & number of asset grid points & $219$ & Appendix \ref{sec-app:codes-ep} \\
 $z$ &  technology & $1$ & \\
 $\theta$ & elasticity of substitution & $6$ & \textcite{auclert2021} \\
 $\psi$ & parameter on price adjustment costs & $100$ & Flat \Gls{nkpc} \\
+$\omega$ & parameter of price ineratia & $0.44$ & \textcite{gust2017wp} \\
 & & & \\
 \multicolumn{2}{l}{\textbf{Fiscal Policy}} & & \\
 $B$ & supply of government bonds & $5.21$ & $B/y_{ss} = 5.71$ \\
@@ -778,9 +781,9 @@ This section confronts the \Gls{hank} model with a credit crunch through a perma
 \label{sec:limit-stst-loose}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Household Policies and Asset Distribution}
+%\subsubsection*{Household Policies and Asset Distribution}
 
-Figure \ref{fig:init-stst-dist-pol} displays cross-sectional characteristics of the initial steady state with $\phi_{ss}$ and $\kappa_{ss}$. In particular, panel \ref{fig:init-stst-dist-pol-a-dist} shows the steady-state distribution of households over bond and \Gls{iou} holdings. This distribution features households with positive as well as negative asset positions. All agents situated to the left of $0$ are net debtors: they owe more in debt than they own in assets. These households have gone through repeated unfortunate productivity realisations and subsequently tap into debt to sustain consumption. In the present calibration, roughly $33.6\%$ of households are net borrowers, see table \ref{tab:stst_comparison_baseline_limit_permanent}. $4.9\%$ of the population end up at the borrowing limit, i.e.~for them $b_{i,ss} = \phi_{ss}$. These individuals might want to borrow more but are prohibited from doing so because of the borrowing limit.
+Figure \ref{fig:init-stst-dist-pol} displays key cross-sectional characteristics of the initial steady state with $\phi_{ss}$ and $\kappa_{ss}$. In particular, panel \ref{fig:init-stst-dist-pol-a-dist} shows the steady-state distribution of households over bond and \Gls{iou} holdings. This distribution features households with positive as well as negative asset positions. All agents situated to the left of $0$ are net debtors: they owe more in debt than they own in assets. These households have gone through repeated unfortunate skill levels and subsequently tap into debt to sustain consumption. In the present calibration, roughly $33.6\%$ of households are net borrowers, see table \ref{tab:stst_comparison_baseline_limit_permanent}. $4.89\%$ of the population end up at the borrowing limit, i.e.~for them $b_{i,ss} = \phi_{ss}$. These individuals might want to borrow more but are prohibited from doing so because of the borrowing limit.
 
 \begin{figure}[t]
     \caption{The Initial Steady State}
@@ -791,6 +794,7 @@ Figure \ref{fig:init-stst-dist-pol} displays cross-sectional characteristics of 
     \label{fig:init-stst-dist-pol-a-dist}
          \centering
          \includesvg[inkscapelatex=false, width=\textwidth]{Results/stst_dist_2d_bar_baseline_limit_permanent_initial.svg}
+         \vspace{0.01cm}
      \end{subfigure}
      \hfill
      \begin{subfigure}[b]{0.49\textwidth}
@@ -798,142 +802,57 @@ Figure \ref{fig:init-stst-dist-pol} displays cross-sectional characteristics of 
      \label{fig:init-stst-dist-pol-c}
          \centering
          \includesvg[inkscapelatex=false, width=\textwidth]{Results/stst_policies_c_baseline_limit_permanent_initial.svg}
+         \vspace{0.01cm}
      \end{subfigure}
-     \begin{flushleft}
+     \justifying
      \footnotesize
-	\textit{Note}: In figure \ref{fig:init-stst-dist-pol-a-dist}, the distribution is cut off at an asset level of $50$ for readability. As the model is solved on a logarithmic grid, values at high bond holdings overestimate the true density at large grid points. In figure \ref{fig:init-stst-dist-pol-c}, the labels $\theta\_0$ -- $\theta\_7$ represent the idiosyncratic labour skill states from \eqref{eq:hh-income-process}.
-	\end{flushleft}
+	\textit{Note}: In figure \ref{fig:init-stst-dist-pol-a-dist}, the distribution is cut off at an asset level of $50$ for readability. As the model is solved on a logarithmic grid, grid points are distributed unevenly. Grid points are very dense at the lower end of the grid, which makes the colour appear bleak. At high levels of assets, grid points are very sparse, overestimating the true density at high bond holdings. The size of the bar at the borrowing limit is exaggerated. In figure \ref{fig:init-stst-dist-pol-c}, the labels $\theta\_0$ -- $\theta\_7$ represent the idiosyncratic labour skill states from \eqref{eq:hh-income-process}.
 \end{figure}
 
-The rest of the population have assets in excess of their liabilities. Net lenders have experienced a series of positive productivity realisations and build positive asset positions in order to smooth consumption and to save in precaution of potentially worse skill endowments. Some of these households invest their funds in bonds, others in the \Gls{iou}s originated by borrowers.
+The rest of the population holds assets in excess of its liabilities. Net lenders have experienced a series of positive productivity realisations and build positive asset positions in order to smooth consumption and to save in precaution of potentially worse skill endowments. Some of these households invest their funds in bonds, others in the \Gls{iou}s originated by borrowers.
 
-As section \ref{sec:model-hh} explains, it is to be expected that asset positions have implications for consumption behaviour. Figure \ref{fig:init-stst-dist-pol-c} shows that this is indeed the case in the present setup by plotting the household consumption policies over assets, separately for each state of idiosyncratic productivity. Naturally, lower asset holdings and/or productivity states translate into lower consumption levels. 
+As section \ref{sec:model-hh} explains, it is to be expected that balance sheet positions have implications for consumption behaviour. Figure \ref{fig:init-stst-dist-pol-c} shows that this is the case in the present setup. It plots the household consumption policies over asset holdings, separately for each productivity state. Naturally, lower asset holdings and/or productivity states translate into lower consumption levels. Importantly however, the curvature of the consumption policies also depends on the asset level. For very low levels of wealth and high debt burdens, the consumption policies are concave and much steeper than for higher asset levels. Intuitively, this means that consumption of households at or near the borrowing limit strongly responds to changes in the respective households' asset positions. As expected, these individuals thus have high \Gls{mpc}s.
 
-Importantly however, the curvature of the consumption policies also depends on the asset level. For very low levels of wealth and high debt burdens, the consumption policies are concave and much steeper than for higher asset levels. Intuitively, this means that consumption of households at or near the borrowing limit strongly responds to changes in the asset positions of these households. As expected, these individuals thus have high \Gls{mpc}s.
+Indeed, table \ref{tab:stst_comparison_baseline_limit_permanent} confirms that, in steady state, the average borrower has an \Gls{mpc} of $0.16$, while the average lender features an \Gls{mpc} of merely $0.02$.\footnote{The aggregate \Gls{mpc} equals $0.0663$, which is quite low when compared to empirical estimates, see \textcite{kaplan2018}. One reason for this is that the model disregards the wealthy hand-to-mouth of \textcite{kaplan2014}.} Thus, an average borrower would increase consumption by $15$ cents more if given one dollar more in assets (or less in debt) than the average lender would. This distinction still masks substantial heterogeneity in the \Gls{mpc}s among borrowers, see figure \ref{fig:baseline-limit-initial-mpcs} in appendix \ref{sec-app:figures}: the \Gls{mpc} of those borrowers at the debt limit can even equal one, while the debtors at only slightly negative asset holdings have \Gls{mpc}s comparable to those of lenders. Overall, this suggests that borrowers -- especially those at or very close to the limit $\phi_{ss}$ -- are much more sensitive to changes in their asset positions and incomes, as alluded to in section \ref{sec:model-hh}.\footnote{The fact that \Gls{mpc}s are heterogeneous is empirically plausible (see e.g.~\cite{gross2002}), but their magnitudes might not be exactly matched by the simple model.} This observation proves crucial in the subsequent analysis.
 
-Indeed, table \ref{tab:stst_comparison_baseline_limit_permanent} confirms that the average borrower has an \Gls{mpc} of $0.16$, while the average lender features an \Gls{mpc} of merely $0.02$.\footnote{The aggregate \Gls{mpc} equals $0.0663$, which is quite low when compared to empirical estimates, see \textcite{kaplan2018}. One reason for this is that the model disregards the wealthy hand-to-mouth of \textcite{kaplan2014} and \textcite{kaplan2018}.} Thus, an average borrower would increase consumption by $17$ cents if given one dollar more in assets (or less in debt). Note that this distinction still masks substantial heterogeneity in the \Gls{mpc}s among borrowers, see figure \ref{fig:baseline-limit-initial-mpcs} in appendix \ref{sec-app:figures}. Overall, this suggests that borrowers -- especially those at or very close to the limit $\phi_{ss}$ -- are much more sensitive to changes in their asset positions and incomes, as alluded to in section \ref{sec:model-hh}.\footnote{The fact that \Gls{mpc}s are heterogeneous is empirically plausible (see e.g.~\cite{gross2002}), but their magnitudes might not be exactly matched by the simple model.}
-
-% EVEN BORROWERS' MPCS ARE HETEROGENEOUS
-
-%Indeed, table \ref{tab:stst_Baseline_Limit_Permanent} confirms this heterogeneity in \Gls{mpc}s.
-
-%In contrast to borrowers and asset-poor households, asset-rich individuals behave approximately as permanent-income consumers. Their consumption functions are almost exactly linear, implying that they increase or decrease their consumption by the same constant and small fraction of any positive or negative windfall in income.
-
-% As explained in \textcite{kv2018}, the one-asset structure chosen here generates too many poor hand-to-mouth households, in comparison to the data, see \textcite{kaplan2014}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Aggregates}
-
-The aggregate dimension of the initial steady state does not feature many noteworthy aspects. The real and nominal interest rates are $0.15\%$ and household debt over output equals $57\%$, as calibrated. The aggregate wage rate and aggregate labour hours imply an average quarterly labour income of $0.76$, which means that the initial debt limit allows households to borrow up to $3.1$ times their average quarterly labour income. 
+The aggregate dimension of the initial steady state does not feature many noteworthy aspects. The real and nominal interest rates are $0.15\%$ and household debt over output equals $57\%$, as calibrated. Aggregate wage and labour hours imply an average quarterly labour income of $0.76$, which means that the initial debt limit allows households to borrow up to $3.1$ times their average quarterly labour income. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Steady State with a Tight Borrowing Limit}
 \label{sec:limit-stst-tight}
 
-To induce a state of tight credit, I choose a new, smaller borrowing limit, $\phi_{ss}' < \phi_{ss}$, such that the household debt-to-output ratio is five percentage points lower in the terminal steady state than it is in the initial state. Taking into account the observed developments in the fraction of unsecured credit to \Gls{gdp} over the last decades (see figure \ref{fig:app-calibration-debt} in appendix \ref{sec-app:data}), this appears to be a magnitude which might realistically be experienced in reality.\footnote{\textcite{gl2017} consider a ten percentage points-reduction of the ratio of debt to \textit{annual} \Gls{gdp}. This translates into a drop of $40$ percentage points in quarterly terms, i.e.~a much larger change than I consider.} 
+%To induce a credit crunch, 
+
+Next, I specify a new steady state of the economy, in which credit is tighter due to a reduced borrowing limit. To that end, I choose a borrowing limit, $\phi_{ss}' < \phi_{ss}$, such that in this terminal steady state the household debt-to-output ratio is five percentage points lower than it is in the initial state, i.e.~$\frac{D_{ss}'}{y_{ss}'} = 52\%$. Taking into account the observed developments in the fraction of unsecured credit to \Gls{gdp} over the last decades (see figure \ref{fig:app-calibration-debt} in appendix \ref{sec-app:data}), a change of five percentage points in this ratio appears to be an empirically realistic magnitude.\footnote{\textcite{gl2017} consider a reduction by ten percentage points of the ratio of debt to \textit{annual} \Gls{gdp}. This translates into a drop of $40$ percentage points in quarterly terms, i.e.~a much larger change than I consider.} 
+
+How does the steady state with a confined debt limit look like and how does it compare to the initial steady state? What forces and induces households to behave differently in an environment of tight credit relative to one of loose credit? To compare the steady state induced by $\phi_{ss}'$ to the initial one, consider figures \ref{fig:comparison-stst-baseline-policies} and \ref{fig:comparison-stst-baseline-dist} (in appendix \ref{sec-app:figures-limit-tight}), which are analogous to the plots in figure IV in \textcite[p.1443]{gl2017}, and table \ref{tab:stst_comparison_baseline_limit_permanent}. 
 
 \begin{figure}[t]
-    \caption{Baseline Model -- Shock to the Borrowing Limit: Comparison of Steady States}
-    \label{fig:comparison-stst-baseline}
+    \caption{Baseline Model -- Shock to the Borrowing Limit: Household Policies}
+    \label{fig:comparison-stst-baseline-policies}
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-    \caption{Asset Distributions}
+    \caption{Assets}
+    \label{fig:comparison-stst-baseline-policies-a}
          \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/stst_dist_2d_comparison_baseline_limit_permanent.svg}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/stst_a_baseline_limit_permanent.svg}
+     \vspace{0.01cm}
      \end{subfigure}
      \hfill
      \begin{subfigure}[b]{0.49\textwidth}
-     \caption{Asset Accumulation}
+     \caption{Consumption}
+     \label{fig:comparison-stst-baseline-policies-c}
          \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/stst_asset_acc_comparison_baseline_limit_permanent.svg}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/stst_c_baseline_limit_permanent.svg}
+    \vspace{0.01cm}
      \end{subfigure}
-     \begin{flushleft}
+     \justifying
      \footnotesize
-	\textit{Note}: %As the model is solved on a logarithmic grid, values at high bond holdings overestimate the true density at large grid points.
-	\end{flushleft}
+	\textit{Note}: The policies are cut off at an asset level of $30$ for readability. In both figures, the differences are a bit difficult to discern. A close look reveals the aspects discussed in the text.
 \end{figure}
 
-%Looking at the time series of household debt over time, figure \ref{fig:app-calibration-debt} in the appendix, reveals that changes of five percentage points are well within the realm of observed short-term changes, $40$ much less so.
-
-% where the $\phi_{ss}$ is the terminal steady-state borrowing limit. The shock occurs unexpectedly at time $t=1$. Once the shock is announced, the economy moves deterministically to the terminal steady state. 
-
-%That is, the solution of transitions via the perfect-foresight approach implies that agents perfectly anticipate future developments in distributions as well as prices and can thus act accordingly. This assumption
-
-% \begin{table}[H] 
-% \centering
-% \caption{Calibration of the Shock Processes}
-% \label{tab:calibration-shocks}
-% \begin{tabular}{llcc}
-% Parameter &   &  Value & Source/Target \\
-% \hline
-% \hline
-% \multicolumn{2}{l}{\textbf{A) Shock to the Borrowing Limit}} & & \\
-% $\phi_{ss}$ & initial borrowing limit & $-2.352$ & $D_{ss}/y_{ss} = 57\%$ \\
-% & & & (\cite{bayer2023}) \\
-% $\phi_{ss}'$ & terminal borrowing limit & $-2.18$ & $\Delta (D_{ss}'/y_{ss}) = -5 \ p.p.$ \\
-% & & & (See text) \\
-% $\rho_{\phi}$ & persistence in borrowing limit & $0.5$ & Shock duration six quarters \\
-% & & & \\
-% \multicolumn{2}{l}{\textbf{B) Shock to the Interest Rate Wedge}} & & \\
-% $\kappa_{ss}$ & initial interest rate wedge & 1e-8 & No initial wedge \\
-% $\kappa_{ss}'$ & terminal interest rate wedge & $0.634\%$ & $RR_{ss}' - 1 = 0.02\%$ \\
-% & & & (See text) \\
-% $\rho_{\kappa}$ & persistence in interest rate wedge & $0.25$ & Shock duration six quarters \\
-% \hline
-% \multicolumn{4}{l}{\footnotesize \multirow{3}{14cm}{\textit{Note:} The table displays the calibration of the model parameters for the processes of the permanent shocks to the borrowing limit and the interest rate wedge, respectively. $p.p.$ stands for percentage points.}} \\
-% & & & \\
-% & & & \\
-% \end{tabular}
-% \end{table}
-
-%The new aggregate \Gls{mpc} is higher, consistent with the observation of \textcite{kaplan2018} that reductions in the supply of assets available to households increase the aggregate \Gls{mpc}.
-
-% The purpose of the present exercise is not to accurately match all moments of the empirical data but rather to flesh out the main mechanisms by which a shock to the borrowing limit affects individual-level and aggregate behaviour.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Comparing Steady States}
-
-Gross liquidity is reduced by the shock, reducing the possibility for "lucky" households to transfer consumption into the next period and to self-insure.
-
-% \begin{table}[t]
-% \centering
-% \caption{Baseline Model -- Shock to the Borrowing Limit: Comparison of Steady States}
-% \label{tab:stst_Baseline_Limit_Permanent}
-% \begin{tabular}{lrrr}
-%                 Variable &  Initial &  Terminal &  Change \\
-% \hline
-% \hline
-% \multicolumn{2}{l}{\textbf{Shock Process}} & & \\
-%               $\phi_t$ &  -0.9900 &   -0.7300 &  0.2600 \\
-%               & & & \\
-% \multicolumn{2}{l}{\textbf{Aggregates}} & & \\
-%                        $C_t$ &   0.9487 &    0.9487 &  0.0000 \\
-%                      div &   0.0949 &    0.0949 &  0.0000 \\
-%                       DY &   0.3519 &    0.2520 & -0.0999 \\
-%                gr\_liquid &   1.8338 &    1.7390 & -0.0948 \\
-%                       mc &   0.9000 &    0.9000 &  0.0000 \\
-%                      MPC &   0.1472 &    0.1601 &  0.0129 \\
-%                        $N_t$ &   0.9487 &    0.9487 &  0.0000 \\
-%                       pi &   1.0000 &    1.0000 &  0.0000 \\
-%                  pitilde &   1.0000 &    1.0000 &  0.0000 \\
-%                        R &   1.0019 &    1.0002 & -0.0017 \\
-%                     Rbar &   0.0000 &    0.0000 &  0.0000 \\
-%                       Rn &   1.0019 &    1.0002 & -0.0017 \\
-%                       $RR_t$ &   1.0019 &    1.0002 & -0.0017 \\
-%                  Rrminus &   1.0019 &    1.0002 & -0.1697 \\
-%                      tau &   0.0028 &    0.0003 & -0.0025 \\
-%                        w &   0.9000 &    0.9000 &  0.0000 \\
-%                & & & \\
-% \multicolumn{2}{l}{\textbf{Cross-Section}} & & \\
-%       Frac. of Borrowers &  46.5300 &   44.3800 & -2.1500 \\
-% Frac. at Borrowing Limit &  10.9800 &   12.0900 &  1.1100 \\
-%     Frac. at Zero Assets &   0.5600 &    0.5000 & -0.0600 \\
-% \hline
-% \end{tabular}
-% \end{table}
-
-\begin{table}[H]
+\begin{table}[ht]
 \centering
 \caption{Baseline Model -- Shock to the Borrowing Limit: Comparison of Steady States}
 \label{tab:stst_comparison_baseline_limit_permanent}
@@ -962,63 +881,45 @@ $\tau$ &  0.0078 &   0.0069 & -0.0009 \\
                   % Top25C &  0.3741 &   0.3744 &  0.0802 \\
 Fraction of Borrowers &   33.66 &     32.9 & -0.7600 \\
 Fraction at Borrowing Limit &    4.89 &     5.07 &  0.1800 \\
-Fraction at Zero Assets &    0.33 &     0.35 &  0.0200 \\
+%Fraction at Zero Assets &    0.33 &     0.35 &  0.0200 \\
 MPC of Borrowers &    0.16 &     0.17 &  0.0100 \\
 MPC of Lenders &    0.02 &     0.02 &  0.0000 \\
 \hline
-\multicolumn{4}{l}{\footnotesize \multirow{2}{12cm}{\textit{Note:} The table displays selected values of the initial steady state with $\phi_{ss}$ and the terminal steady state with $\phi_{ss}'$. The change is either in absolute or in percentage terms. The numbers are rounded.}} \\
+\multicolumn{4}{l}{\footnotesize \multirow{2}{12cm}{\justifying \textit{Note:} The table contains selected values of the initial steady state with $\phi_{ss}$ and the terminal steady state with $\phi_{ss}'$. The change for values expressed in percent is in percentage points. The numbers are rounded.}} \\
 & & & \\
 \end{tabular}
 \end{table}
-% , $b_{i,ss} = 0$
+
+Figure \ref{fig:comparison-stst-baseline-dist} plots the two steady-state distributions of agents over their asset positions, cut off at bond holdings of $30$ for readability. The two distributions look very similar. Trivially, no mass of agents is admissible between the old and the new borrowing limit in the new steady state, so the density there is zero. Overall, the asset distribution seems to have been moved to the right. However, as in \textcite{gl2017}, there is also a more subtle but important change: the tighter borrowing limit actually compresses the distribution rather than just pushing it to the right. On the one hand, at the remaining admissible levels of debt and at low positive asset holdings, the density of the terminal state lies above the density of the initial state. On the other hand, less agents are located at high bond holdings in an environment of tight credit relative to before. Thus, the asset distribution is compressed. Incidentally, this results in a reduced wealth inequality as measured by the asset share of the top-$10\%$, see table \ref{tab:stst_comparison_baseline_limit_permanent}.
+
+% What is more, table \ref{tab:stst_comparison_baseline_limit_permanent} reveals that $5.07\%$ of the population now choose to be directly at the borrowing limit, a slight increase from the initial $4.89\%$.
+
+Figure \ref{fig:comparison-stst-baseline-policies-a} sheds light on why this compression takes place by comparing the average asset accumulation in each steady state.\footnote{Asset accumulation is the asset policy less the $45$ degree line, i.e.~less a hypothetical policy according to which assets remain the same for the next period along all asset holdings. The average is over productivity levels.} In the terminal steady state, the average household reduces debt holdings faster when being a borrower and draws down positive asset holdings faster than in the initial steady state. How are agents persuaded to behave in this new way? Consider first the borrowers. As the borrowing limit is now closer for all agents, and especially so for the ones in debt, households would like to reduce the possibility of reaching the debt limit in finite time. To achieve this, agents aim at reducing borrowing faster whenever given the chance to do so, e.g.~in the case of an above-average labour skill realisation. Thus, on average, they pay back debt in a higher pace than in the initial steady state.
+
+All else equal, the asset-rich households would likewise aim for higher precautionary savings due to the borrowing limit being a more imminent threat. To understand why these households nevertheless decumulate assets faster rather than accumulate these quicker, consider table \ref{tab:stst_comparison_baseline_limit_permanent}. It reveals that the real interest rate is permanently lower in the terminal steady state than in the initial steady state. As these households are interest-rate sensitive -- recall from subsection \ref{sec:model-hh-constraints} that the asset-rich behave here like a permanent-income consumer -- the lower real interest rate induces the wealthy to substitute away from asset holdings and towards consumption. Figure \ref{fig:init-stst-dist-pol-c} reflects this. In an environment of tight credit, individuals at the lower end of the asset distribution consume less in order to pay back debt, as described above. In contrast, consumption for households at high asset levels is higher as the lower real interest rate induces them to do so.
+
+This raises the question as to why the real interest rate is lower in the terminal steady state. Crucially, this drop is a direct consequence of the adjustments in the asset market: a reduction in the supply of liquidity and an increase in the demand for liquidity. As documented by \textcite{gl2017} and as is the case here, two forces contribute to these developments.  The first one is the deleveraging forced onto the households at and close to the initial borrowing limit. Prohibiting these agents to hold their initial levels of debt crucially prevents them to issue \Gls{iou}s. That is, the shock to the borrowing limit mechanically restricts the supply of \Gls{iou}s and thus the supply of assets which the productive households can invest in. This is the crucial aspect of the financial shock considered here: it not only affects borrowers but, through debtors' balance sheets, also the lenders.
+
+The second force leading to adjustments in the asset market is the increased desire for precautionary savings by the unconstrained agents. Even these agents dread the now closer debt limit and would in principle like to save more. The resulting increase in demand for safe assets meets, however, the aforementioned decrease in supply of assets. Taken together, these changes call for a lower interest rate in order to achieve equilibrium in the asset market. Essentially, the reduced interest rate prompts some borrowers to supply some more assets and lenders to demand less assets.
+
+Note that, as expected, aggregate consumption is identical across steady states as it is pinned down by the unchanged degree of substitutability among intermediate goods. Intuitively, lower interest rates (and taxes) enable consumption to remain unchanged in this model, even in an environment of tight credit.\footnote{Hence, the model can not speak to considerations about the long-term connection of credit availability and aggregate consumption.} Incidentally, the same level of aggregate consumption is more unevenly distributed in the long run.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Credit Crunch Dynamics}
 \label{sec:limit-transition}
 
-This subsection turns to the dynamics of the model induced by the change in the borrowing limit. The shock arises unexpectedly in $t=1$. Thereafter, $\phi_t$ evolves deterministically according to an \Gls{ar}(1) process:
+How does the economy evolve \textit{during the transition} from the steady state from subsection \ref{sec:limit-stst-loose} to the one described in subsection \ref{sec:limit-stst-tight}? That is, how does the shock to the borrowing limit work through the households' balance sheets over time and then create, in general equilibrium, distributional and aggregate dynamics?
+
+Let the economy be in the initial steady state with $\phi_{ss}$ in $t=0$. Latest by $t=200$, the economy settles in the terminal steady state with $\phi_{ss}'$. Inbetween the two endpoints, the shock becomes known to the agents in $t=1$ and $\phi_t$ evolves deterministically thereafter according to an \Gls{ar}(1) process:
 \begin{equation}
     \phi_t = \phi_{ss} \Bigg( \frac{\phi_{t-1}}{\phi_{ss}} \Bigg)^{\rho_{\phi}} exp(\varepsilon_{\phi}), \label{eq:borrowing-limit-process}
 \end{equation}
-where $\rho_{\phi}$ is the persistence of changes in the borrowing limit.\footnote{$\varepsilon_{\phi}$ is a one-time shock to the borrowing limit. In this thesis, $\varepsilon_{\phi} = 0$ $\forall t$.} I follow \textcite{gl2017} in choosing a duration of the credit crunch of six quarters, i.e.~one and a half years, which requires $\rho_{\phi} = 0.5$. Doing so is meant to capture the notion that a financial shock might not force households to delever fully within one period but might take some time to manifest itself in household balance sheets.\footnote{Section \ref{sec:sensitivity-persistence} explores alternative choices for the speed of the credit crunch episode.} 
+where $\rho_{\phi}$ is the persistence of changes in the borrowing limit.\footnote{$\varepsilon_{\phi}$ is a one-time shock to the borrowing limit. In this thesis, $\varepsilon_{\phi} = 0$ $\forall t$.} I follow \textcite{gl2017} in choosing a duration of the credit crunch of six quarters, i.e.~one and a half years, which requires $\rho_{\phi} = 0.5$. Doing so is meant to capture the notion that a financial shock might not force households to delever fully within one period but might take some time to manifest itself in household balance sheets. Section \ref{sec:sensitivity-persistence} explores alternative choices for the speed of the credit crunch episode.
 
-Next, I present and explain the dynamic consequences of the credit crunch episode, i.e.~the transition from a state of loose borrowing (with $\phi_{ss}$) to a state of tight borrowing (with $\phi_{ss}'$). I proceed as follows. First, I dwell on the effects of the shock on asset policies and the asset market, thereby emphasising the endogenous adjustment of the real interest rate. Thereafter, I discuss the response of consumption and further incomes. 
+Figure \ref{fig:baseline-permanent-limit-agg} presents the responses of some key variables. For the sake of brevity, I refer the reader to figure \ref{fig:baseline-permanent-limit-agg-extra} in appendix \ref{sec-app:figures-limit-transition} for some supplementary responses. First, plot \ref{fig:baseline-permanent-limit-agg-phi} confirms that the borrowing limit completes most of its transition from $\phi_{ss} = -2.3485$ to $\phi_{ss}' = -2.1775$ within six model periods, as calibrated.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Savings Policies and the Interest Rate}
-
-Figure \ref{fig:baseline-permanent-limit-agg-phi} shows the development of the borrowing limit. The first direct effect of the reduction in the debt limit is the deleveraging forced on the immediately constrained agents.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Consumption, Employment and Incomes}
-
-%Figure \ref{fig:baseline-permanent-limit-agg} presents the responses of some key variables to the shock in the borrowing limit. First, panel \ref{fig:baseline-permanent-limit-agg-phi} shows the development of the borrowing limit.
-
-Clearly, the response of aggregate consumption is not very persistent and does not last much longer than the shock itself. Note however that the responses in \textcite{gl2017} are also not very persistent. Their model also lacks capital, habit formation or investment adjustment costs. Interestingly however, the response of household debt shows strong persistence. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsubsection*{Aggregate Dynamics}
-
-Clearly, here the responses of borrowers and lenders do not wash out in the aggregate as in \textcite{justiniano2015}.
-
-The figures with the \Gls{zlb} not binding also show that, unlike in \textcite{egg2012}, the \Gls{zlb} is not the crucial amplification mechanism.
-
-This creates the perfect storm for borrowers: their incomes fall, taxes increase, they have to delever, the rate on their current debt spikes. And they do not have insurance through working more due to \Gls{ghh} preferences.
-
-A higher \textit{ex-post} real interest rate in $t=1$ is a windfall profit for lenders and a windfall cost for borrowers. Going forward, lenders anticipate however that the real rate has to fall.
-
-The target-rate of the central bank adjusts immediately. That is, the central bank knows immediately in $t=1$ where the real rate will settle in the long run.
-
-In the short-run, household debt-to-GDP spikes as output falls faster than households' debt positions. This is something that \textcite{justiniano2015} also find but argue that this increase was much larger in the Great Recession. 
-
-Household debt-to-GDP \textit{increases} on impact, before starting to fall to its new lower level.
-
-%\footnote{The reader might refer to \textcite{mian2017} to object this as that paper finds that an \textit{increase} in debt leads to a fall in GDP. However, GDP in their statistical analyses falls only as soon as debt falls after an exogenous increase.}
-
-Inflation falls. Note that this does not induce a a debt-deflation spiral à la \textcite{fisher1933} because assets are in real terms, meaning that their value immediately adjusts with inflation.
-
-\begin{figure}[H]
+\begin{figure}[!ht]
     \centering
     \caption{Baseline Model -- Shock to the Borrowing Limit: Aggregate Dynamics}
     \label{fig:baseline-permanent-limit-agg}
@@ -1029,6 +930,12 @@ Inflation falls. Note that this does not induce a a debt-deflation spiral à la 
          \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_phi_baseline_limit_permanent.svg}
      \end{subfigure}
     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{Household Debt, $D$}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_D_baseline_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
     \caption{Consumption, $C$}
          \centering
@@ -1052,20 +959,47 @@ Inflation falls. Note that this does not induce a a debt-deflation spiral à la 
          \centering
          \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_R_Rn_baseline_limit_permanent.svg}
      \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.49\textwidth}
-     \caption{Inflation, $\pi$}
-         \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_pi_baseline_limit_permanent.svg}
-     \end{subfigure}
-     \begin{flushleft}
+     \justifying
      \footnotesize
-	\textit{Note}: Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to 12 quarters.
-	\end{flushleft}
+	\textit{Note}: Wherever the terminal steady state of a variable differs from the initial steady state, the red dotted line displays the former. Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to 12 quarters, including the initial steady state in $t=0$.
 \end{figure}
 
+In $t=1$, when the shock is announced, the debt limit already contracts by almost half of its total change. As can be seen from the plots in figure \ref{fig:baseline-permanent-limit-agg}, on impact, debt and consumption fall, while the debt-to-\Gls{gdp} ratio and the real interest rate spike. The central bank immediately adjusts its target rate to the terminal rate (not shown) and reduces the nominal interest rate to zero. Figure \ref{fig:baseline-permanent-limit-agg-extra} further shows that total labour hours go down, wages, marginal costs and inflation drop and taxes as well as dividends surge. 
+
+How do these impact responses come about? In the following, I draw on the aggregate and cross-sectional dimensions to describe the dynamics.
+
+%Next, I present and explain the dynamic consequences of the credit crunch episode, i.e.~the transition from a state of loose borrowing (with $\phi_{ss}$) to a state of tight borrowing (with $\phi_{ss}'$). I proceed as follows. First, I dwell on the effects of the shock on asset policies and the asset market, thereby emphasising the endogenous adjustment of the real interest rate. Thereafter, I discuss the response of consumption and further incomes. 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Distributional Dynamics}
+\subsubsection{Savings Policies and the Interest Rate}
+
+The first direct effect of the reduction in the debt limit is the deleveraging forced on the immediately constrained agents.
+
+%In contrast to the model of \textcite{gl2017}, here negative real interest rates can arise naturally.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Consumption, Employment and Incomes}
+
+Clearly, the response of aggregate consumption is not very persistent and does not last much longer than the shock itself. Note however that the responses in \textcite{gl2017} are also not very persistent. Their model also lacks capital, habit formation or investment adjustment costs. Interestingly however, the response of household debt shows strong persistence. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection*{Aggregate Dynamics}
+
+Clearly, here the responses of borrowers and lenders do not wash out in the aggregate as in \textcite{justiniano2015}.
+
+The figures with the \Gls{zlb} not binding also show that, unlike in \textcite{egg2012}, the \Gls{zlb} is not the crucial amplification mechanism.
+
+This creates the perfect storm for borrowers: their incomes fall, taxes increase, they have to delever, the rate on their current debt spikes. And they do not have insurance through working more due to \Gls{ghh} preferences.
+
+A higher \textit{ex-post} real interest rate in $t=1$ is a windfall profit for lenders and a windfall cost for borrowers. Going forward, lenders anticipate however that the real rate has to fall.
+
+%The target-rate of the central bank adjusts immediately. That is, the central bank knows immediately in $t=1$ where the real rate will settle in the long run.
+
+In the short-run, household debt-to-GDP spikes as output falls faster than households' debt positions. This is something that \textcite{justiniano2015} also find but argue that this increase was much larger in the Great Recession. 
+
+%\footnote{The reader might refer to \textcite{mian2017} to object this as that paper finds that an \textit{increase} in debt leads to a fall in GDP. However, GDP in their statistical analyses falls only as soon as debt falls after an exogenous increase.}
+
+Inflation falls. Note that this does not induce a a debt-deflation spiral à la \textcite{fisher1933} because assets are in real terms, meaning that their value immediately adjusts with inflation.
 
 A shock to the model is effectively an exogenous shock to the supply of IOUs. This can be due to a lot of reasons, \textit{inter alia} due to lost confidence in the ability of borrowers to repay their debt.
 
@@ -1073,7 +1007,7 @@ As noted by \textcite{gl2017}, this shock has the effect of forcing some to save
 
 In \textcite{gl2017}, just less than $1\%$ of the population are at the borrowing limit in the initial steady state. However, note that their stationary distributions feature comparable fractions of borrowers overall: $33\%$ and $27\%$, respectively.\footnote{Based on own calculations from the replication codes by \textcite{gl2017}. The MATLAB codes are available here: \url{https://sites.northwestern.edu/guidolor/}, last retrieved \printdate{2023-6-28}.}
 
-As \textcite{gl2017} note, the consumption response will depend on the aggregate MPC. If the MPC is large, then the consumption response will be large.
+As \textcite{gl2017} note, the consumption response will depend on the aggregate MPC. If the MPC is large, then the consumption response will be large. %But crucially, it might also depend on how \Gls{mpc}s are distributed, no???
 
 Note how the fraction of borrowers after the shock is endogenously reduced, a feature that cannot be captured by a two-asset model structure, where the fraction of lenders and borrowers remain constant over time.
 
@@ -1083,26 +1017,17 @@ Note how the fraction of borrowers after the shock is endogenously reduced, a fe
 \section{A Credit Crunch through the Interest Rate Wedge}
 \label{sec:wedge}
 
-Having understood the consequences of a shock to the household-level borrowing limit, this sections turns to a credit crunch arising through an increase in the \textit{price} of debt. Thus, I am at identifying the similarities and differences in the dynamics induced by the two financial shocks. Crucially, this section finds that the consequences are similar qualitatively, but that important quantitative and distributional divergences exist. 
+Having understood the consequences of a shock to the household-level borrowing limit, this sections considers a credit crunch through an increase in the \textit{price} of debt. By doing so, I aim at identifying the similarities and differences in the dynamics induced by the two financial shocks. Crucially, this section finds that the consequences are similar qualitatively, but that important quantitative and distributional divergences exist. 
 
 Analogously to \eqref{eq:borrowing-limit-process}, let the process of the interest rate wedge, $\kappa_t$, be given by:
 \begin{equation}
     \kappa_t = \kappa_{ss} \Bigg( \frac{\kappa_{t-1}}{\kappa_{ss}} \Bigg)^{\rho_{\kappa}} exp(e_{\kappa}), \label{eq:wedge-process}
 \end{equation}
-where $\rho_{\kappa}$ is again the persistence of the process. $\rho_{\kappa} = 0.3$ results in the duration of the adjustment being complete within six periods. 
+where I set $\kappa_{ss} =$ 1e-8, as before, and $\kappa_{ss}' = 0.00203$ to achieve a reduction in the debt-to-output ratio of five percentage points. This makes for a fair comparison to the shock of section \ref{sec:limit}. Choosing $\rho_{\kappa}$, the persistence of the borrowing wedge, equal to $0.3$ results in the duration of the adjustment being complete within six periods. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Steady States with Cheap and Expensive Borrowing}
-% \label{sec:wedge-stst}
+In contrast to the credit crunch provoked by the borrowing limit, the present shock does not necessarily prohibit agents from taking up more debt. However, it makes holding debt -- at all levels of debt -- more expensive and thus reduces the willingness (and ability) of borrowers to supply \Gls{iou}s.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsubsection*{Policies and Distributions}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsubsection*{Aggregates}
-
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Permanent Shock to the Interest Rate Wedge: Comparison of Steady States}
 \label{tab:stst_Baseline_Wedge_Permanent}
@@ -1136,16 +1061,52 @@ Frac. at Borrowing Limit &  10.9800 &    7.7400 & -3.2400 \\
 \end{tabular}
 \end{table}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Transition to Expensive Borrowing}
-% \label{sec:wedge-transition}
+\begin{figure}[!ht]
+    \centering
+    \caption{Baseline Model -- Shock to the Interest Rate Wedge: Aggregate Dynamics}
+    \label{fig:baseline-permanent-wedge-agg}
+     \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Interest Rate Wedge, $\kappa$}
+     \label{fig:baseline-permanent-wedge-agg-phi}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_Rbar_baseline_limit_permanent_baseline_wedge_permanent.svg}
+     \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{Household Debt, $D$}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_D_baseline_limit_permanent_baseline_wedge_permanent.svg}
+     \end{subfigure}
+     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{Consumption, $C$}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_C_baseline_limit_permanent_baseline_wedge_permanent.svg}
+     \end{subfigure}
+     \hfill
+     % \begin{subfigure}[b]{0.49\textwidth}
+     % \caption{Debt-to-Output, $\frac{D}{y}$}
+     %     \centering
+     %     \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_DY_baseline_limit_permanent_baseline_wedge_permanent.svg}
+     % \end{subfigure}
+     % \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \caption{\textit{Ex-Post} Real Interest Rate, $RR$}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_Rr_baseline_limit_permanent_baseline_wedge_permanent.svg}
+     \end{subfigure}
+     % \hfill
+     % \begin{subfigure}[b]{0.49\textwidth}
+     % \caption{Nominal and Notional Interest Rates, $R$ and $R^n$}
+     %     \centering
+     %     \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_R_Rn_baseline_limit_permanent_baseline_wedge_permanent.svg}
+     % \end{subfigure}
+     \justifying
+     \footnotesize
+	\textit{Note}: Wherever the terminal steady state of a variable differs from the initial steady state, the red dotted line displays the former. Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to 12 quarters, including the initial steady state in $t=0$.
+\end{figure}
 
 %A more involved model would of course model the intermediation costs as profits to a financial intermediary. As those profits would then be distributed to households, the effect should be dampened. This, however, depends also on the way that profits are distributed.
-
-% \subsubsection*{Aggregate Dynamics}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1153,7 +1114,9 @@ Frac. at Borrowing Limit &  10.9800 &    7.7400 & -3.2400 \\
 \section{The Asymmetry of Financial Shocks}
 \label{sec:asymmetry}
 
-This section explores the asymmetry of financial shocks.
+This section explores the asymmetry of financial shocks. To that end, I consider a simple experiment: what if the borrowing limit, instead of tightening from $\phi_{ss}$ to $\phi_{ss}'$, loosens from $\phi_{ss}'$ to $\phi_{ss}$? Would the economy go through the same dynamics just with the sign reversed?
+
+Figure rev shows that this is clearly not the case: the boom from a loosening in the debt limit is much less pronounced than the recession caused by a tightening in the same limit.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1161,7 +1124,7 @@ This section explores the asymmetry of financial shocks.
 \section{Sensitivity Analyses}
 \label{sec:sensitivity}
 
-This section completes the formal analysis of the present thesis by exploring the effects of two crucial aspects in the preceding analysis: the speed with which a credit crunch takes effect and the ability of households to absorb shocks via individual labour supply. First, subsection \ref{sec:sensitivity-persistence} varies the persistence of the shock processes \eqref{eq:borrowing-limit-process} and \eqref{eq:wedge-process} in order to show the differences in the economy's responses to the varying speeds of the transition to tighter credit. Second, subsection \ref{sec:sensitivity-end-labour} adopts a preference specification for households which allows households to self-insure through labour supply.
+This section completes the formal analysis of the present thesis by exploring the effects of two crucial aspects in the preceding analysis: the speed with which a credit crunch takes effect and the ability of households to absorb shocks via individual labour supply. First, subsection \ref{sec:sensitivity-persistence} varies the persistence of the shock processes \eqref{eq:borrowing-limit-process} and \eqref{eq:wedge-process} in order to show the differences in the economy's responses to varying speeds of the transition to tighter credit. Second, subsection \ref{sec:sensitivity-end-labour} adopts a preference specification for households which allows households to self-insure through labour supply.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1177,17 +1140,17 @@ Note that the grids differ across the models due to the computational challenges
 \subsection{Insurance through Endogenous Labour Supply}
 \label{sec:sensitivity-end-labour}
 
-\Gls{ghh} preferences preclude households from adjusting working hours in order to absorb shocks to their consumption. This section explores an extension of the model which allows households to do so. 
-
-This allows wealth-poor households to potentially insure against reductions in income by supplying more labour hours.
+\Gls{ghh} preferences preclude households from adjusting working hours in order to absorb shocks to their consumption. This section explores an extension of the model which allows households to do so. This allows wealth-poor households to potentially insure against reductions in income by supplying more labour hours.
 
 Households now have \Gls{crra}-type preferences:
 \begin{equation}
     u(c_{i,t}, n_{i,t}) = \frac{c_{i,t}^{1-\sigma_c}}{1-\sigma_c} - \phi \frac{n_{i,t}^{1+\sigma_l}}{1+\sigma_l}, \label{eq:hh-crra-utility}
 \end{equation}
-where $\phi$ is the weight on the disutility of labour. I follow \textcite{mckay2016} and set $\phi=1$.\footnote{There is a wide range of values in use for this parameter.}
+where $\phi$ is the weight on the disutility of labour. I follow \textcite{mckay2016} and set $\phi=1$. The rest of the model remains identical as in section \ref{sec:model}.
 
-Note that in this setup, output is an entirely endogenous object. 
+%\footnote{There is a wide range of values in use for this parameter.}
+
+%Note that in this setup, output is an entirely endogenous object. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1339,16 +1302,13 @@ This subsection presents a visualisation of the baseline model presented in sect
 
   \draw[-] (3.2,-4.25) -- (6.5,-4.25); % btw MP an firms
   \draw[->] (5.5,-4.25) -- (5.5,2.5); % to interest rate btw borr and lend
-  %\node at (4.65,2.45) {Interest $RR$};
   
   \draw[->] (5.5,-3) -- (13,-3); 
 
   \draw[->] (2.65,1) -- (2.65,-4); % to firms
-  %\node at (2.7,-2) {Labour $N$};
   \draw[->] (2.4,-4) -- (2.4,1); % from firms
   \node at (1.4,-1) {Income $wN$};
   \node at (3.6,-1) {Labour $N$};
-  %\node at (1.65,-1.5) {$wN$};
 
   \node at (1.2,-2) {Consumption};
   \node at (1.4,-2.5) {Goods $C$};
@@ -1420,11 +1380,10 @@ Second, I acquire data on US nominal \Gls{gdp}, the US price level from the FRED
     \label{fig:app-calibration-bonds}
     \includesvg[inkscapelatex=false, width=0.75\textwidth]{Results/FRED_b.svg}
 \end{figure}
-\begin{flushleft}
+\justifying{
      \footnotesize
 	\textit{Note}: Data taken from \href{https://fred.stlouisfed.org}{FRED data base}. Sample range: 1951:Q4 -- 2023:Q1. The dotted line is the full sample mean of the series. The series is in terms of the units from the \textit{baseline} calibration of the model in section \ref{sec:model}, in which $y_{ss} = 0.9129$. 
-\end{flushleft}
-
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1487,19 +1446,29 @@ This appendix contains supplementary figures, placed here for the sake of brevit
     \includesvg[inkscapelatex=false, width=0.75\textwidth]{Results/stst_policies_mpc_baseline_limit_permanent_initial.svg}
 \end{figure}
 
+\subsection{Figures for Section \ref{sec:limit-stst-tight}}
+\label{sec-app:figures-limit-tight}
+
+\begin{sidewaysfigure}
+%\begin{figure}[H]
+    \caption{Shock to the Borrowing Limit: Comparison
+ of Asset Distributions}
+    \label{fig:comparison-stst-baseline-dist}
+    \centering
+\includesvg[inkscapelatex=false, width=0.8\textwidth]{Results/stst_dist_2d_comparison_baseline_limit_permanent.svg}
+    \\
+     \centering
+     %\footnotesize
+	\textit{Note}: Note that the density is due to numerical errors.
+\end{sidewaysfigure}
+
 \subsection{Figures for Section \ref{sec:limit-transition}}
 \label{sec-app:figures-limit-transition}
 
 \begin{figure}[H]
     %\ContinuedFloat
     \caption{Supplement for Figure \ref{fig:baseline-permanent-limit-agg}}%{\hypersetup{hidelinks}\ref{fig:baseline-permanent-limit-agg}}}
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-     \caption{Household Debt, $D$}
-         \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_D_baseline_limit_permanent.svg}
-     \end{subfigure}
-     \hfill
+    \label{fig:baseline-permanent-limit-agg-extra}
     \begin{subfigure}[b]{0.49\textwidth}
      \caption{Labour Hours, $N$}
          \centering
@@ -1510,6 +1479,18 @@ This appendix contains supplementary figures, placed here for the sake of brevit
      \caption{Wage, $w$}
          \centering
          \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_w_baseline_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \centering
+     \caption{Marginal Costs, $mc$}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_mc_baseline_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \centering
+     \caption{Inflation, $\pi$}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_pi_baseline_limit_permanent.svg}
      \end{subfigure}
      \hfill
     \begin{subfigure}[b]{0.49\textwidth}
@@ -1531,10 +1512,6 @@ This appendix contains supplementary figures, placed here for the sake of brevit
 
 \subsection{Figures for Section \ref{sec:wedge}}
 \label{sec-app:figures-wedge}
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1568,28 +1545,20 @@ I re-set $\beta$ so that the steady state (real) interest rate is $0.15\%$, as b
 
 Now, \Gls{iou}s make up a larger share of gross liquidity. 
 
-Clearly, the steady-state distributions are different. \Gls{mpc}s are much higher.
+Clearly, the steady-state distributions are different. \Gls{mpc}s are much higher, consistent with the observation by \textcite{kaplan2018} that \Gls{mpc}s rise with less available liquidity.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Distortionary Labour Income Tax}
-%\label{sec-app:robust-labour-tax}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{A Permanent Discount Factor Shock}
-%\label{sec-app:robust-beta-shock}
-
+%\end{appendices}
+\newpage
+\thispagestyle{plain}
+\pagenumbering{roman}  % Turn page numbering to Roman
+\renewcommand*{\thepage}{A-\roman{page}} % Add 'A' to each page number for appendices section
+\printbibliography[heading=subbibliography, title={Appendix References}]
+\addcontentsline{toc}{section}{Appendix References}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{appendices}
-\newpage
-\thispagestyle{plain}
-\pagenumbering{Roman}  % Turn page numbering to arabic
-\renewcommand*{\thepage}{A-\Roman{page}} % Add 'A' to each page number for appendices section
-\thispagestyle{plain}
-\printbibliography[heading=subbibliography, title={Appendix References}]
-\addcontentsline{toc}{section}{Appendix References}
 \end{refsection}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
