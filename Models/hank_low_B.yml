@@ -70,8 +70,8 @@ aux_equations: |
     top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
     top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
     top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
-    top25a = 1 - percentile(a, dist, .75) # wealth share of top-10% 
-    top25c = 1 - percentile(c, dist, .75) # consumption share of top-10% 
+    top25a = 1 - percentile(a, dist, .75) # wealth share of top-25% 
+    top25c = 1 - percentile(c, dist, .75) # consumption share of top-25% 
     bot25a = percentile(a, dist, .25) # wealth share of bottom-25% 
     bot25c = percentile(c, dist, .25) # consumption share of bottom-25% 
 

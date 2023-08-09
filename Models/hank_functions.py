@@ -115,7 +115,7 @@ def egm_step(Wa_p, a_grid, skills_grid, w, n, T, R, Rminus, beta, sigma_c, sigma
                   a)
     
     # Calculate the marginal propensity to consume (MPC) out of a small
-    # increase (given by db) of in liquid wealth
+    # increase (given by db) of liquid wealth
     mpc = (interpolate(a, (a + da), c) - c) / da
     
     # Ensure that MPC is at most 1
