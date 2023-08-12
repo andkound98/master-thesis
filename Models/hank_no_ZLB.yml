@@ -1,6 +1,8 @@
-# Author: Andreas Koundouros [koundouros.andreas@gmail.com]
+# Author: Andreas Koundouros [koundouros.andreas@gmail.com] 
+# Based on example model from Gregor Böhl
+# https://github.com/gboehl/econpizza/blob/master/econpizza/examples/hank_with_comments.yml
 ---
-name: 'hank_baseline'
+name: 'hank_no_ZLB'
 description: 'One-Asset HANK model with Shocks to the Borrowing Constraint and the Interest Rate Wedge'
 functions_file: 'hank_functions.py'
 
@@ -22,7 +24,7 @@ definitions: |
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
-variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid, Top10C, Top10A, Top1C, Top1A, Top25C, Top25A, Bot25A, Bot25C ]
+variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid, Bot25A, Bot25C, Bot50A, Bot50C, Top25C, Top25A, Top10C, Top10A ]
 parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, omega ]
 shocks: [ e_phi, e_Rbar ]
 
@@ -63,35 +65,34 @@ aux_equations: |
     aggr_a = jnp.sum(dist*a, axis=(0,1)) # asset holdings
     aggr_c = jnp.sum(dist*c, axis=(0,1)) # consumption 
     aggr_mpc = jnp.sum(dist*mpc, axis=(0,1)) # MPC
-    aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt holdings
+    aggr_debt = -jnp.sum(jnp.where((a < 0), dist*a, 0), axis=(0,1)) # debt
     
     # Shares
-    top1a = 1 - percentile(a, dist, .99) # wealth share of top-1% 
-    top1c = 1 - percentile(c, dist, .99) # consumption share of top-1% 
-    top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
-    top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
-    top25a = 1 - percentile(a, dist, .75) # wealth share of top-10% 
-    top25c = 1 - percentile(c, dist, .75) # consumption share of top-10% 
     bot25a = percentile(a, dist, .25) # wealth share of bottom-25% 
     bot25c = percentile(c, dist, .25) # consumption share of bottom-25% 
-
+    bot50a = percentile(a, dist, .5) # wealth share of bottom-50% 
+    bot50c = percentile(c, dist, .5) # consumption share of bottom-50% 
+    top25a = 1 - percentile(a, dist, .75) # wealth share of top-25% 
+    top25c = 1 - percentile(c, dist, .75) # consumption share of top-25% 
+    top10a = 1 - percentile(a, dist, .9) # wealth share of top-10% 
+    top10c = 1 - percentile(c, dist, .9) # consumption share of top-10% 
+    
 equations:
-    # Aggregation
+    # Aggregation and definitions
     ~ C = aggr_c # aggregate consumption
     ~ MPC = aggr_mpc # aggregate MPC
     ~ D = aggr_debt # household debt
     ~ DY = D/y # household debt-to-GDP
-    ~ gr_liquid = B + D # gross liquid assets
-    
-    # Definitions
-    ~ Top1C = top1c
-    ~ Top1A = top1a
-    ~ Top10C = top10c
-    ~ Top10A = top10a
-    ~ Top25C = top25c
-    ~ Top25A = top25a
+    ~ gr_liquid = B + D # gross liquidity
+     
     ~ Bot25C = bot25c
     ~ Bot25A = bot25a
+    ~ Bot50C = bot50c
+    ~ Bot50A = bot50a
+    ~ Top25C = top25c
+    ~ Top25A = top25a
+    ~ Top10C = top10c
+    ~ Top10A = top10a
 
     # Firms
     ~ y_prod = z*N # production
@@ -104,15 +105,15 @@ equations:
     ~ tau = (Rr-1)*B # balanced government budget 
     
     # Monetary authority
-    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional nominal interest rate
-    ~ R = maximum(1, Rn) # ZLB on nominal interest rates
+    ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional interest rate
+    ~ R = Rn # no ZLB
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
     ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
 
     # Market clearing conditions
-    ~ B = aggr_a # bond market
     ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - Rbar*aggr_debt # output (i.e. GDP)
     ~ C = y # goods market
+    ~ B = aggr_a # asset market
     ~ w = N**sigma_l # labour market
 
     # Exogenous processes
@@ -129,7 +130,7 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.98946 # discount factor
+        beta: 0.99056 # discount factor
         sigma_c: 2. # coefficient of relative risk aversion
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         
@@ -149,6 +150,7 @@ steady_state:
         
         # Monetary Policy
         pi: 1.0 # inflation
+        pitilde: pi # indexed inflation
         rho: 0.8 # persistence in notional nominal interest rate
         phi_pi: 2. # Taylor rule coefficient on inflation
         phi_y: 0.15 # Taylor rule coefficient on output
