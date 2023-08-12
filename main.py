@@ -51,7 +51,8 @@ from plot_functions import (plot_full_stst,
                             plot_compare_stst,
                             plot_all,
                             plot_selected_transition,
-                            plot_policy_impact)
+                            visualise_dist_over_time,
+                            plot_percentile_transitions_C)
 
 # Import lists of variables to plot
 from list_variables_to_plot import dict_of_variables_to_plot
@@ -60,9 +61,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = False # True: save results (tables and plots)
+save_results = True # True: save results (tables and plots)
 
-show_titles_in_plots = True # True: show plot titles
+show_titles_in_plots = False # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -76,7 +77,7 @@ models = ['baseline', # baseline model (section 3)
           'slow_shock', # baseline model with slow deleveraging (section 6.1)
           'fast_shock', # baseline model with fast deleveraging (section 6.1)
           'end_L', # extended model with endogenous labour supply (section 6.2)
-          'low_beta', # baseline model with a low beta calibration (appendix E.1)
+          'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
           'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
@@ -204,19 +205,20 @@ for model in models:
                                  x_transition, horizon, 
                                  save_results, exact_path, 
                                  title=show_titles_in_plots)
+
+        # Plot asset distribution over time
+        visualise_dist_over_time(hank_model_initial, hank_model_terminal,
+                                 x_transition, horizon=40,
+                                 y_threshold=10, 
+                                 x_threshold=shock_model_parameters['terminal_borrowing_limit']+0.2)
         
-        # Plot policies on impact
-        plot_policy_impact(hank_model_initial, hank_model_terminal, 
-                           x_transition,
-                           save_results, exact_path,
-                           borr_lim=shock_model_parameters['terminal_borrowing_limit'],
-                           x_threshold=150)
-        
-        plot_policy_impact(hank_model_initial, hank_model_terminal, 
-                           x_transition,
-                           save_results, exact_path,
-                           borr_lim=shock_model_parameters['terminal_borrowing_limit'],
-                           x_threshold=10)
+        # Plot consumption responses of certain percentiles
+        plot_percentile_transitions_C(hank_model_terminal, x_transition,
+                                      [['Bot25C','Bottom-25%'], 
+                                       ['Bot50C','Bottom-50%'], 
+                                       ['Top25C','Top-25%']], horizon, 
+                                      save_results, exact_path,
+                                      title=show_titles_in_plots)
         
         #######################################################################
         # Save transition as pickle for convenience

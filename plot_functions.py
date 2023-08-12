@@ -833,22 +833,103 @@ def visualise_dist_over_time(initial_model,
                              terminal_model,
                              x_trans,
                              horizon,
-                             x_threshold,
-                             y_threshold):
+                             y_threshold,
+                             x_threshold=None,
+                             percent=100):
     dist_dyn = terminal_model.get_distributions(trajectory = x_trans,
                                                 init_dist = initial_model['steady_state']['distributions'])
     dist_init = jnp.sum(initial_model['steady_state']['distributions'][0],axis=0)
     dist_term = jnp.sum(terminal_model['steady_state']['distributions'][0],axis=0)
+    
     for tt in range(0,horizon):
         new_dist = jnp.sum(dist_dyn['dist'][..., tt], axis=0)
-        fig=px.line(x=terminal_model['context']['a_grid'][:x_threshold],
-                    y=[dist_init[:x_threshold],
-                       new_dist[:x_threshold],
-                       dist_term[:x_threshold]])
+        dist_df = pd.DataFrame({'Bond/IOU Holdings': terminal_model['context']['a_grid'],
+                           'Initial Distribution': percent*dist_init,
+                           'Terminal Distribution': percent*dist_term,
+                           f'Distribution t = {tt}': percent*new_dist})
+        
+        if x_threshold != None:
+            dist_df = dist_df[dist_df['Bond/IOU Holdings'] < x_threshold]
+        
+        fig=px.line(dist_df,
+                    x='Bond/IOU Holdings',
+                    y=['Initial Distribution',
+                       f'Distribution t = {tt}',
+                       'Terminal Distribution'],
+                    title=f't={tt}',
+                    color_discrete_sequence=px.colors.qualitative.D3[:3]).update_traces(line=dict(width=3))
+        fig.update_layout(xaxis_title='Bond/IOU Holdings', 
+                          yaxis_title='%',
+                          plot_bgcolor = 'whitesmoke', 
+                          font=dict(family="Times New Roman",
+                                            size=20,
+                                            color="black"),
+                          margin=dict(l=15, r=15, t=50, b=5), 
+                          legend_title='',
+                          legend=dict(yanchor="top", y=0.98, 
+                                      xanchor="right", x=0.98,
+                                      font=dict(size=28)), ) 
         fig.add_vline(x=x_trans[tt,terminal_model['variables'].index('phi')],
                       line_width=3, line_dash="dash", line_color="red")
         fig.update_yaxes(range=[0,y_threshold])
         fig.show()
+
+
+def plot_percentile_transitions_C(hank_model_terminal,
+                                  x_transition,
+                                  percentiles,
+                                  horizon,
+                                  save_results, 
+                                  exact_path,
+                                  title=True,
+                                  percent=100):
+    time = list(range(0, horizon, 1)) # Time vector
+    
+    df = pd.DataFrame({'Quarters': time})
+    
+    if title == False:
+        fig_title = ''
+        top_space = 5
+    elif title == True:
+        fig_title = 'Consumption Response by Percentile'
+        top_space = 50
+    
+    for pp in percentiles:
+        pp_var = pp[0]
+        pp_name = pp[1]
+        var_index = hank_model_terminal['variables'].index(f'{pp_var}') # Find variable index
+        
+        disagg_transition = x_transition[:horizon,var_index] * x_transition[:horizon,hank_model_terminal['variables'].index('C')]
+        disagg_transition_per = percent*((disagg_transition - disagg_transition[0])/ disagg_transition[0])
+        
+        df[f'{pp_name}'] = disagg_transition_per
+    
+    # Plot
+    fig = px.line(df,
+                  x = 'Quarters',
+                  y = df.columns.tolist(), 
+                  color_discrete_sequence=px.colors.qualitative.D3[:len(percentiles)]).update_traces(line=dict(width=3))
+    fig.update_layout(title=f'{fig_title}', # empty title
+                       xaxis_title='Quarters', # x-axis labeling
+                       yaxis_title='Percent Deviation', # y-axis labeling
+                       legend=dict(yanchor="bottom", y=0.02, 
+                                   xanchor="right", x=0.98,
+                                   font=dict(size=28)), 
+                       legend_title='', 
+                       plot_bgcolor='whitesmoke', 
+                       margin=dict(l=15, r=15, t=top_space, b=5),
+                       font=dict(family="Times New Roman", # adjust font
+                                 size=20,
+                                 color="black"))
+    fig.show() # Show plot
+    
+    if save_results == True:
+        path_plot = os.path.join(os.getcwd(),
+                                 'Results',
+                                 f'{exact_path}',
+                                 'percentile_transitions_C.svg')
+        fig.write_image(path_plot)
+    
 
 ###############################################################################
 ###############################################################################

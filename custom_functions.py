@@ -80,7 +80,7 @@ def get_exact_results_path(settings):
 # Set model and shock parameters according to settings
 def get_parametrisation(settings):
     # Parametrisation in case of baseline model of section 3
-    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock':
+    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'no_ZLB' or settings['Model'] == 'no_omega' or settings['Model'] == 'low_psi':
         shock_model_parameters = {'initial_borrowing_limit': -2.3485,
                                   'terminal_borrowing_limit': -2.1775,
                                   'initial_wedge': 1e-8,
@@ -92,13 +92,6 @@ def get_parametrisation(settings):
                                   'terminal_borrowing_limit': -1.655,
                                   'initial_wedge': 1e-8,
                                   'terminal_wedge': 0.00277}
-        
-    # Parametrisation in case of baseline model with a low beta calibration
-    if settings['Model'] == 'low_beta':
-        shock_model_parameters = {'initial_borrowing_limit': -2.3567,
-                                  'terminal_borrowing_limit': -2.1846,
-                                  'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.00201}
     
     # Parametrisation in case of baseline model with a high B calibration
     if settings['Model'] == 'low_B':
@@ -547,7 +540,9 @@ def get_labels(comparison):
                       'fast_shock_wedge_permanent': 'Fast Shock; Shock to \u03BA',
                       'low_B_limit_permanent': 'Low B; Shock to \u03C6',
                       'low_B_wedge_permanent': 'Low B; Shock to \u03BA',
-                      'low_beta_limit_permanent': 'Low \u03B2; Shock to \u03C6',
+                      'no_ZLB_limit_permanent': 'No ZLB; Shock to \u03C6',
+                      'no_omega_limit_permanent': 'No Omega; Shock to \u03C6',
+                      'low_psi_limit_permanent': 'Low Psi; Shock to \u03C6',
                       'low_beta_wedge_permanent': 'Low \u03B2; Shock to \u03BA',
                       'slow_shock_limit_permanent': 'Slow Shock; Shock to \u03C6',
                       'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA'}

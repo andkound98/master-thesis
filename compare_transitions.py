@@ -37,9 +37,9 @@ from plot_functions import compare_selected_transitions
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: results (tables and plots) are saved
+save_results = False # True: results (tables and plots) are saved
 
-show_titles_in_plots = False # True: show plot titles
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -51,7 +51,7 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 ### NOTE: in order to comapre the transition of shocks, you must have 
 # implemented them first through the main.py file
 comparison = {'transition_1': 'baseline_limit_permanent',
-              'transition_2': 'end_L_limit_permanent'} #baseline_wedge_permanent
+              'transition_2': 'low_psi_limit_permanent'} # baseline_wedge_permanent 
 
 # comparison = {'transition_1': 'fast_shock_wedge_permanent',
 #               'transition_2': 'baseline_wedge_permanent',

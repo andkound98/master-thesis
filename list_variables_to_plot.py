@@ -25,10 +25,14 @@ aggregate_variables = [['phi', 'Borrowing Limit', 'Model Units'],
                        ['DY', 'Household Debt-to-GDP', 'Percent of Output']]
 
 # List of distributional variables to be plotted
-distributional_variables = [['Top10C', 'Top10% Consumption Share', 'Percent'],
-                            ['Bot25C', 'Bottom25% Consumption Share', 'Percent'],
-                            ['Top10A', 'Top10% Assets Share', 'Percent'],
-                            ['Bot25A', 'Bottom25% Assets Share', 'Percent']]
+distributional_variables = [['Bot25A', 'Bottom-25% Assets Share', 'Percent'],
+                            ['Bot25C', 'Bottom-25% Consumption Share', 'Percent'],
+                            ['Bot50A', 'Bottom-50% Assets Share', 'Percent'],
+                            ['Bot50C', 'Bottom-50% Consumption Share', 'Percent'],
+                            ['Top25A', 'Top-25% Assets Share', 'Percent'],
+                            ['Top25C', 'Top-25% Consumption Share', 'Percent'],
+                            ['Top10A', 'Top-10% Assets Share', 'Percent'],
+                            ['Top10C', 'Top-10% Consumption Share', 'Percent']]
 
 # Create dictionary of the two lists
 dict_of_variables_to_plot = {'aggregate': aggregate_variables,
