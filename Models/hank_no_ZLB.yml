@@ -1,5 +1,5 @@
 # Author: Andreas Koundouros [koundouros.andreas@gmail.com] 
-# Based on example model from Gregor Böhl
+# Based on example model from Gregor Boehl, see:
 # https://github.com/gboehl/econpizza/blob/master/econpizza/examples/hank_with_comments.yml
 ---
 name: 'hank_no_ZLB'
