@@ -119,7 +119,7 @@ def return_models_permanent(model_path,
     # Models for permanent shock to the borrowing limit
     if settings['Shock'].startswith('limit') == True:
         # Settings for interest rate wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = shock_model_parameters['initial_wedge']
+        hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
         
         # Create model with initial borrowing limit
         init = shock_model_parameters['initial_borrowing_limit']
@@ -149,13 +149,13 @@ def return_models_permanent(model_path,
         hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}')
         
         # Create model with initial borrowing wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = shock_model_parameters['initial_wedge']
+        hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
         
         # Load initial model
         hank_model_initial = ep.load(hank_dict)
         
         # Create model with terminal borrowing wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = shock_model_parameters['terminal_wedge']
+        hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['terminal_wedge']
         
         # Load terminal model
         hank_model_terminal = ep.load(hank_dict)
@@ -171,7 +171,7 @@ def return_models_permanent(model_path,
         hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}')
         
         # Settings for interest rate wedge
-        hank_dict['steady_state']['fixed_values']['Rbar'] = shock_model_parameters['initial_wedge']
+        hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
         
         # Load initial model
         hank_model_initial = ep.load(hank_dict)
@@ -199,7 +199,7 @@ def return_models_transitory(model_path,
     
     # Load model depending on the chosen shock
     
-    hank_dict['steady_state']['fixed_values']['Rbar'] = shock_model_parameters['initial_wedge']
+    hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
     
     init = shock_model_parameters['initial_borrowing_limit']
     term = shock_model_parameters['terminal_borrowing_limit']
@@ -448,7 +448,7 @@ def stst_overview(models,
         # Calculate changes based on variable type
         for index, row in stst_df.iterrows():
             try:
-                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'Rbar', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
+                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'kappa', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
                     # Absolute change for specific variables
                     stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
                 else:

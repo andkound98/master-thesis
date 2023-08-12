@@ -208,9 +208,9 @@ for model in models:
 
         # Plot asset distribution over time
         visualise_dist_over_time(hank_model_initial, hank_model_terminal,
-                                 x_transition, horizon=40,
+                                 x_transition, horizon=30,
                                  y_threshold=10, 
-                                 x_threshold=shock_model_parameters['terminal_borrowing_limit']+0.2)
+                                 x_threshold=-1.4)
         
         # Plot consumption responses of certain percentiles
         plot_percentile_transitions_C(hank_model_terminal, x_transition,

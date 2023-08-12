@@ -528,7 +528,7 @@ def plot_single_transition(model,
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                4*percent*(x_trans[:horizon,var_index] - 1.0)])
         yfin = 4*percent*(x_trans[-1,var_index] - 1.0)
-    elif variable[0] in ['Rbar']:
+    elif variable[0] in ['kappa']:
         x_single_transition = np.column_stack([time, # Concatenate IRF and time vector
                                                4*percent*x_trans[:horizon,var_index]])
         yfin = 4*percent*x_trans[-1,var_index]
@@ -965,7 +965,7 @@ def compare_selected_transitions(list_of_transition_dfs,
                     new_col = 4*percent*(df[f'{variable}'][:horizon] - 1.0)
                     transition_df[col_name] = new_col.reset_index(drop=True)
     
-            elif variable in ['Rbar']:
+            elif variable in ['kappa']:
                 for i, df in enumerate(list_of_transition_dfs):
                     col_name = f'{legend[i]}'
                     new_col = 4*percent*(df[f'{variable}'][:horizon])

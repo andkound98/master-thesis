@@ -24,9 +24,9 @@ definitions: |
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
-variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, Rbar, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid, Bot25A, Bot25C, Bot50A, Bot50C, Top25C, Top25A, Top10C, Top10A ]
-parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_Rbar, db, omega ]
-shocks: [ e_phi, e_Rbar ]
+variables: [ div, mc, y, y_prod, tau, w, pi, pitilde, R, Rn, Rr, kappa, Rrminus, C, N, B, phi, MPC, D, DY, gr_liquid, Bot25A, Bot25C, Bot50A, Bot50C, Top25C, Top25A, Top10C, Top10A ]
+parameters: [ beta, sigma_c, sigma_l, z, theta, psi, phi_pi, phi_y, rho, rho_phi, rho_kappa, db, omega ]
+shocks: [ e_phi, e_kappa ]
 
 ###############################################################################
 ###############################################################################
@@ -108,17 +108,17 @@ equations:
     ~ Rn = (RSS*((pi/piSS)**phi_pi)*((y/ySS)**phi_y))**(1-rho)*RnLag**rho # Taylor rule for notional interest rate
     ~ R = maximum(1, Rn) # ZLB on nominal interest rates
     ~ Rr = RLag/pi # ex-post real return on positive asset holdings 
-    ~ Rrminus = Rr + Rbar # ex-post real return on negative asset holdings
+    ~ Rrminus = Rr + kappa # ex-post real return on negative asset holdings
 
     # Market clearing conditions
-    ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - Rbar*aggr_debt # output (i.e. GDP)
+    ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - kappa*aggr_debt # output (i.e. GDP)
     ~ C = y # goods market
     ~ B = aggr_a # asset market
     ~ w = N**sigma_l # labour market
 
     # Exogenous processes
     ~ phi = phiSS*(phiLag/phiSS)**rho_phi*exp(e_phi) # borrowing limit
-    ~ Rbar = RbarSS*(RbarLag/RbarSS)**rho_Rbar*exp(e_Rbar) # interest rate wedge
+    ~ kappa = kappaSS*(kappaLag/kappaSS)**rho_kappa*exp(e_kappa) # interest rate wedge
 
 ###############################################################################
 ###############################################################################
@@ -135,7 +135,7 @@ steady_state:
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         
         phi: amin # borrowing limit
-        Rbar: 1e-8 # intermediation cost
+        kappa: 1e-8 # intermediation cost
         db: 0.01 # step size in MPC calculation
         
         # Firms
@@ -157,7 +157,7 @@ steady_state:
         
         # Exogenous processes
         rho_phi: 0.68 # persistence of borrowing limit shock
-        rho_Rbar: 0.48 # persistence of interest rate wedge shock
+        rho_kappa: 0.48 # persistence of interest rate wedge shock
         
         # Auxiliary equations
         w: mc*z # wage
@@ -169,7 +169,7 @@ steady_state:
         R: 1.001 # steady state nominal interest rate
         Rn: R # steady state notional interest rate
         Rr: R # steady state real interest rate on positive bond holdings 
-        Rrminus: Rr + Rbar # steady state real rate on negative bond holdings
+        Rrminus: Rr + kappa # steady state real rate on negative bond holdings
         tau: (Rr-1)*B # steady state lump-sum tax
         WaPrime: egm_init(a_grid, skills_stationary) # initialise marginal continuation value
         

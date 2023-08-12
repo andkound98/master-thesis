@@ -9,7 +9,7 @@ This file creates lists of variables to be plotted.
 
 # List of aggregate variables to be plotted
 aggregate_variables = [['phi', 'Borrowing Limit', 'Model Units'],
-                       ['Rbar', 'Interest Rate Wedge', 'Annualised Rate'],
+                       ['kappa', 'Interest Rate Wedge', 'Annualised Rate'],
                        ['C', 'Consumption', 'Percent Deviation'], 
                        ['N', 'Labour Hours', 'Percent Deviation'],
                        ['w', 'Wage', 'Percent Deviation'], 
