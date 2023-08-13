@@ -4,7 +4,8 @@
 Author: Andreas Koundouros
 Date: 15.05.2023
 
-This file contains custom functions used throughout the project.
+This file contains custom functions used throughout the project, inter alia in 
+the main file and the plot_functions file.
 """
 
 ###############################################################################
@@ -541,9 +542,7 @@ def get_labels(comparison):
                       'low_B_limit_permanent': 'Low B; Shock to \u03C6',
                       'low_B_wedge_permanent': 'Low B; Shock to \u03BA',
                       'no_ZLB_limit_permanent': 'No ZLB; Shock to \u03C6',
-                      'no_omega_limit_permanent': 'No Omega; Shock to \u03C6',
-                      'low_psi_limit_permanent': 'Low Psi; Shock to \u03C6',
-                      'low_beta_wedge_permanent': 'Low \u03B2; Shock to \u03BA',
+                      'no_ZLB_wedge_permanent': 'No ZLB; Shock to \u03BA',
                       'slow_shock_limit_permanent': 'Slow Shock; Shock to \u03C6',
                       'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA'}
     

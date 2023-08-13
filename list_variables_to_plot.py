@@ -4,7 +4,8 @@
 Author: Andreas Koundouros
 Date: 21.06.2023
 
-This file creates lists of variables to be plotted.
+This file allows to specify a dictionary with lists of aggregate and cross-
+sectional variables from the HANK models to be plotted.
 """
 
 # List of aggregate variables to be plotted

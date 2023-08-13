@@ -4,7 +4,8 @@
 Author: Andreas Koundouros
 Date: 04.05.2023
 
-This file contains custom functions for plotting results from the main file.
+This file contains custom functions for plotting various results from the HANK
+models, e.g. policies, distributions and transitions.
 """
 
 ###############################################################################
@@ -703,128 +704,6 @@ def plot_selected_transition(list_of_variables,
         else: 
             print('Error with the dimensions of the variable list.')
 
-###############################################################################
-###############################################################################
-# Function for plotting the impact of the shock on household decisions over the 
-# distribution
-def plot_policy_on_impact_over_dist(hank_model_initial, 
-                                    hank_model_terminal,
-                                    x_transition,
-                                    policy, 
-                                    policy_name, 
-                                    save_results,
-                                    exact_path,
-                                    x_threshold=None,
-                                    borr_lim=None,
-                                    percent=100):
-    # Get disaggregated dynamics
-    hank_model_initial_dist = hank_model_initial['steady_state']['distributions'].copy()
-    dist_transition = hank_model_terminal.get_distributions(trajectory = x_transition,
-                                                            init_dist = hank_model_initial_dist)
-    
-    # Get steady state policy, averaged over productivity
-    stst_policy = hank_model_initial['steady_state']['decisions'][f'{policy}']
-    av_stst_policy = jnp.dot(hank_model_terminal['context']['skills_stationary'], stst_policy)
-    
-    # Get policy in period 1, averaged over productivity
-    period_1_policy = dist_transition[f'{policy}'][:, :, 0]
-    av_period_1_policy = jnp.dot(hank_model_terminal['context']['skills_stationary'], period_1_policy)
-    
-    # Calculate differences in percent
-    diff_stst = percent*(av_period_1_policy - av_stst_policy)/(abs(av_stst_policy))
-    
-    if policy == 'a':
-        # Get a list of whether - at a given asset grid point - the sign of
-        # the policy changed
-        sign_change = jnp.not_equal(jnp.sign(av_period_1_policy), 
-                                    jnp.sign(av_stst_policy)) 
-        
-        # Loop over the percentage change in asset policies to leave out the 
-        # cases where the sign of the policy changed (rendering percentage 
-        # change calculation difficult)
-        for ii in range(len(sign_change)):
-            if sign_change[ii] == True:
-                diff_stst = diff_stst.at[ii].set(np.nan)
-    
-    # Make data frame
-    impact = {'grid': np.array(hank_model_terminal['context']['a_grid']),
-              'impact': diff_stst}
-    impact_df = pd.DataFrame(impact)
-
-    # Cut off x axis at threshold
-    if x_threshold != None:
-        impact_df.loc[impact_df['grid'] > x_threshold, :] = np.nan
-        
-        if policy == 'a':
-            condition = (-0.5 < impact_df['grid']) & (impact_df['grid'] < 0.5)
-            impact_df.loc[condition, :] = np.nan
-
-    # Plot
-    fig_impact=px.line(impact_df, 
-                       x = 'grid', 
-                       y = 'impact', 
-                       title='', 
-                       color_discrete_sequence=[px.colors.qualitative.D3[0]])
-    fig_impact.update_layout(xaxis_title='Bond/IOU Holdings', 
-                              yaxis_title=f'{policy_name}',
-                              plot_bgcolor = 'whitesmoke', 
-                              font=dict(family="Times New Roman",
-                                        size=20,
-                                        color="black"),
-                              margin=dict(l=15, r=15, t=5, b=5), 
-                              legend_title='') 
-    fig_impact.update_traces(line=dict(width=4))
-    
-    # Add terminal borrowing limit as vertical line
-    if borr_lim != None:
-        fig_impact.add_vline(x=borr_lim,
-                             line_width=3, line_dash="dash", line_color="red")
-    
-    # Show plot
-    fig_impact.show()
-    
-    # Save plot
-    if save_results == True:
-        path_plot = os.path.join(os.getcwd(),
-                                 'Results',
-                                 f'{exact_path}',
-                                 f'distr_impact_{policy}_{exact_path}.svg')
-        fig_impact.write_image(path_plot)
-        
-###############################################################################
-###############################################################################
-# Function for plotting the impact of the shock on all household decisions over 
-# the distribution
-def plot_policy_impact(hank_model_initial, hank_model_terminal, 
-                       x_transition,
-                       save_results, exact_path,
-                       borr_lim,
-                       x_threshold=150):
-    
-    # Change in consumption choice on impact over the distribution of assets
-    plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
-                                    x_transition, 'c', 'Consumption', 
-                                    save_results, exact_path,
-                                    x_threshold=x_threshold,
-                                    borr_lim=borr_lim)
-
-    # Change in asset choice on impact over the distribution of assets
-    plot_policy_on_impact_over_dist(hank_model_initial, hank_model_terminal, 
-                                    x_transition, 'a', 'Assets', 
-                                    save_results, exact_path,
-                                    x_threshold=x_threshold,
-                                    borr_lim=borr_lim)
-
-    # Change in labour choice on impact over the distribution of assets
-    try: 
-        plot_policy_on_impact_over_dist(hank_model_initial, 
-                                        hank_model_terminal, 
-                                        x_transition, 'n', 'Labour Supply', 
-                                        save_results, exact_path,
-                                        x_threshold=x_threshold,
-                                        borr_lim=borr_lim)
-    except KeyError: # If there is no labour supply policy, pass
-        pass
 
 ###############################################################################
 ###############################################################################
@@ -874,7 +753,9 @@ def visualise_dist_over_time(initial_model,
         fig.update_yaxes(range=[0,y_threshold])
         fig.show()
 
-
+###############################################################################
+###############################################################################
+# Function to plot the transitions of policies by percentiles
 def plot_percentile_transitions(policy,
                                 hank_model_terminal,
                                 x_transition,
@@ -915,25 +796,39 @@ def plot_percentile_transitions(policy,
                   x = 'Quarters',
                   y = df.columns.tolist(), 
                   color_discrete_sequence=px.colors.qualitative.D3[:len(percentiles)]).update_traces(line=dict(width=3))
-    fig.update_layout(title=f'{fig_title}', # empty title
-                       xaxis_title='Quarters', # x-axis labeling
-                       yaxis_title='Percent Deviation', # y-axis labeling
-                       legend=dict(yanchor="bottom", y=0.02, 
-                                   xanchor="right", x=0.98,
-                                   font=dict(size=28)), 
-                       legend_title='', 
-                       plot_bgcolor='whitesmoke', 
-                       margin=dict(l=15, r=15, t=top_space, b=5),
-                       font=dict(family="Times New Roman", # adjust font
-                                 size=20,
-                                 color="black"))
+    
+    if policy_var == 'C':
+        fig.update_layout(title=f'{fig_title}', # empty title
+                           xaxis_title='Quarters', # x-axis labeling
+                           yaxis_title='Percent Deviation', # y-axis labeling
+                           legend=dict(yanchor="bottom", y=0.02, 
+                                       xanchor="right", x=0.98,
+                                       font=dict(size=28)), 
+                           legend_title='', 
+                           plot_bgcolor='whitesmoke', 
+                           margin=dict(l=15, r=15, t=top_space, b=5),
+                           font=dict(family="Times New Roman", # adjust font
+                                     size=20,
+                                     color="black"))
+    else:
+        fig.update_layout(title=f'{fig_title}', # empty title
+                           xaxis_title='Quarters', # x-axis labeling
+                           yaxis_title='Percent Deviation', # y-axis labeling
+                           showlegend=False, 
+                           legend_title='', 
+                           plot_bgcolor='whitesmoke', 
+                           margin=dict(l=15, r=15, t=top_space, b=5),
+                           font=dict(family="Times New Roman", # adjust font
+                                     size=20,
+                                     color="black"))
+        
     fig.show() # Show plot
     
     if save_results == True:
         path_plot = os.path.join(os.getcwd(),
                                  'Results',
                                  f'{exact_path}',
-                                 'percentile_transitions_C.svg')
+                                 f'percentile_transitions_{exact_path}_{policy_var}.svg')
         fig.write_image(path_plot)
     
 

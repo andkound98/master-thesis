@@ -52,7 +52,7 @@ from plot_functions import (plot_full_stst,
                             plot_all,
                             plot_selected_transition,
                             visualise_dist_over_time,
-                            plot_percentile_transitions_C)
+                            plot_percentile_transitions)
 
 # Import lists of variables to plot
 from list_variables_to_plot import dict_of_variables_to_plot
@@ -213,12 +213,22 @@ for model in models:
                                  x_threshold=-1.4)
         
         # Plot consumption responses of certain percentiles
-        plot_percentile_transitions_C(hank_model_terminal, x_transition,
-                                      [['Bot25C','Bottom-25%'], 
-                                       ['Bot50C','Bottom-50%'], 
-                                       ['Top25C','Top-25%']], horizon, 
-                                      save_results, exact_path,
-                                      title=show_titles_in_plots)
+        plot_percentile_transitions(['C', 'Consumption'], 
+                                    hank_model_terminal, x_transition,
+                                    [['Bot25C','Bottom-25%'], 
+                                     ['Bot50C','Bottom-50%'], 
+                                     ['Top25C','Top-25%']], horizon, 
+                                    save_results, exact_path,
+                                    title=show_titles_in_plots)
+        
+        if settings['Model'] == 'end_L':
+            plot_percentile_transitions(['N', 'Labour'], 
+                                        hank_model_terminal, x_transition,
+                                        [['Bot25N','Bottom-25%'], 
+                                         ['Bot50N','Bottom-50%'], 
+                                         ['Top25N','Top-25%']], horizon, 
+                                        save_results, exact_path,
+                                        title=show_titles_in_plots)
         
         #######################################################################
         # Save transition as pickle for convenience
