@@ -73,17 +73,17 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Settings
 
 # Choose model(s)
-models = ['baseline', # baseline model (section 3)
-          'slow_shock', # baseline model with slow deleveraging (section 6.1)
-          'fast_shock', # baseline model with fast deleveraging (section 6.1)
-          'end_L', # extended model with endogenous labour supply (section 6.2)
-          'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
-          'low_B' # baseline model with a low B calibration (appendix E.2)
+models = ['baseline', # baseline model (section 4)
+          #'slow_shock', # baseline model with slow deleveraging (section 5.1)
+          #'fast_shock', # baseline model with fast deleveraging (section 5.1)
+          #'end_L', # extended model with endogenous labour supply (section 5.2)
+          #'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
+          #'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
 # Choose shock(s)
-shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4.1)
-         'wedge_permanent', # permanent shock to the interest rate wedge (section 4.2)
+shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4)
+         #'wedge_permanent', # permanent shock to the interest rate wedge (section 6)
          ]
 
 # Choose asymmetry 

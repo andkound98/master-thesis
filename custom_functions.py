@@ -449,7 +449,7 @@ def stst_overview(models,
         # Calculate changes based on variable type
         for index, row in stst_df.iterrows():
             try:
-                if row['Variable'] in ['beta', 'tau', 'D', 'DY', 'gr_liquid', 'phi', 'MPC', 'R', 'kappa', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
+                if row['Variable'] in ['beta', 'tau', 'DY', 'phi', 'MPC', 'R', 'kappa', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders'] or row['Variable'].startswith('Top') or row['Variable'].startswith('Bot'):
                     # Absolute change for specific variables
                     stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
                 else:

@@ -52,7 +52,7 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Choose model-shock combinations to comapre
 
 comparison = {'transition_1': 'baseline_limit_permanent',
-              'transition_2': 'baseline_wedge_permanent'}
+              'transition_2': 'end_L_limit_permanent'}
 
 # comparison = {'transition_1': 'fast_shock_limit_permanent',
 #               'transition_2': 'baseline_limit_permanent',
