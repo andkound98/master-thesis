@@ -4,8 +4,28 @@ This repository accompanies my master thesis, titled *Financial Constraints and 
 
 ## `main.py`
 
-This is the main file of the project.
+This is the main file of the project. The code herein reproduces the results found in the thesis. It allows the user to select one or more of the possible combinations of models and shocks. Having set the respective choices, the code loads, adjusts and solves the initial and terminal models, computes the fully non-linear perfect-foresight transition paths and plots various informative plots about the steady states and transitions. If desired, the results are stored in the folder 'Results'.
+
+## `compare_transitions.py`
+
+This file creates plots that compare the transitions produced by different models and shocks. To compare the transitions, they must have been implemented first through the main file and stored in a folder in 'Results'.
+
+## `custom_functions.py`
+
+This file contains custom functions used throughout the project, inter alia in the `main.py` file and the `plot_functions.py` file.
+
+## `plot_functions.py`
+
+This file contains custom functions for plotting various results from the HANK models, e.g. policies, distributions and transitions.
+
+## `calibration.py`
+
+This file calculates targets for the calibration of the employed HANK model.
 
 ## Thesis 
 
 The folder **Thesis** contains the TeX code of the thesis as well as its `.bib` file. The PDF version of the thesis is also in this folder.
+
+## Results
+
+The folder **Results** contains the results produced by the `main.py` file and the `plot_functions.py` file.
