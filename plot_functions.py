@@ -875,23 +875,29 @@ def visualise_dist_over_time(initial_model,
         fig.show()
 
 
-def plot_percentile_transitions_C(hank_model_terminal,
-                                  x_transition,
-                                  percentiles,
-                                  horizon,
-                                  save_results, 
-                                  exact_path,
-                                  title=True,
-                                  percent=100):
+def plot_percentile_transitions(policy,
+                                hank_model_terminal,
+                                x_transition,
+                                percentiles,
+                                horizon,
+                                save_results, 
+                                exact_path,
+                                title=True,
+                                percent=100):
     time = list(range(0, horizon, 1)) # Time vector
     
+    # Initialise data frame
     df = pd.DataFrame({'Quarters': time})
     
+    policy_var = policy[0]
+    policy_name = policy[1]
+    
+    # Handle title of plot
     if title == False:
         fig_title = ''
         top_space = 5
     elif title == True:
-        fig_title = 'Consumption Response by Percentile'
+        fig_title = f'{policy_name} Response by Percentile'
         top_space = 50
     
     for pp in percentiles:
@@ -899,7 +905,7 @@ def plot_percentile_transitions_C(hank_model_terminal,
         pp_name = pp[1]
         var_index = hank_model_terminal['variables'].index(f'{pp_var}') # Find variable index
         
-        disagg_transition = x_transition[:horizon,var_index] * x_transition[:horizon,hank_model_terminal['variables'].index('C')]
+        disagg_transition = x_transition[:horizon,var_index] * x_transition[:horizon,hank_model_terminal['variables'].index(f'{policy_var}')]
         disagg_transition_per = percent*((disagg_transition - disagg_transition[0])/ disagg_transition[0])
         
         df[f'{pp_name}'] = disagg_transition_per
@@ -1101,14 +1107,19 @@ def compare_selected_transitions(list_of_transition_dfs,
             # Create the folder if it doesn't exist
                 os.makedirs(path)
             
-            key1 = comparison['transition_1']
-            key2 = comparison['transition_2']
+            combined_key = ''
+            for kk in list(comparison.keys()):
+                key = comparison[kk]
+                if combined_key == '':
+                    combined_key = key
+                else:
+                    combined_key = combined_key + '_' + key
             
             if len(sublist) == 3:
                 path_plot = os.path.join(path,
-                                         f'comparison_{variable}_{key1}_{key2}.svg')
-            elif len(sublist) ==5:
+                                         f'comparison_{variable}_{combined_key}.svg')
+            elif len(sublist) == 5:
                 path_plot = os.path.join(path,
-                                         f'comparison_{variable1}_{variable2}_{key1}_{key2}.svg')
+                                         f'comparison_{variable1}_{variable2}_{combined_key}.svg')
             fig.write_image(path_plot)
             
