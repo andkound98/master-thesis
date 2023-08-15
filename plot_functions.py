@@ -304,7 +304,7 @@ def bar_plot_asset_dist(hank_model,
                                                   size=20,
                                                   color="black")),
                                    dict(x=(pos_a_grid.tail(1).iloc[0]-(bar_positions[i]/8)),
-                                                     y=y_threshold*(1/5),
+                                                     y=round(pos_y.tail(1).iloc[0],2)+0.05,
                                                      text=f'Pr[b≥{round(pos_a_grid.tail(1).iloc[0],2)}] = {round(pos_y.tail(1).iloc[0],2)}',
                                                      showarrow=False,
                                                      arrowhead=1,
@@ -915,6 +915,14 @@ def compare_selected_transitions(list_of_transition_dfs,
                     col_name2 = f'{variable_name2}; {legend[i]}'
                     new_col2 = percent*((df[f'{variable2}'][:horizon] - df[f'{variable2}'][0]) / df[f'{variable2}'][0])
                     transition_df[col_name2] = new_col2.reset_index(drop=True)
+        
+        if len([col for col in legend if 'Credit Easing' in col]) != 0:
+            for col in transition_df.columns:
+                if transition_df[col].iloc[0] == 0: 
+                    if col != 'Quarters' and 'Credit Easing' not in col:
+                        transition_df[col] *= -1
+                else:
+                    pass
         
         # Plot
         fig = px.line(transition_df,

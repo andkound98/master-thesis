@@ -534,6 +534,7 @@ def get_transitions(comparison):
 
 def get_labels(comparison):
     correspondence = {'baseline_limit_permanent': 'Baseline; Shock to \u03C6',
+                      'baseline_limit_permanent_asymmetric': 'Credit Easing; Shock to \u03C6',
                       'baseline_wedge_permanent': 'Baseline; Shock to \u03BA',
                       'end_L_limit_permanent': 'End. LS; Shock to \u03C6',
                       'end_L_wedge_permanent': 'End. LS; Shock to \u03BA',

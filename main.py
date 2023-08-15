@@ -61,9 +61,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: save results (tables and plots)
+save_results = False # True: save results (tables and plots)
 
-show_titles_in_plots = False # True: show plot titles
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 

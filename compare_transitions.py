@@ -40,9 +40,9 @@ from plot_functions import compare_selected_transitions
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: results (tables and plots) are saved
+save_results = False # True: results (tables and plots) are saved
 
-show_titles_in_plots = False # True: show plot titles
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -50,6 +50,9 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 ###############################################################################
 ###############################################################################
 # Choose model-shock combinations to comapre
+
+comparison = {'transition_1': 'baseline_limit_permanent',
+              'transition_2': 'baseline_limit_permanent_asymmetric'}
 
 comparison = {'transition_1': 'baseline_limit_permanent',
               'transition_2': 'end_L_limit_permanent'}
