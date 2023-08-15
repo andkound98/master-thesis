@@ -504,10 +504,30 @@ def create_grid(amax, n, amin, rho_a, amin_terminal, T=200):
     path_borrowing_limit.append(0) # ensure that 0 is included
     path_borrowing_limit.pop(0) # delete double initial borrowing limit
     
+    # # Combine initial log grid and grid values of borrowing limit path and 
+    # # sort the result
+    # full_grid = jnp.append(initialise_log_grid, 
+    #                        jnp.array(path_borrowing_limit)).sort()
+    
+    
+    path_borrowing_limit_rev = [np.nan]*T 
+    path_borrowing_limit_rev[0] = amin_terminal 
+    
+    for tt in range(T-1):
+        path_borrowing_limit_rev[tt+1] = round(amin*(path_borrowing_limit_rev[tt]/amin)**rho_a, 6)
+    
+    path_borrowing_limit_rev = [num for num in path_borrowing_limit_rev if num > amin]
+    path_borrowing_limit_rev.pop(0)
+    
     # Combine initial log grid and grid values of borrowing limit path and 
     # sort the result
     full_grid = jnp.append(initialise_log_grid, 
                            jnp.array(path_borrowing_limit)).sort()
+    
+    full_grid = jnp.append(full_grid,
+                            jnp.array(path_borrowing_limit_rev)).sort()
+    
+    full_grid = jnp.unique(full_grid)
     
     # Return the final grid and its length
     return full_grid, len(full_grid)
