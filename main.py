@@ -35,7 +35,7 @@ if not os.getcwd().endswith('master-thesis'):
 ###############################################################################
 ###############################################################################
 ###############################################################################
-# Import functions
+# Imports
 
 # Custom functions for various purposes
 from custom_functions import (get_model_path, 
@@ -54,7 +54,7 @@ from plot_functions import (plot_full_stst,
                             visualise_dist_over_time,
                             plot_percentile_transitions)
 
-# Import lists of variables to plot
+# Selections of variables to plot
 from list_variables_to_plot import dict_of_variables_to_plot
 
 ###############################################################################
@@ -82,12 +82,12 @@ models = ['baseline', # baseline model (section 4)
           ]
 
 # Choose shock(s)
-shocks = ['limit_permanent', # permanent shock to the borrowing limit (section 4)
-         #'wedge_permanent', # permanent shock to the interest rate wedge (section 6)
+shocks = ['limit_permanent', # permanent shock to the borrowing limit (with baseline model, section 4)
+          #'wedge_permanent', # permanent shock to the interest rate wedge (with baseline model, section 6)
          ]
 
 # Choose asymmetry 
-asymmetry = False # True: credit easing
+asymmetry = True # True: credit easing
 
 # Loop thorugh model-shock combinations to obtain results
 for model in models:
@@ -196,6 +196,14 @@ for model in models:
                                  save_results, exact_path, 
                                  title=show_titles_in_plots)
         
+        # Plot long-term debt dynamics separately
+        plot_selected_transition(dict_of_variables_to_plot['debt'], 
+                                 hank_model_terminal, 
+                                 x_transition, 80, 
+                                 False, 
+                                 exact_path, 
+                                 title=show_titles_in_plots)
+        
         #######################################################################
         # Distributional dynamics
         
@@ -217,7 +225,7 @@ for model in models:
                                     hank_model_terminal, x_transition,
                                     [['Bot25C','Bottom-25%'], 
                                      ['Bot50C','Bottom-50%'], 
-                                     ['Top25C','Top-25%']], horizon, 
+                                     ['Top25C','Top-25%']], 200, 
                                     save_results, exact_path,
                                     title=show_titles_in_plots)
         

@@ -8,7 +8,7 @@ This file allows to specify a dictionary with lists of aggregate and cross-
 sectional variables from the HANK models to be plotted.
 """
 
-# List of aggregate variables to be plotted
+# Selection of aggregate variables
 aggregate_variables = [['phi', 'Borrowing Limit', 'Model Units'],
                        ['kappa', 'Interest Rate Wedge', 'Annualised Rate'],
                        ['C', 'Consumption', 'Percent Deviation'], 
@@ -25,7 +25,11 @@ aggregate_variables = [['phi', 'Borrowing Limit', 'Model Units'],
                        ['D', 'Household Debt', 'Model Units'], 
                        ['DY', 'Household Debt-to-GDP', 'Percent of Output']]
 
-# List of distributional variables to be plotted
+# Selection of debt variables (in case these should be plotted additionally)
+debt_variables = [['D', 'Household Debt', 'Model Units'], 
+                  ['DY', 'Household Debt-to-GDP', 'Percent of Output']]
+
+# Selection of cross-section variables
 distributional_variables = [['Bot25A', 'Bottom-25% Assets Share', 'Percent'],
                             ['Bot25C', 'Bottom-25% Consumption Share', 'Percent'],
                             ['Bot50A', 'Bottom-50% Assets Share', 'Percent'],
@@ -37,4 +41,5 @@ distributional_variables = [['Bot25A', 'Bottom-25% Assets Share', 'Percent'],
 
 # Create dictionary of the two lists
 dict_of_variables_to_plot = {'aggregate': aggregate_variables,
+                             'debt': debt_variables,
                              'cross_sec': distributional_variables}

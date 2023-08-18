@@ -80,28 +80,29 @@ def get_exact_results_path(settings):
 ###############################################################################
 # Set model and shock parameters according to settings
 def get_parametrisation(settings):
-    # Parametrisation in case of baseline model of section 3
-    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'no_ZLB' or settings['Model'] == 'no_omega' or settings['Model'] == 'low_psi':
+    
+    # Baseline model of section 4
+    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'no_ZLB':
         shock_model_parameters = {'initial_borrowing_limit': -2.3485,
                                   'terminal_borrowing_limit': -2.1775,
                                   'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.00203}
+                                  'terminal_wedge': 0.00203} 
     
-    # Parametrisation in case of extended model with CRRA preferences of section 6.2
+    # Model version with CRRA preferences of section 5.2
     if settings['Model'] == 'end_L':
         shock_model_parameters = {'initial_borrowing_limit': -1.7956,
                                   'terminal_borrowing_limit': -1.655,
                                   'initial_wedge': 1e-8,
                                   'terminal_wedge': 0.00277}
     
-    # Parametrisation in case of baseline model with a high B calibration
+    # Baseline model with a high B calibration of appendix E.2
     if settings['Model'] == 'low_B':
         shock_model_parameters = {'initial_borrowing_limit': -1.54946,
                                   'terminal_borrowing_limit': -1.4238,
                                   'initial_wedge': 1e-8,
                                   'terminal_wedge': 0.00316}
         
-    # Return shock and model parametrisation
+    # Return parametrisation
     return shock_model_parameters
 
 ###############################################################################
@@ -293,174 +294,133 @@ def stst_overview(models,
     # Create a rounding function for convenience
     round_func_4 = lambda x: round(float(x), 4)
         
-    # Distinguish between the case of one model...:
-    if len(models) == 1:
-        model = models[0]
-        stst_df = pd.DataFrame(model['stst'].items(), 
-                                    columns = ['Variable', 'Steady State'])
-        stst_df['Steady State'] = stst_df['Steady State'].apply(round_func_4)
-        
-        # Add some more features of the steady states
-        a_grid = model['context']['a_grid']
-        
-        # Distributions
-        distribution_skills_and_assets = model['steady_state']['distributions'][0]
-        distribution_assets = 100*jnp.sum(distribution_skills_and_assets, 
-                                          axis = 0)
-        
-        # Add fraction of indebted households
-        row_share_indebted = {'Variable': 'Frac. of Borrowers',
-                              'Steady State': jnp.sum(jnp.where(a_grid < 0, 
-                                                                        distribution_assets, 
-                                                                        0)).round(2).item()}
-        row_share_indebted_df = pd.DataFrame([row_share_indebted])
-        stst_df = pd.concat([stst_df, row_share_indebted_df], 
-                                 ignore_index=True)
-        
-        # Add fraction of households at borrowing limit    
-        row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
-                           'Steady State': distribution_assets[0].round(2).item()}
-        row_share_limit_df = pd.DataFrame([row_share_limit])
-        stst_df = pd.concat([stst_df, row_share_limit_df], 
-                                       ignore_index=True)
-        
-        # Add fraction of households at 0 assets 
-        row_share_zero = {'Variable': 'Frac. at Zero Assets',
-                          'Steady State': jnp.sum(jnp.where(a_grid == 0, 
-                                                            distribution_assets, 
-                                                            0)).round(2).item()}
-        row_share_zero_df = pd.DataFrame([row_share_zero])
-        stst_df = pd.concat([stst_df, row_share_zero_df], 
-                                       ignore_index=True)
+    # Extract models
+    hank_model_init = models[0]
+    hank_model_term = models[1]
     
-    # ...and case of two models:
-    elif len(models) == 2:
-        hank_model_init = models[0]
-        hank_model_term = models[1]
-        
-        stst_df = pd.DataFrame(hank_model_init['stst'].items(), 
-                                    columns = ['Variable', 'Initial'])
-        stst_df['Initial'] = stst_df['Initial'].apply(round_func_4)
-        
-        term_stst_df = pd.DataFrame(hank_model_term['stst'].items(),
-                                             columns = ['Variable', 'Terminal'])
-        term_stst_df['Terminal'] = term_stst_df['Terminal'].apply(round_func_4)
-        
-        # Merge steady states into one data frame
-        stst_df = pd.merge(stst_df, term_stst_df, 
-                           on = 'Variable', how = 'left')
-        
-        # Add some more features of the steady states
-        a_grid_init = hank_model_init['context']['a_grid']
-        a_grid_term = hank_model_term['context']['a_grid']
-        
-        # Initial steady state 
-        distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
-        distribution_assets_initial = percent*jnp.sum(distribution_skills_and_assets_initial, 
-                                          axis = 0)
-        
-        # Terminal steady state 
-        distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
-        distribution_assets_terminal = percent*jnp.sum(distribution_skills_and_assets_terminal, 
-                                          axis = 0)
-        
-        #a_grid = hank_model['context']['a_grid']
-        #dist = hank_model['steady_state']['distributions'][0]
-        mpc_init = hank_model_init['steady_state']['decisions']['mpc']
-        mpc_term = hank_model_term['steady_state']['decisions']['mpc']
-        
-        borr_mpc_init = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_initial, 0))
-        borr_mpc_term = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_terminal, 0))
-        
-        current_limit_index = jnp.argmax(distribution_skills_and_assets_initial > 0)
-        current_limit = a_grid_init[current_limit_index]
-
-        # Find the value in arr1 which is 10 entries away from 'current_limit'
-        target_index = current_limit_index + 10
-        target_value = a_grid_init[target_index]
-        
-        constr_mpc_init = jnp.sum(jnp.where(a_grid_init<target_value,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<target_value, distribution_skills_and_assets_initial, 0))
-        
-        current_limit_index = jnp.argmax(distribution_skills_and_assets_terminal > 0)
-        current_limit = a_grid_term[current_limit_index]
-
-        # Find the value in arr1 which is 10 entries away from 'current_limit'
-        target_index = current_limit_index + 10
-        target_value = a_grid_term[target_index]
-        
-        constr_mpc_term = jnp.sum(jnp.where(a_grid_term<target_value,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_term<target_value, distribution_skills_and_assets_terminal, 0))
-        
-        lend_mpc_init = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_initial, 0))
-        lend_mpc_term = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_terminal, 0))
+    stst_df = pd.DataFrame(hank_model_init['stst'].items(), 
+                                columns = ['Variable', 'Initial'])
+    stst_df['Initial'] = stst_df['Initial'].apply(round_func_4)
     
-        # Add fraction of indebted households
-        row_share_indebted = {'Variable': 'Frac. of Borrowers',
-                              'Initial': jnp.sum(jnp.where(a_grid_init < 0, 
-                                                                        distribution_assets_initial, 
-                                                                        0)).round(2).item(),
-                              'Terminal': jnp.sum(jnp.where(a_grid_init < 0, 
-                                                                        distribution_assets_terminal, 
-                                                                        0)).round(2).item()}
-        row_share_indebted_df = pd.DataFrame([row_share_indebted])
-        stst_df = pd.concat([stst_df, row_share_indebted_df], 
-                                       ignore_index=True)
-        
-        # Add fraction of households at borrowing limit    
-        row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
-                           'Initial': distribution_assets_initial[0].round(2).item(),
-                           'Terminal': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
-        row_share_limit_df = pd.DataFrame([row_share_limit])
-        stst_df = pd.concat([stst_df, row_share_limit_df], 
-                                       ignore_index=True)
-        
-        # Add fraction of households at 0 assets 
-        row_share_zero = {'Variable': 'Frac. at Zero Assets',
-                          'Initial': jnp.sum(jnp.where(a_grid_init == 0, 
+    term_stst_df = pd.DataFrame(hank_model_term['stst'].items(),
+                                         columns = ['Variable', 'Terminal'])
+    term_stst_df['Terminal'] = term_stst_df['Terminal'].apply(round_func_4)
+    
+    # Merge steady states into one data frame
+    stst_df = pd.merge(stst_df, term_stst_df, 
+                       on = 'Variable', how = 'left')
+    
+    # Add some more features of the steady states
+    a_grid_init = hank_model_init['context']['a_grid']
+    #a_grid_term = hank_model_term['context']['a_grid']
+    
+    # Initial steady state 
+    distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
+    distribution_assets_initial = percent*jnp.sum(distribution_skills_and_assets_initial, 
+                                      axis = 0)
+    
+    # Terminal steady state 
+    distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
+    distribution_assets_terminal = percent*jnp.sum(distribution_skills_and_assets_terminal, 
+                                      axis = 0)
+    
+    #a_grid = hank_model['context']['a_grid']
+    #dist = hank_model['steady_state']['distributions'][0]
+    mpc_init = hank_model_init['steady_state']['decisions']['mpc']
+    mpc_term = hank_model_term['steady_state']['decisions']['mpc']
+    
+    borr_mpc_init = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_initial, 0))
+    borr_mpc_term = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_terminal, 0))
+    
+    #current_limit_index = jnp.argmax(distribution_skills_and_assets_initial > 0)
+    #current_limit = a_grid_init[current_limit_index]
+
+    # Find the value in arr1 which is 10 entries away from 'current_limit'
+    #target_index = current_limit_index + 10
+    #target_value = a_grid_init[target_index]
+    
+    #constr_mpc_init = jnp.sum(jnp.where(a_grid_init<target_value,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<target_value, distribution_skills_and_assets_initial, 0))
+    
+    #current_limit_index = jnp.argmax(distribution_skills_and_assets_terminal > 0)
+    #current_limit = a_grid_term[current_limit_index]
+
+    # Find the value in arr1 which is 10 entries away from 'current_limit'
+    #target_index = current_limit_index + 10
+    #target_value = a_grid_term[target_index]
+    
+    #constr_mpc_term = jnp.sum(jnp.where(a_grid_term<target_value,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_term<target_value, distribution_skills_and_assets_terminal, 0))
+    
+    lend_mpc_init = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_initial, 0))
+    lend_mpc_term = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_terminal, 0))
+
+    # Add fraction of indebted households
+    row_share_indebted = {'Variable': 'Frac. of Borrowers',
+                          'Initial': jnp.sum(jnp.where(a_grid_init < 0, 
                                                                     distribution_assets_initial, 
                                                                     0)).round(2).item(),
-                          'Terminal': jnp.sum(jnp.where(a_grid_init == 0, 
-                                                                     distribution_assets_terminal, 
-                                                                     0)).round(2).item()}
-        row_share_zero_df = pd.DataFrame([row_share_zero])
-        stst_df = pd.concat([stst_df, row_share_zero_df], 
-                                       ignore_index=True)
-        
-        # Add MPC of indebted households
-        row_mpc_indebted = {'Variable': 'MPC of Borrowers',
-                              'Initial': round(borr_mpc_init,2),
-                              'Terminal': round(borr_mpc_term,2)}
-        row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
-        stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
-                                       ignore_index=True)
-        
-        # Add MPC of households very close to the constraint
-        
-        # Add MPC of lending households
-        row_mpc_lending = {'Variable': 'MPC of Lenders',
-                              'Initial': round(lend_mpc_init,2),
-                              'Terminal': round(lend_mpc_term,2)}
-        row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
-        stst_df = pd.concat([stst_df, row_mpc_lending_df], 
-                                       ignore_index=True)
-        
-        # Add column which calculates changes in percent between the steady states
-        stst_df['Change'] = 0
+                          'Terminal': jnp.sum(jnp.where(a_grid_init < 0, 
+                                                                    distribution_assets_terminal, 
+                                                                    0)).round(2).item()}
+    row_share_indebted_df = pd.DataFrame([row_share_indebted])
+    stst_df = pd.concat([stst_df, row_share_indebted_df], 
+                                   ignore_index=True)
+    
+    # Add fraction of households at borrowing limit    
+    row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
+                       'Initial': distribution_assets_initial[0].round(2).item(),
+                       'Terminal': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
+    row_share_limit_df = pd.DataFrame([row_share_limit])
+    stst_df = pd.concat([stst_df, row_share_limit_df], 
+                                   ignore_index=True)
+    
+    # Add fraction of households at 0 assets 
+    row_share_zero = {'Variable': 'Frac. at Zero Assets',
+                      'Initial': jnp.sum(jnp.where(a_grid_init == 0, 
+                                                                distribution_assets_initial, 
+                                                                0)).round(2).item(),
+                      'Terminal': jnp.sum(jnp.where(a_grid_init == 0, 
+                                                                 distribution_assets_terminal, 
+                                                                 0)).round(2).item()}
+    row_share_zero_df = pd.DataFrame([row_share_zero])
+    stst_df = pd.concat([stst_df, row_share_zero_df], 
+                                   ignore_index=True)
+    
+    # Add MPC of indebted households
+    row_mpc_indebted = {'Variable': 'MPC of Borrowers',
+                          'Initial': round(borr_mpc_init,2),
+                          'Terminal': round(borr_mpc_term,2)}
+    row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
+    stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
+                                   ignore_index=True)
+    
+    # Add MPC of households very close to the constraint
+    
+    # Add MPC of lending households
+    row_mpc_lending = {'Variable': 'MPC of Lenders',
+                          'Initial': round(lend_mpc_init,2),
+                          'Terminal': round(lend_mpc_term,2)}
+    row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
+    stst_df = pd.concat([stst_df, row_mpc_lending_df], 
+                                   ignore_index=True)
+    
+    # Add column which calculates changes in percent between the steady states
+    stst_df['Change'] = 0
 
-        # Calculate changes based on variable type
-        for index, row in stst_df.iterrows():
-            try:
-                if row['Variable'] in ['beta', 'tau', 'DY', 'phi', 'MPC', 'R', 'kappa', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders'] or row['Variable'].startswith('Top') or row['Variable'].startswith('Bot'):
-                    # Absolute change for specific variables
-                    stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
-                else:
-                    # Percentage change for other variables
-                    stst_df.at[index, 'Change'] = percent * ((row['Terminal'] - row['Initial']) / row['Initial'])
-            # In case of division by zero, insert NaN
-            except ZeroDivisionError:
-                stst_df.at[index, 'Change'] = np.nan
+    # Calculate changes based on variable type
+    for index, row in stst_df.iterrows():
+        try:
+            if row['Variable'] in ['beta', 'tau', 'DY', 'phi', 'MPC', 'R', 'kappa', 'Rn', 'Rr', 'Rrminus', 'spread', 'Frac. of Borrowers', 'Frac. at Borrowing Limit', 'Frac. at Zero Assets', 'MPC of Borrowers', 'MPC of Lenders'] or row['Variable'].startswith('Top') or row['Variable'].startswith('Bot'):
+                # Absolute change for specific variables
+                stst_df.at[index, 'Change'] = row['Terminal'] - row['Initial']
+            else:
+                # Percentage change for other variables
+                stst_df.at[index, 'Change'] = percent * ((row['Terminal'] - row['Initial']) / row['Initial'])
+        # In case of division by zero, insert NaN
+        except ZeroDivisionError:
+            stst_df.at[index, 'Change'] = np.nan
 
-        # Round changes
-        stst_df['Change'] = stst_df['Change'].apply(round_func_4)
+    # Round changes
+    stst_df['Change'] = stst_df['Change'].apply(round_func_4)
     
     # Save table in TeX
     if save_results == True:

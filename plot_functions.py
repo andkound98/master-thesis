@@ -872,7 +872,13 @@ def compare_selected_transitions(list_of_transition_dfs,
                     new_col = 4*percent*(df[f'{variable}'][:horizon])
                     transition_df[col_name] = new_col.reset_index(drop=True)
                 
-            elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid', 'Top10C', 'Top10A', 'Top1C', 'Top1A', 'Top25C', 'Top25A', 'Bot25A', 'Bot25C']:
+            elif variable in ['beta', 'D', 'DY', 'phi', 'gr_liquid']:
+                for i, df in enumerate(list_of_transition_dfs):
+                    col_name = f'{legend[i]}'
+                    new_col = df[f'{variable}'][:horizon]
+                    transition_df[col_name] = new_col.reset_index(drop=True)
+                    
+            elif variable.startswith('Top') or variable.startswith('Bot'):
                 for i, df in enumerate(list_of_transition_dfs):
                     col_name = f'{legend[i]}'
                     new_col = df[f'{variable}'][:horizon]
@@ -915,14 +921,6 @@ def compare_selected_transitions(list_of_transition_dfs,
                     col_name2 = f'{variable_name2}; {legend[i]}'
                     new_col2 = percent*((df[f'{variable2}'][:horizon] - df[f'{variable2}'][0]) / df[f'{variable2}'][0])
                     transition_df[col_name2] = new_col2.reset_index(drop=True)
-        
-        if len([col for col in legend if 'Credit Easing' in col]) != 0:
-            for col in transition_df.columns:
-                if transition_df[col].iloc[0] == 0: 
-                    if col != 'Quarters' and 'Credit Easing' not in col:
-                        transition_df[col] *= -1
-                else:
-                    pass
         
         # Plot
         fig = px.line(transition_df,
@@ -1000,16 +998,6 @@ def compare_selected_transitions(list_of_transition_dfs,
         
         # Save plot
         if save_results == True:
-            # Define path 
-            path = os.path.join(os.getcwd(), 
-                                'Results', 
-                                'compare_transitions')
-            
-            # Check if the folder exists
-            if not os.path.exists(path):
-            # Create the folder if it doesn't exist
-                os.makedirs(path)
-            
             combined_key = ''
             for kk in list(comparison.keys()):
                 key = comparison[kk]
@@ -1017,6 +1005,17 @@ def compare_selected_transitions(list_of_transition_dfs,
                     combined_key = key
                 else:
                     combined_key = combined_key + '_' + key
+            
+            # Define path 
+            path = os.path.join(os.getcwd(), 
+                                'Results', 
+                                'compare_transitions',
+                                 combined_key)
+            
+            # Check if the folder exists
+            if not os.path.exists(path):
+            # Create the folder if it doesn't exist
+                os.makedirs(path)
             
             if len(sublist) == 3:
                 path_plot = os.path.join(path,
