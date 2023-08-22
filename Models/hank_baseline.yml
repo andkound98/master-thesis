@@ -18,9 +18,9 @@ definitions: |
     # Create custom grid
     amax = 150 # Maximum asset grid point
     an = 200 # Initial number of asset grid points 
-    amin = 0 # Initial borrowing constraint
+    amin = 0 # Initial borrowing constraint (0 is a placeholder)
     rho_phi = 0.5 # Persistence in shock to borrowing constraint
-    amin_terminal = 0 # Terminal borrowing constraint 
+    amin_terminal = 0 # Terminal borrowing constraint (0 is a placeholder)
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks

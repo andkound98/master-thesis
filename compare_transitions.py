@@ -54,12 +54,12 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 ###############################################################################
 # Choose model-shock combinations to comapre
 
-comparison = {'transition_1': 'baseline_wedge_permanent',
-              'transition_2': 'very_slow_phi_limit_permanent'}
+comparison = {'transition_1': 'baseline_limit_permanent',
+              'transition_2': 'baseline_wedge_permanent'}
 
-# comparison = {'transition_1': 'fast_shock_limit_permanent',
-#               'transition_2': 'baseline_limit_permanent',
-#               'transition_3': 'slow_shock_limit_permanent'}
+comparison = {'transition_1': 'fast_shock_limit_permanent',
+              'transition_2': 'baseline_limit_permanent',
+              'transition_3': 'slow_shock_limit_permanent'}
 
 # Get informative legend names for plots
 legend = get_labels(comparison)
@@ -88,10 +88,12 @@ compare_selected_transitions(list_of_transitions,
                               comparison,
                               title=show_titles_in_plots)
 
+# Plot long-term debt dynamics separately
 compare_selected_transitions(list_of_transitions,
                               dict_of_variables_to_plot['debt'],
                               80,
                               legend,
-                              False,
+                              save_results,
                               comparison,
-                              title=True)
+                              exact_path='long_run_debt',
+                              title=show_titles_in_plots)

@@ -61,9 +61,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: save results (tables and plots)
+save_results = False # True: save results (tables and plots)
 
-show_titles_in_plots = False # True: show plot titles
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -73,11 +73,11 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Settings
 
 # Choose model(s)
-models = [#'baseline', # baseline model (section 4)
+models = ['baseline', # baseline model (section 4)
           #'slow_shock', # baseline model with slow deleveraging (section 5.1)
           #'fast_shock', # baseline model with fast deleveraging (section 5.1)
           #'end_L', # extended model with endogenous labour supply (section 5.2)
-          'very_slow_phi', # baseline model with very slow deleveraging (section 6)
+          #'very_slow_phi', # baseline model with very slow deleveraging (section 6)
           #'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
           #'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
@@ -222,7 +222,7 @@ for model in models:
                                  y_threshold=10, 
                                  x_threshold=-1.4)
         
-        # Plot consumption responses of certain percentiles
+        # Plot consumption responses by percentiles
         plot_percentile_transitions(['C', 'Consumption'], 
                                     hank_model_terminal, x_transition,
                                     [['Bot25C','Bottom-25%'], 
@@ -231,6 +231,7 @@ for model in models:
                                     save_results, exact_path,
                                     title=show_titles_in_plots)
         
+        # If applicable, plot labour supply responses by percentiles 
         if settings['Model'] == 'end_L':
             plot_percentile_transitions(['N', 'Labour'], 
                                         hank_model_terminal, x_transition,

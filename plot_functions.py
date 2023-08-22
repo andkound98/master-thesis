@@ -851,6 +851,7 @@ def compare_selected_transitions(list_of_transition_dfs,
                                  legend,
                                  save_results, 
                                  comparison,
+                                 exact_path=None,
                                  percent=100,
                                  title=True):
     time = list(range(0, horizon, 1)) # Time vector
@@ -1015,6 +1016,9 @@ def compare_selected_transitions(list_of_transition_dfs,
                     combined_key = key
                 else:
                     combined_key = combined_key + '_' + key
+                    
+            if exact_path != None:
+                combined_key = combined_key + '_' + exact_path
             
             # Define path 
             path = os.path.join(os.getcwd(), 
