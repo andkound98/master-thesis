@@ -22,10 +22,17 @@ This file contains custom functions for plotting various results from the HANK m
 
 This file calculates targets for the calibration of the employed HANK model.
 
-## Thesis 
+## Models 
 
-The folder **Thesis** contains the TeX code of the thesis as well as its `.bib` file. The PDF version of the thesis is also in this folder.
+The folder [**Models**](https://github.com/andkound98/master-thesis/tree/main/Models) contains the models employed by the various code files.
 
 ## Results
 
-The folder **Results** contains the results produced by the `main.py` file and the `plot_functions.py` file.
+The folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results) contains the results produced by the `main.py` file and the `plot_functions.py` file.
+
+## Thesis 
+
+The folder [**Thesis**](https://github.com/andkound98/master-thesis/tree/main/Thesis) contains the TeX code of the thesis as well as its `.bib` file. The PDF version of the thesis is also in this folder.
+
+---
+All these codes were run using the Spyder IDE 5.4.3 with Python 3.9.12 and [`Econpizza`](https://github.com/gboehl/econpizza/tree/master) 0.6.1 on macOS 12.6.5.
