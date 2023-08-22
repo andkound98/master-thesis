@@ -28,7 +28,7 @@ urldate=long
 \usepackage{float}
 \usepackage{longtable}
 \usepackage{multirow}
-\usepackage{multirow,multicol, makecell, booktabs}
+\usepackage{multirow,multicol,makecell,booktabs}
 \usepackage[justification=centering]{caption}
 \usepackage{subcaption}
 \usepackage{setspace}
@@ -36,9 +36,7 @@ urldate=long
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 \usepackage{tikz}
-\usepackage{lscape}
 \usepackage{rotating}
-\usepackage{adjustbox}
 \usepackage{hyperref} % Load after everything else
 \usepackage[symbols, nopostdot, automake, nonumberlist]{glossaries}
 
@@ -301,7 +299,7 @@ Matriculation Number: & 3466868
 \newpage
 \begin{abstract} % Create abstract
 
-Debt not only sustains borrowers' consumption but also provides lenders with liquidity. Deleveraging shocks thus reduce the demand for goods and the supply of assets. As a consequence, the interest rate must fall. However, in a model with uninsurable idiosyncratic risk, such a financial shock strengthens precautionary-savings demand from unconstrained agents, prompting a short-run recession and a protracted transition of aggregate debt to lower levels. This thesis studies two "credit crunch"-scenarios: a reduction in the debt limit and an increase in the borrowing premium. In the small-scale \Gls{hank} economy, both shocks operate similarly but the tighter credit limit induces more pronounced short-run adjustments. Both scenarios predict reduced wealth and higher consumption inequality in the long run. Finally, I document an interesting asymmetry: financial tightenings are more recessionary than financial easings are expansionary.
+Household debt not only sustains borrowers' consumption but also provides lenders with liquidity. Tightening the borrowing capacity of debtors thus reduces the demand for goods and the supply of assets. I study two such ``credit crunch"-scenarios in a small-scale \Gls{hank} economy: a contraction in the debt limit and an increase in the borrowing premium. I find that the former disturbance produces the mechanisms identified in the literature: interest rates fall but not sufficiently to avert a recession in the short run. This is because, in the presence of incomplete markets, mechanical deleveraging by constrained borrowers is accompanied by an invigorated precautionary motive by unconstrained agents. The shock to the credit spread operates similarly but induces less pronounced short-run adjustments as it works only in tandem with the real interest rate. Both scenarios predict reduced wealth and higher consumption inequality in the long run. Finally, I document an interesting asymmetry: financial tightenings are more recessionary than financial easings are expansionary.
 
 \begin{center}
 \rule{10cm}{0.4pt}
@@ -369,7 +367,7 @@ The remainder of this thesis is structured as follows. Section \ref{sec:literatu
 
 Since at least the Great Depression of the 1930s, economists have been thinking about the role of finance and indebtedness in the macroeconomy. For example, the work of \textcite{fisher1933} points to the debt-deflation spiral as one of the key drivers of the prolonged economic weakness caused by the Great Depression. In that view, nominal debt has to be reduced once it proves unsustainably high. However, this deleveraging kicks off a vicious circle of reduced consumption, deflation, a mechanic increase in the real debt burden, which finally aggravates the need for deleveraging.
 
-Later, formal macroeconomic models captured financial frictions on the \textit{firm} side or in the \textit{banking} sector of the economy. The typical approach within the former model class is to let entrepreneurs have private information over their projects which their lenders can not observe \textit{ex ante}, implying that companies' net worth plays a role in their access to credit (see e.g.~\cite{bg1989}, \cite{bgg1999}). Motivated by the events of the Great Recession, the literature introduced constraints to banks' leverage, which are argued to arise due to the possibility of banks' managers to liquidate the bank (see e.g.~\cite{gertler2011}). Studies in both directions typically find that such financial frictions prove to be accelerators of an economy's reaction to a variety of shocks.\footnote{See \textcite{brunnermeier2012} and \textcite{christiano2022} for surveys on financial frictions in macroeconomics.}
+Later, formal macroeconomic models captured financial frictions on the \textit{firm} side or in the \textit{banking} sector of the economy. The typical approach within the former model class is to let entrepreneurs have private information over their projects which their lenders can not observe \textit{ex ante}, implying that the net worth of companies plays a role in their access to credit (see e.g.~\cite{bg1989}, \cite{bgg1999}). Motivated by the events of the Great Recession, the literature introduced constraints to banks' leverage, which are argued to arise due to the possibility of banks' managers to liquidate the bank (see e.g.~\cite{gertler2011}). Studies in both directions typically find that such financial frictions prove to be accelerators of an economy's reaction to a variety of shocks.\footnote{See \textcite{brunnermeier2012} and \textcite{christiano2022} for surveys on financial frictions in macroeconomics.}
 
 Concurrently, the literature has increasingly turned to \textit{household} financial constraints and debt as potentially important factors in business cycle analysis. This development is motivated by empirical evidence suggesting that households' asset positions, access to credit and indebtedness are key to understanding the behaviour of individual as well as macroeconomic outcomes. 
 
@@ -411,14 +409,15 @@ In all what follows, time, $t$, is discrete, refers to quarters of a year and ru
 Households in this model choose optimal paths of consumption, labour hours and savings, given prices. However, individual labour income varies stochastically. To smooth consumption in the presence of incomplete markets, households save in government bonds and lend to and borrow from each other. This private credit intermediation is subject to a debt limit and a premium on the borrowing rate. The model allows for shocks to both of these constraints.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Households' Environment}
+\subsubsection{Environment for Households}
 \label{sec:model-hh-environment}
 
-This subsection presents the formal environment for households. The economy is populated by a mass-one continuum of \textit{ex-ante} identical households, indexed by $i$. Households' idiosyncratic labour productivity, denoted by $e_{i,t}$, fluctuates over time. Specifically, $e_{i,t}$ evolves as a discrete Markov process, generated from the following first-order autoregressive (\Gls{ar}(1)) process:\footnote{The \textcite{rouwenhorst1995} method transforms the continuous process into a discrete one.}
+This subsection presents the formal environment for households. The economy is populated by a mass-one continuum of \textit{ex-ante} identical households, indexed by $i$. Households' idiosyncratic labour productivity, denoted by $e_{i,t}$, fluctuates over time and evolves as a first-order autoregressive (\Gls{ar}(1)) process:
 \begin{equation}
     log(e_{i,t}) = \rho_e log(e_{i,t-1}) + \varepsilon^e_{i,t}, \label{eq:hh-income-process}
 \end{equation}
-where $\varepsilon^e_{i,t}$ is a mean-zero shock to agents' skill level with variance $\sigma_e$. Idiosyncratic productivity shocks die out with persistence $\rho_e$. Average productivity is one. %\footnote{For simplicity, I ignore the possibility of unemployment here, in contrast to \textcite{gl2017}.}
+where $\varepsilon^e_{i,t}$ is a mean-zero shock to agents' skill level with variance $\sigma_e$. Idiosyncratic productivity shocks die out with persistence $\rho_e$. Average productivity is one. %Specifically, $e_{i,t}$ evolves as a discrete Markov process, generated from the following first-order autoregressive (\Gls{ar}(1)) process: 
+%\footnote{The \textcite{rouwenhorst1995} method transforms the continuous process into a discrete one.}
 
 Household-specific productivity, $e_{i,t}$, signifies how well household $i$ can turn its working hours into output in period $t$. For the household, process \eqref{eq:hh-income-process} is entirely exogenous and can not be influenced. $e_{i,t}$ enters the labour income of household $i$ in $t$, which is composed of idiosyncratic productivity, individual labour hours, $n_{i,t}$, and the aggregate wage rate, $w_t$.
 
@@ -428,7 +427,7 @@ Given the prevailing prices in the economy, given the process in \eqref{eq:hh-in
 \begin{equation}
     \max_{c_{i,t}, n_{i,t}, b_{i,t}} \ \mathbb{E}_{e,t} \Bigg\{ \sum_{t=0}^{\infty} \beta^t u(x_{i,t}) \Bigg\}, \label{eq:hh-objective}
 \end{equation}
-by choosing individual (non-durable) consumption in period $t$, $c_{i,t}$, labour supply and next-period's asset holdings, $b_{i,t}$, for all periods. Note that $\mathbb{E}_{e,t}$ denotes expectations taken at time $t$ over the skill process \eqref{eq:hh-income-process}, $\beta$ is the factor by which households discount future utility, $u( \cdot )$ is the period-utility function and $x_{i,t}$ is a composite good of $c_{i,t}$ and $n_{i,t}$. The functional forms of $u( \cdot )$ and $x_{i,t}$ are specified below but, naturally, households derive utility from consumption and experience a utility loss from working. That is, I require $u( \cdot )$ to be increasing in $x_{i,t}$ as well as $x_{i,t}$ to be increasing in $c_{i,t}$ and decreasing in $n_{i,t}$.\footnote{Formally: $\frac{\partial u( \cdot )}{\partial x_{i,t}} > 0$, $\frac{\partial x_{i,t}}{\partial c_{i,t}} > 0$, $\frac{\partial x_{i,t}}{\partial n_{i,t}} < 0$.}
+by choosing individual (non-durable) consumption in period $t$, $c_{i,t}$, labour supply and next-period's asset holdings, $b_{i,t}$, for all periods. $\mathbb{E}_{e,t}$ denotes expectations taken at time $t$ over the skill process \eqref{eq:hh-income-process}, $\beta$ is the factor by which households discount future utility, $u( \cdot )$ is the period-utility function and $x_{i,t}$ is a composite good of $c_{i,t}$ and $n_{i,t}$. The functional forms of $u( \cdot )$ and $x_{i,t}$ are specified below but, naturally, households derive utility from consumption and experience a utility loss from working.\footnote{That is: $\frac{\partial u( \cdot )}{\partial x_{i,t}} > 0$, $\frac{\partial x_{i,t}}{\partial c_{i,t}} > 0$, $\frac{\partial x_{i,t}}{\partial n_{i,t}} < 0$.} % That is, I require $u( \cdot )$ to be increasing in $x_{i,t}$ as well as $x_{i,t}$ to be increasing in $c_{i,t}$ and decreasing in $n_{i,t}$.
 
 In maximising \eqref{eq:hh-objective}, households are subject to a sequence of budget constraints and a sequence of borrowing constraints. The former states that, in any given period $t$, household $i$ must not spend more than it earns. The period-$t$ budget constraint for household $i$ reads as follows: 
 \begin{equation}
@@ -436,7 +435,7 @@ c_{i,t} + b_{i,t} = RR (RR_t, b_{i,t-1}) b_{i,t-1} + w_t e_{i,t} n_{i,t} + \Pi_t
 \end{equation}
 where $w_t$ is the aggregate real wage paid for each unit of effective labour, $e_{i,t} n_{i,t}$, and where $RR (RR_t, b_{i,t-1})$ is the real interest rate schedule determining the return on or cost of previous period's asset or debt holdings, $b_{i,t-1}$. As the real rate reflects the opportunity cost of consuming today, it is the crucial price guiding the household's decisions on consuming and saving. 
 
-$\Pi_t$ are firm dividends and $\tau_t$ is a tax rate set by the government, discussed in subsequent sections. As in \textcite{mckay2016}, $\bar{\Pi} (e_{i,t})$ and $\bar{\tau} (e_{i,t})$ are incidence rules which transform aggregate dividends and taxes into household-level values in a lump-sum fashion.\footnote{It is well-known that, in \Gls{ha} models, the rule which distributes taxes and profits is of importance for the results of these models (see e.g.~\cite{kaplan2018}). As \textcite{mckay2016} explain, the present approach ensures that profits and taxes are distributed in a way analogous to lump-sum procedures in representative-agent models.} Thus, the left-hand side of \eqref{eq:hh-budget} captures the expenditure of household $i$ in $t$, comprised of goods consumption and asset acquisitions. Earnings, the right-hand side of \eqref{eq:hh-budget}, are composed of asset income, labour income and dividend income, less taxes.
+$\Pi_t$ are firm dividends and $\tau_t$ is a tax rate set by the government, discussed in subsequent sections. As in \textcite{mckay2016}, $\bar{\Pi} (e_{i,t})$ and $\bar{\tau} (e_{i,t})$ are incidence rules which transform aggregate dividends and taxes into household-level values in a lump-sum fashion.\footnote{\textcite{mckay2016} explain that the present approach is analogous to lump-sum procedures in representative-agent models. \textcite{kaplan2018} note that incidence rules can influence the results of \Gls{ha} models.} Thus, the left-hand side of \eqref{eq:hh-budget} captures the expenditure of household $i$ in $t$, comprised of goods consumption and asset acquisitions. Earnings, the right-hand side of \eqref{eq:hh-budget}, are composed of asset income, labour income and dividend income, less taxes.
 
 As already noted, the real interest rate schedule in \eqref{eq:hh-budget} is the key price for a household's consumption-savings decision. I specify the real interest rate schedule to take the following form:
 \begin{equation}
@@ -451,7 +450,7 @@ As in \textcite{auclert2021}, $RR_t$ in \eqref{eq:hh-interest-rate-wedge} adhere
 \begin{equation}
     RR_t = \frac{R_{t-1}}{\pi_t}, \label{eq:hh-fisher-equation}
 \end{equation}
-where $R_{t-1}$ is last period's gross nominal interest rate and $\pi_t$ is the current gross rate of inflation, which are determined by monetary policy and by firms, respectively. I discuss $R_{t-1}$ and $\pi_t$ in detail in the corresponding subsections \ref{sec:model-policy} and \ref{sec:model-firms}.
+where $R_{t-1}$ is last period's gross nominal interest rate and $\pi_t$ is the current gross rate of inflation, which are determined by monetary policy and by firms, respectively. I discuss $R_{t-1}$ and $\pi_t$ in the corresponding subsections \ref{sec:model-policy} and \ref{sec:model-firms}.
 
 Finally, when choosing next period's asset holding, $b_{i,t}$, household $i$ faces a borrowing constraint à la \textcite{huggett1993}:
 \begin{equation}
@@ -502,9 +501,7 @@ where $C_t$ is aggregate consumption, $N_t$ is aggregate supply of labour hours 
 
 This subsection aims at clarifying the key implications of the chosen asset structure and how borrowers and lenders emerge in the model. Thereafter, subsection \ref{sec:model-hh-constraints} explains how the financial constraints introduced above affect households' consumption behaviour.  
 
-In the model, households' main objective is to smooth consumption over time. However, they are subject to idiosyncratic labour productivity risk from \eqref{eq:hh-income-process} and thus fear the possibility of obtaining low labour income, which hurts their consumption. Further, households dread the possibility of reaching the borrowing limit in \eqref{eq:borrowing-limit}, e.g.~after repeatedly being in low productivity states. Being at the limit would be particularly harmful for households, as explained below.
-
-%because it bars them from taking on any additional debt to absorb adverse productivity shocks, forcing them to adjust consumption one-to-one with the reduction in their income (see e.g.~\cite{carroll2021}). 
+In the model, the main objective of households is to smooth consumption over time. However, they are subject to idiosyncratic labour skill risk from \eqref{eq:hh-income-process} and thus fear the possibility of obtaining low labour income as it hurts their consumption. Further, households dread the possibility of reaching the borrowing limit in \eqref{eq:borrowing-limit}, e.g.~after repeatedly being in low productivity states. Being at the limit would be particularly harmful for households, as explained below.
 
 Clearly, households have an incentive to insure themselves against labour income shocks.\footnote{The chosen \Gls{ghh} preferences eliminate the possibility of households using working hours as insurance against low productivity. Section \ref{sec:sensitivity-end-labour} explores the case where households can adjust labour supply individually.} However, in an environment of incomplete markets, contracts which insure against specific realisations of labour productivity, high or low, are unavailable.\footnote{Incidentally, assuming complete markets and hence the presence of state-contingent claims would reduce the problem to a representative-agent setup, rendering the investigation of the present issues vacuous.} As \textcite{heath2009} remark, households thus resort to self-insurance by means of precautionary savings which they can draw down when confronted with low labour income. The existence of the borrowing limit further strengthens the wish to save. Crucially, the desire for precautionary savings contributes to the \textit{demand for assets} by households. 
 
@@ -516,11 +513,11 @@ Now, it is important to realise that the demand for debt corresponds to a source
 
 As the debt that borrowing households have on the liability side of their balance sheet are matched one-to-one by assets that the lenders hold on the asset side of their balance sheets -- each positive \Gls{iou} of a lender is a negative \Gls{iou} of some borrower -- the two groups of households are tightly linked through their balance sheets and the asset market. This crucially implies that when borrowers are forced, out of some reason, to curtail their leverage and thus their liabilities, lenders will be directly affected as the supply of \Gls{iou}s they can invest in is reduced. Evidently, such a credit crunch will, through interlinked balance sheets, have repercussions that outsize the initial effect on borrowers. %This is at the core of the analyses below.
 
-The real interest rate, $RR_t$, is what lenders earn on their positive \Gls{iou}s and what borrowers pay on their negative \Gls{iou}s. Naturally, debtors prefer to pay low interest, while lenders like high returns on their savings. To match these contrarious interests, $RR_t$ adjusts endogenously so that, in equilibrium, saving and borrowing households have no incentive to save more or less or to borrow more or less. Hence, whenever a situation of excess demand for bonds or, equivalently -- through the budget constraint \eqref{eq:hh-budget} -- of excess demand for tomorrow's relative to today's consumption, arises, the real interest rate has to adjust to restore equilibrium. % Thus, the real rate is the key price guiding households' borrowing-savings decisions.
+The real interest rate, $RR_t$, is what lenders earn on their positive \Gls{iou}s and what borrowers pay on their negative \Gls{iou}s. Naturally, debtors prefer to pay low interest, while lenders like high returns on their savings. To match these contrarious interests, $RR_t$ adjusts endogenously so that, in equilibrium, saving and borrowing households have no incentive to save more or less or to borrow more or less. Hence, whenever a situation of excess demand for bonds or, equivalently -- through the budget constraint \eqref{eq:hh-budget} -- of excess demand for tomorrow's relative to today's consumption, arises, the real interest rate has to adjust to restore equilibrium.
 
 Unlike in \textcite{gl2017}, a Fisher equation \eqref{eq:hh-fisher-equation} pins down the real interest rate here, highlighting that developments in the asset market influence $RR_t$ through the goods market. Further, the real rate is an \textit{ex-post} rate in this setup, i.e.~it applies to past instead of to future asset holdings. This does not change the main mechanisms relative to \textcite{gl2017} but gives rise to some distinctive features of the analysis in \ref{sec:limit}.
 
-As lenders' and borrowers' asset positions net out, \Gls{iou}s are in zero net supply. Therefore, up to this point, the asset structure is essentially the one found in the \textcite{huggett1993} economy. However, I follow a series of papers (e.g.\cite{gl2017}, \cite{bayer2023}) by introducing an exogenous and time-invariant supply of government bonds, $B$. These bonds are perfect substitutes to the privately intermediated \Gls{iou}s. Thus, the entirety of liquidity available to net lenders, gross liquidity, is the sum of bonds and \Gls{iou}s.
+As the asset positions of lenders and borrowers net out, \Gls{iou}s are in zero net supply. Hence, up to this point, the asset structure is essentially the one found in the \textcite{huggett1993} economy. However, I follow a series of papers (e.g.\cite{gl2017}, \cite{bayer2023}) by introducing an exogenous and time-invariant supply of government bonds, $B$. These bonds are perfect substitutes to the privately intermediated \Gls{iou}s. Therefore, the entirety of liquidity available to net lenders, gross liquidity, is the sum of bonds and \Gls{iou}s.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Financial Constraints and Consumption Behaviour}
@@ -623,20 +620,15 @@ An equilibrium in this economy is defined as a sequence of household consumption
 \end{enumerate}
 \end{definition}
 
-% \begin{align}
-%     B_t^d &= B, \label{eq:bond-clearing} \\
-%     C_t &= y_t \label{eq:goods-clearing}
-% \end{align}
-
 The labour market clears when \eqref{eq:hh-agg-labour-supply} holds. The bond and goods markets clear when $B_t^d = B$ and $C_t = y_t$ hold, respectively, where $y_t$ is output net of price adjustment and credit intermediation costs:
 \begin{equation}
-    y_t \equiv \Bigg( 1 - \frac{\psi}{2} \Bigg( \frac{\pi_t}{\pi_{t-1}} - 1 \Bigg)^2 \Bigg) y_t^f - \kappa_t D_t, \label{eq:effective-gdp}
+    y_t \equiv \Bigg( 1 - \frac{\psi}{2} \Bigg( \frac{\pi_t}{\tilde{\pi}_{t-1}} - 1 \Bigg)^2 \Bigg) y_t^f - \kappa_t D_t, \label{eq:effective-gdp}
 \end{equation}
-where $D_t$ denotes aggregate debt holdings:
+where $D_t$, given by:  %denotes aggregate debt holdings:
 \begin{equation}
     D_t \equiv - \int b_{i,t} \mathbb{1}_{[\phi_t \le b_{i,t} \le 0]} d \Psi_t (b,e), \label{eq:agg-debt}
 \end{equation}
-where $\mathbb{1}_{[\phi_t \le b_{i,t} \le 0]}$ is an indicator function for negative asset holdings.
+denotes aggregate debt holdings. $\mathbb{1}_{[\phi_t \le b_{i,t} \le 0]}$ is an indicator function for negative asset holdings.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -647,11 +639,11 @@ The \Gls{hank} model does not allow for an analytical solution. This subsection 
 
 As is well-known to the literature, \Gls{ha} models are notoriously difficult to solve since general equilibrium and rational expectations require that agents are able to forecast market-clearing prices which depend on the sequence of distributions, $\{ \Psi_t (b,e) \}_{t=0}^{\infty} $, each element of which is an infinite-dimensional object. By now, a variety of solution methods for this challenge exists but choosing among methods still involves trade-offs. 
 
-The present thesis makes use of the method laid out by \textcite{boehl2023econpizza} which builds on recent work by \textcite{auclert2021} and implements a perfect-foresight approach to find the non-linear transitions of \Gls{ha} models after one-time, unexpected ("MIT") shocks. To do so, the method makes use of a Newton root-finding procedure that searches in sequence space for aggregate outcomes, truncated at some distant terminal period, which are consistent with the household policies and the law of motion for the distribution, both of which are given on discretised grids of productivity states and asset holdings. The household policies are found with the endogenous-gridpoints method (\Gls{egm}) by \textcite{carroll2006}, which iterates on equations \eqref{eq:foc-euler} and \eqref{eq:foc-envelope} to find the households' consumption and savings policies.
+The present thesis makes use of the method laid out by \textcite{boehl2023econpizza} which builds on \textcite{auclert2021} and implements a perfect-foresight approach to find the non-linear transitions of \Gls{ha} models after one-time, unexpected ("MIT") shocks. To do so, the method makes use of a Newton root-finding procedure that searches in sequence space for aggregate outcomes, truncated at some distant terminal period, which are consistent with the household policies and the law of motion for the distribution, with the policies and the distribution being given on discretised grids of skills and assets. The endogenous-gridpoints method (\Gls{egm}) by \textcite{carroll2006} iterates on equations \eqref{eq:foc-euler} and \eqref{eq:foc-envelope} to find the household consumption and savings policies.
 
 On the one hand, the implementation by \textcite{boehl2023econpizza} offers advantages over competitor methods. It flexibly accommodates non-linearities in the model's aggregate state space and is typically very fast due to the use of automatic differentiation. On the other hand, meaningful uncertainty in aggregates -- as opposed to idiosyncratic uncertainty -- is disregarded. In particular, the method assumes that households know the exact trajectory of the economy once the shock to the model is announced. Nevertheless, accounting for non-linearities, such as the \Gls{zlb}, appears important for the present use case, so the method by \textcite{boehl2023econpizza} seems appropriate.
 
-Its implementation is available through the Python package \texttt{Econpizza}.\footnote{The package is maintained by Dr.~Gregor Böhl on \href{https://github.com/gboehl/econpizza}{GitHub}, last retrieved on \printdate{2023-7-17}.} For the sake of brevity, I delegate a discussion of some caveats regarding the present application to appendix \ref{sec-app:codes}.
+Its implementation is available through the Python package \texttt{Econpizza}.\footnote{The package is maintained by Dr.~Gregor Böhl on \href{https://github.com/gboehl/econpizza}{GitHub}, last retrieved on \printdate{2023-08-22}.} For the sake of brevity, I delegate a discussion of some caveats regarding the present application to appendix \ref{sec-app:codes}.
 
 Numerically solving a model implies that its parameters must be calibrated. Table \ref{tab:calibration-baseline} reports the baseline calibration together with the sources or targets I use.\footnote{Calibration is always to some degree arbitrary. Estimation is preferred but beyond the scope of this thesis.} I choose $\beta$, the households' discount factor, such that the net real interest rate is $0.15\%$ in steady state. This arguably low target aims to capture the possibility of the \Gls{zlb} binding during the credit crunch, given the importance which the literature assigns to this mechanism (e.g.~\cite{egg2012}, \cite{gl2017}). Appendix \ref{sec-app:robust-no-zlb} explores a model version ignoring the \Gls{zlb}.
 
@@ -764,11 +756,10 @@ $C$ &  $0.9129$ &   $0.9129$ &  -- \\
 $D / y$ &    $57\%$ & $52\%$ & $-5 \ p.p.$ \\
 $B + D$ &  $5.73$ &   $5.68$ & $-0.80\%$ \\
 $RR - 1$ &  $0.15\%$ &  $0.13\%$ & $-0.02 \ p.p.$ \\
-$\tau$ &  $0.0078$ & $0.0069$ & $-0.0009$  \\
 & & & \\
 \multicolumn{2}{l}{\textbf{Cross-Section}} & & \\
-                  Share of Assets Held by Top-$10\%$ &  $0.4834$ &   $0.4774$ & $-0.006 \ p.p.$ \\
-                  Share of Consumption by Top-$10\%$ &  $0.1729$ &   $0.1731$ & $0.0002 \ p.p.$ \\
+                  Share of Assets Held by Top-$10\%$ &  $48.34$ &   $47.74$ & $-0.6 \ p.p.$ \\
+                  Share of Consumption by Top-$10\%$ &  $17.29$ &   $17.31$ & $0.02 \ p.p.$ \\
 Fraction of Borrowers & $33.66$ & $32.9$ & $-0.76 \ p.p.$ \\
 Fraction at Borrowing Limit & $ 4.89$ & $5.07$ &  $0.18 \ p.p.$ \\
 \Gls{mpc} of Borrowers &    $0.16$ &     $0.17$ &   \\
@@ -792,7 +783,7 @@ The aggregate dimension of the steady state shows that the real and nominal inte
 \subsection{Loose vs Tight Credit: Comparing Steady States}
 \label{sec:limit-stst-tight}
 
-Next, I specify a new steady state of the economy, in which credit is tighter due to a reduced borrowing limit, $\phi_{ss}' < \phi_{ss}$. To that end, let $\phi_{ss}' = -2.1775$ so that the debt-to-output ratio is five percentage points lower in the terminal steady state than it is initially, i.e.~$\frac{D_{ss}'}{y_{ss}'} = 52\%$. Taking into account the observed developments in unsecured credit over the last decades (figure \ref{fig:app-calibration-debt} in appendix \ref{sec-app:data}), a change of five percentage points in this ratio appears to be an empirically realistic magnitude.\footnote{\textcite{gl2017} consider a reduction by ten percentage points of the ratio of debt to \textit{annual} \Gls{gdp}. This translates into a drop of $40$ percentage points in quarterly terms, i.e.~a much larger change than I study.} 
+Next, I specify a new steady state of the economy, in which credit is tighter due to a reduced borrowing limit, $\phi_{ss}' < \phi_{ss}$. To that end, let $\phi_{ss}' = -2.1775$ so that the (quarterly) debt-to-output ratio is five percentage points lower in the terminal steady state than it is initially, i.e.~$\frac{D_{ss}'}{y_{ss}'} = 52\%$. Taking into account the observed developments in unsecured credit over the last decades (figure \ref{fig:app-calibration-debt} in appendix \ref{sec-app:data}), a change of five percentage points in this ratio appears to be an empirically realistic magnitude.\footnote{\textcite{gl2017} consider a reduction by ten percentage points of the ratio of debt to \textit{annual} \Gls{gdp}. This translates into a drop of $40$ percentage points in quarterly terms, i.e.~a much larger change than I study.} 
 
 How does the steady state with a confined debt limit compare to the initial steady state? What forces and induces households to behave differently in an environment of tight credit relative to one of loose credit? To contrast steady states, consider plot \ref{fig:comparison-stst-baseline-policies} and appendix figure \ref{fig:comparison-stst-baseline-dist}, which are analogous to figure IV in \textcite[p.1443]{gl2017}, as well as table \ref{tab:stst_comparison_baseline_limit_permanent}. 
 
@@ -1038,7 +1029,7 @@ Consider households with \Gls{crra}-type preferences:
 \begin{equation}
     u(c_{i,t}, n_{i,t}) = \frac{c_{i,t}^{1-\sigma_c}}{1-\sigma_c} - \phi \frac{n_{i,t}^{1+\sigma_l}}{1+\sigma_l}, \label{eq:hh-crra-utility}
 \end{equation}
-where $\phi$ is the weight on the disutility of labour. Consult appendix \ref{sec-app:full} for the implied modifications of the formal aspects of the model. I follow \textcite{mckay2016} and set $\phi=1$.\footnote{\textcite{gl2017} also use \Gls{crra} preferences. In their baseline, they set $\psi = 12.48$ but choose $\psi = 1.389$ in a "low-$\psi$" calibration.} I re-calibrate $\beta$, $\phi_{ss}$ and $\phi_{ss}'$ to match the same targets as before, in particular: debt to output is $57\%$ initially and equals $52\%$ in the terminal steady state.\footnote{Specifically: $\beta = 0.98801$, $\phi_{ss} = -1.7956$, $\phi_{ss}' = -1.655$ and $B = 5.39$. $\rho_{\phi}$ is again $0.5$. Note that leaving $\sigma_l$ unchanged is likely to change the average Frisch elasticity in the economy.} The rest of the model remains unchanged, but of course the steady states can be quite different to those described in sections \ref{sec:limit-stst-loose} and \ref{sec:limit-stst-tight}. In the appendix, figure \ref{fig:init-stst-end-L} and table \ref{tab:stst_comparison_end_L_limit_permanent} reproduce plot \ref{fig:init-stst-dist-pol} and table \ref{tab:stst_comparison_baseline_limit_permanent}, respectively.
+where $\phi$ is the weight on the disutility of labour. Consult appendix \ref{sec-app:full-derivations-households} for the implied modifications of the formal aspects of the model. I follow \textcite{mckay2016} and set $\phi=1$.\footnote{\textcite{gl2017} also use \Gls{crra} preferences. In their baseline, they set $\psi = 12.48$ but choose $\psi = 1.389$ in a "low-$\psi$" calibration.} I re-calibrate $\beta$, $\phi_{ss}$ and $\phi_{ss}'$ to match the same targets as before, in particular: debt to output is $57\%$ initially and equals $52\%$ in the terminal steady state.\footnote{Specifically: $\beta = 0.98801$, $\phi_{ss} = -1.7956$, $\phi_{ss}' = -1.655$ and $B = 5.39$. $\rho_{\phi}$ is again $0.5$. Note that leaving $\sigma_l$ unchanged is likely to change the average Frisch elasticity in the economy.} The rest of the model remains unchanged, but of course the steady states can be quite different to those described in sections \ref{sec:limit-stst-loose} and \ref{sec:limit-stst-tight}. In the appendix, figure \ref{fig:init-stst-end-L} and table \ref{tab:stst_comparison_end_L_limit_permanent} reproduce plot \ref{fig:init-stst-dist-pol} and table \ref{tab:stst_comparison_baseline_limit_permanent}, respectively.
 
 Figures \ref{fig:comparison-end-labour-agg} and \ref{fig:comparison-end-labour-agg-extra} compare the present model extension to the baseline in terms of their dynamics after a tightening in the debt limit. Stark differences are visible. Importantly, plot \ref{fig:comparison-end-labour-c} shows that, on impact of the shock, consumption drops by only slightly more than half a percent, roughly six times less than in the baseline case with \Gls{ghh} preferences. As consumption does not fall as strongly, goods demand deteriorates by less, implying that wages, marginal costs and consequently prices do not drop as much as they do in the baseline.\footnote{Plots \ref{fig:comparison-end-labour-agg-extra-N} and \ref{fig:comparison-end-labour-agg-extrag-w} suggest that, indeed, the average Frisch elasticity might differ from the baseline.} The central bank reduces the nominal interest rate but the \Gls{zlb} does not bind. Further, consumption quickly returns to its pre-shock level by $t=3$ and does not exhibit the same boom as in the baseline. 
 
@@ -1131,11 +1122,10 @@ $C$ &  $0.9129$ &   $0.9119$ & $-0.11\%$ \\
 $B+D$ &  $5.73$ &   $5.68$ & $-0.81\%$ \\
 $Rr-1$ &  $0.15\%$ & $0.12\%$ & $-0.03 \ p.p.$ \\
 $(RR+\kappa)-1$ &  $0.15\%$ & $0.33\%$ &  $0.18 \ p.p.$ \\
-$\tau$ &  0.0078 &   0.0064 & -0.0014 \\
 & & & \\
 \multicolumn{2}{l}{\textbf{Cross-Section}} & & \\
-Share of Assets Held by Top-$10\%$ &  $0.4834$ &   $0.4742$ & $-0.0092 \ p.p.$ \\
-Share of Consumption by Top-$10\%$ &  $0.1729$ &   $0.1734$ &  $0.0005 \ p.p.$ \\
+Share of Assets Held by Top-$10\%$ &  $48.34$ &   $47.42$ & $-0.92 \ p.p.$ \\
+Share of Consumption by Top-$10\%$ &  $17.29$ &   $17.34$ &  $0.05 \ p.p.$ \\
 Fraction of Borrowers &   $33.66$ &    $31.87$ & $-1.79 \ p.p.$ \\
 Fraction at Borrowing Limit &    $4.89$ &     $4.17$ & $-0.72 \ p.p.$ \\
 \Gls{mpc} of Borrowers &    $0.16$ &     $0.14$ &  \\
@@ -1273,11 +1263,11 @@ Second, financial tightenings through the debt limit and the credit spread give 
 
 As the model predicts potentially large and unequally distributed consumption losses after financial tightenings, it is natural to ask whether these findings carry policy implications. Yet, the model in its present form appears too simple to speak to such considerations. For example, it does not feature any criterion as to whether a certain debt level is "normal" or "optimal". In any case, as \textcite{korinek2016} remark, the reflex to curtail \textit{ex-ante} leverage has to be weighed against the positive effects of private credit intermediation. 
 
-This provides the basis for a possible extension of the present analysis. Accounting for a richer framework of household finance -- e.g.~by explicitly including default and asset positions in gross terms and with varying maturities -- would be a fruitful extension and could provide sharper results as to how policy can intervene most effectively when confronted with a credit crunch. As mentioned above, \textcite{gl2017} study an extension of their model with a durable good which serves as collateral when borrowing. \textcite{kaplan2018} develop a \Gls{hank} model with a rich representation of household balance sheets in terms of their liquidity composition. \textcite{guerrieri2020} model mortgage debt with different maturities in a partial-equilibrium setting.
+This provides the basis for a possible extension of the present analysis. Accounting for a richer framework of household finance -- e.g.~by explicitly including default and asset positions in gross terms and with varying maturities -- would be a fruitful extension and could provide sharper results as to how policy can intervene most effectively when confronted with a credit crunch. As mentioned above, \textcite{gl2017} study an extension of their framework with a durable good which serves as collateral when borrowing. \textcite{kaplan2018} develop a \Gls{hank} model with a rich representation of household balance sheets in terms of their liquidity composition. \textcite{guerrieri2020} consider mortgage debt with different maturities in a partial-equilibrium setting.
 
 Furthermore, an episode of tight credit is unlikely to impact households alone. Firms, banks and the government will most certainly be affected as well. Thus, studying these agents' qualitative and quantitative reactions is important. \textcite{buera2020} consider heterogeneous entrepreneurs and the response of investment and factor productivity to a credit crunch similar to the one studied here. \textcite{lee2021} put forward a \Gls{hank} economy with a frictional banking sector. Clearly however, more work is needed to understand the response of the entire economy to financial shocks of various sources.
 
-Finally, an empirical analysis of the mechanisms discussed should be a top priority. Ideally, one would proceed similarly to \textcite{bayer2019} on shocks to income risk. That is, one would identify shocks to household-level borrowing limits from micro data to estimate how such disturbances affect macroeconomic and cross-sectional outcomes. Doing so would make clear whether and if so, to what extent, the issues of the present thesis have an impact on people's lives and well-being in the data.
+Finally, an empirical analysis of the mechanisms discussed should be a top priority. Ideally, one would proceed similarly to \textcite{bayer2019} on shocks to income risk. That is, one would identify shocks to household-level borrowing limits from micro data to estimate how such disturbances affect macroeconomic and cross-sectional outcomes. Thereafter, one would match these responses in an estimated \Gls{hank} model. Doing so would reveal whether and if so, to what extent, the issues of the present thesis have an impact on people's lives and well-being in the data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1307,56 +1297,207 @@ Finally, an empirical analysis of the mechanisms discussed should be a top prior
 This appendix present the full models employed throughout the main text and the subsequent appendices. Appendix \ref{sec-app:full-derivations} derives the equations characterising optimal behaviour of households and firms. Thereafter, appendix \ref{sec-app:full-equations} displays the full system of equations passed to the \texttt{Econpizza} package (see appendix \ref{sec-app:codes} for details). Finally, appendix \ref{sec-app:full-graphical} presents a graphical representation of the baseline model.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Derivations for Households and Firms}
 \label{sec-app:full-derivations}
 
-This subsection derives the equations that characterise optimal behaviour by households and firms. It begins with the household side. Next, the corporate sector's problem is dealt with.
+This subsection derives the equations that characterise optimal behaviour by households and firms.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Households}
 \label{sec-app:full-derivations-households}
 
-The household setup is explained in section \ref{sec:model-hh} of the main text. Here, I present the derivations which yield the final equations necessary to determine optimal household behaviour. For the baseline model, which features \Gls{ghh} preferences, the final equations are \eqref{eq:foc-euler} -- \eqref{eq:foc-labour-supply}. For the model with \Gls{crra}-type preferences, the final equations are ...
+The derivations for the household sector depend on the preference specification. I begin with the baseline case with \Gls{ghh} preferences as detailed in section \ref{sec:model-hh-solution}. Thereafter, I present the changes necessary for the environment in which agents have \Gls{crra} preferences.
 
-The maximisation problem of the households can be cast into the following Bellman equation:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{The Case of \Gls{ghh} Preferences (Baseline Model; Section \ref{sec:model})}
+
+The households' environment in the baseline case is given by equations \eqref{eq:hh-income-process} -- \eqref{eq:hh-composite-good}. This setup can be cast into the following Bellman equation:
 \begin{equation}
-    V_t (e_{i,t}, b_{i,t-1}) = \max_{c_{i,t}, n_{i,t}, b_{i,t}} \Bigg\{ u(x_{i,t}) + \beta \mathbb{E}_{e,t} \{ V_{t+1} (e_{i,t+1}, b_{i,t}) \} \Bigg\} \label{eq:app-hh-bellman}
+    V_t (e_{i,t}, b_{i,t-1}) = \max_{c_{i,t}, n_{i,t}, b_{i,t}} \Bigg\{ \frac{1}{1-\sigma_c} \Bigg( c_{i,t} - e_{i,t}\frac{n_{i,t}^{1+\sigma_l}}{1+\sigma_l} \Bigg)^{1-\sigma_c} + \beta \mathbb{E}_{e,t} \{ V_{t+1} (e_{i,t+1}, b_{i,t}) \} \Bigg\} \label{eq:app-hh-bellman}
 \end{equation}
-subject to \eqref{eq:hh-budget} and \eqref{eq:borrowing-limit}. As appendix \ref{sec-app:full-derivations-households} shows, using the specifications for the composite good in equation \eqref{eq:hh-composite-good} and the utility function in equation \eqref{eq:hh-utility-fun}, this formulation leads to two first-order conditions (\Gls{foc}) and an envelope condition, which together characterise optimal household behaviour for all $i$. Note first the conditions with respect to the consumption-savings decision:
+where households maximise subject to the budget constrain \eqref{eq:hh-budget} and the borrowing limit \eqref{eq:borrowing-limit}. Using \eqref{eq:hh-budget}, this yields:
+\begin{align}
+    \max_{c_{i,t}, n_{i,t}, b_{i,t} \ge \phi_t} \Bigg\{ \frac{1}{1-\sigma_c} \Bigg( &RR_t b_{i,t-1} + w_t e_{i,t} n_{i,t} + \Pi_t \bar{\Pi} (e_{i,t}) - \tau_t \bar{\tau} (e_{i,t}) - b_{i,t} \nonumber \\ 
+    &- e_{i,t}\frac{n_{i,t}^{1+\sigma_l}}{1+\sigma_l} \Bigg)^{1-\sigma_c} \nonumber \\ 
+    &+ \beta \mathbb{E}_{e,t} \{ V_{t+1} (e_{i,t+1}, b_{i,t}) \} \Bigg\}, \label{eq:app-hh-max}
+\end{align}
+where I abbreviate $RR (RR_t, b_{i,t-1})$ by $RR_t$ to ease notation. Differentiating \eqref{eq:app-hh-max} with respect to $b_{i,t}$ yields:
+\begin{align}
+    - x_{i,t}^{-\sigma_c} + \beta \mathbb{E}_{e,t} \{ V_{b,t+1} (e_{i,t+1} b_{i,t} ) \} + \lambda_t &\overset{!}{=} 0 \nonumber \\
+    \Leftrightarrow \ x_{i,t}^{-\sigma_c} &\ge \beta \mathbb{E}_{e,t} \{ V_{b,t+1} (e_{i,t+1} b_{i,t} ) \}, \label{eq:app-hh-foc-euler}
+\end{align}
+where $x_{i,t}$ is given by \eqref{eq:hh-composite-good} and the inequality in \eqref{eq:app-hh-foc-euler} holds with equality whenever $b_{i,t} > \phi_t$, i.e.~when the borrowing constraint is slack and its Lagrange multiplier, $\lambda_t$, is consequently zero. The corresponding Envelope condition is:
+\begin{equation}
+    V_{b,t} = RR_t x_{i,t}^{-\sigma_c}. \label{eq:app-hh-foc-envelope}
+\end{equation}
 
-Households have \Gls{ghh} preferences over the composite good, $x_{i,t}$. \Gls{ghh} preferences simplify the household decision problem as it makes household $i$'s labour supply decision exogenous with respect to $i$'s consumption. As \textcite{auclert2017} note, this is because, with \Gls{ghh} preferences, the marginal utility of consumption and the marginal disutility of working move proportionally, thus leaving $n_{i,t}$ unchanged when $c_{i,t}$ changes. In the end, this implies that all households work the same hours, despite consuming different amounts.
+Equations \eqref{eq:app-hh-foc-euler} and \eqref{eq:app-hh-foc-envelope} are equations \eqref{eq:foc-euler} and \eqref{eq:foc-envelope}. To obtain \eqref{eq:foc-labour-supply}, differentiate \eqref{eq:app-hh-max} with respect to $n_{i,t}$ to obtain:
+\begin{align}
+    x_{i,t}^{-\sigma_c} \big( w_t e_{i,t} - e_{i,t} n_{i,t}^{\sigma_l} \big) &\overset{!}{=} 0 \nonumber \\
+    \Leftrightarrow \ w_t e_{i,t} - e_{i,t} n_{i,t}^{\sigma_l} &= 0 \nonumber \\
+    \Leftrightarrow \  w_t &= n_{i,t}^{\sigma_l}, \label{eq:app-hh-foc-labour}
+\end{align}
+which holds for all $i$. This derivation shows how \Gls{ghh} preferences dramatically simplify the households' decision problem. As these preferences are such that agent $i$'s labour supply, $n_{i,t}$, only depends on $w_t$, all households work the same hours, despite differing in consumption levels and balance sheet positions. Intuitively, this is because, with \Gls{ghh} preferences, the marginal utility of consumption and the marginal disutility of working move proportionally, thus leaving $n_{i,t}$ unchanged when $c_{i,t}$ changes, see \textcite{auclert2017}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{The Case of \Gls{crra} Preferences (Endogenous Labour Model; Section \ref{sec:sensitivity-end-labour})}
+
+Now, let households have \Gls{crra} preferences as given in \eqref{eq:hh-crra-utility}. This implies the following Bellman equation:
+\begin{equation}
+    V_t (e_{i,t}, b_{i,t-1}) = \max_{c_{i,t}, n_{i,t}, b_{i,t}} \Bigg\{ \frac{c_{i,t}^{1-\sigma_c}}{1-\sigma_c} - \phi \frac{n_{i,t}^{1+\sigma_l}}{1+\sigma_l} + \beta \mathbb{E}_{e,t} \{ V_{t+1} (e_{i,t+1}, b_{i,t}) \} \Bigg\}, \label{eq:app-hh-bellman-crra}
+\end{equation}
+again subject to \eqref{eq:hh-budget} and \eqref{eq:borrowing-limit}. Similar to above, I substitute the borrowing constraint for $c_{i,t}$ and differentiate with respect to $b_{i,t}$, which yields:
+\begin{align}
+    -c_{i,t}^{-\sigma_c} + \beta \mathbb{E}_{e,t} \{ V_{b,t+1} (e_{i,t+1} b_{i,t} ) \} + \lambda_t &\overset{!}{=} 0 \nonumber \\
+    \Leftrightarrow \ c_{i,t}^{-\sigma_c} \ge \beta \mathbb{E}_{e,t} \{ V_{b,t+1} (e_{i,t+1} b_{i,t} ) \}, \label{eq:app-hh-foc-euler-crra}
+\end{align}
+which again holds with equality whenever $b_{i,t} > \phi_t$. The envelope condition now is:
+\begin{equation}
+    V_{b,t} = RR_t c_{i,t}^{-\sigma_c}. \label{eq:app-hh-foc-envelope-crra}
+\end{equation}
+
+To obtain the intra-temporal condition on labour supply, differentiate \eqref{eq:app-hh-bellman-crra} with respect to $n_{i,t}$:
+\begin{align}
+    c_{i,t}^{-\sigma_c} w_t e_{i,t} - \phi n_{i,t}^{\sigma_l} &\overset{!}{=} 0 \nonumber \\
+    \Leftrightarrow \ n_{i,t} &= \Bigg( \frac{c_{i,t}^{-\sigma_c} w_t e_{i,t}}{\phi} \Bigg)^{\frac{1}{\sigma_l}}. \label{eq:app-hh-foc-labour-crra}
+\end{align}
+
+Equations \eqref{eq:app-hh-foc-euler-crra}, \eqref{eq:app-hh-foc-envelope-crra} and \eqref{eq:app-hh-foc-labour-crra} are the counterparts of equations \eqref{eq:app-hh-foc-euler}, \eqref{eq:app-hh-foc-envelope} and \eqref{eq:app-hh-foc-labour} and thus constitute the formal solution to the households setup in the case that agents have \Gls{crra} preferences. Aggregate labour supply is found by: $N_t = \int n_{i,t} d \Psi_t (b,e)$.
+
+Note that, as the labour supply decision now occurs on the individual level, it is part of the \Gls{egm} step in the solution algorithm of the household block.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Firms}
 \label{sec-app:full-derivations-firms}
-A representative and perfectly competitive firm produces the final good, $y_t^f$, by combining different intermediate goods, $Y_{j,t}$. The technology it uses for that process features constant returns to scale and is given by:
-\begin{equation}
-    y_t^f = \Bigg( \int_0^1 Y_{j,t}^{\frac{\theta - 1}{\theta}} dj \Bigg)^{\frac{\theta}{\theta-1}},
-\end{equation}
-where $\theta$ is the elasticity of substitution for the intermediate goods in the production process. Profit maximisation and a zero-profits condition lead to input demand:
-\begin{equation}
-    Y_{j,t} = \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} y_t^f,
-\end{equation}
-and a price aggregator of the form:
-\begin{equation}
-    P_t = \Bigg( \int_0^1 P_{j,t}^{1-\theta} dj \Bigg)^{\frac{1}{1-\theta}}
-\end{equation}
 
-A continuum of intermediate-goods firms, indexed by $j$, sell their output, produced with the production function:
-\begin{equation}
-    y_{j,t} = z N_{j,t}
-\end{equation}
-to the representative final-good firm in a monopolistically competitive market by setting the nominal price $P_{j,t}$. In adjusting their prices, the intermediate-goods firms are subject to price adjustment costs à la \textcite{rotemberg1982}.
+This section describes the corporate sector of the model in more detail and derives its optimal behaviour, in particular the \Gls{nkpc} \eqref{eq:firms-nkpc}. The corporate sector consists of a final-good producer and a continuum of intermediate-goods producers, indexed by $j$.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Final-Good Firm}
+
+Consider first the representative, perfectly competitive firm which produces the final good, $y_t^f$, by combining intermediate goods, denoted by $Y_{j,t}$. This firm uses the following technology with constant returns-to-scale:
+\begin{equation}
+    y_t^f = \Bigg( \int_0^1 Y_{j,t}^{\frac{\theta - 1}{\theta}} dj \Bigg)^{\frac{\theta}{\theta-1}}, \label{eq:app-firms-technology-final}
+\end{equation}
+where $\theta$ is the elasticity of substitution for the intermediate goods in the production process. The objective of the final-good firm is to maximise its profits, $\Pi_t^f$, i.e.:
+\begin{equation*}
+    \max_{Y_{j,t}} \ \Pi_t^f = P_t y_t^f - \int_0^1 P_{j,t} Y_{j,t} dj,
+\end{equation*}
+subject to its technology \eqref{eq:app-firms-technology-final}. $P_t$ is the price of the final good and $P_{j,t}$ is the price of intermediate good $Y_{j,t}$. The firm maximises its profits by choosing the inputs optimally. Thus, the result of this optimisation will be the demand of the final-good firm for intermediate goods.  
+
+Inserting \eqref{eq:app-firms-technology-final} into the objective and differentiating with respect to $Y_{j,t}$ results in the \Gls{foc} which yields the input demand. Formally:
+\begin{align}
+    \max_{Y_{j,t}} \ \Pi_t^f &= P_t y_t^f - \int_0^1 P_{j,t} Y_{j,t} dj \nonumber \\
+    \max_{Y_{j,t}} \ \Pi_t^f &= P_t \Bigg( \int_0^1 Y_{j,t}^{\frac{\theta - 1}{\theta}} dj \Bigg)^{\frac{\theta}{\theta-1}} - \int_0^1 P_{j,t} Y_{j,t} dj \nonumber \\
+    \Rightarrow \ \frac{\partial \Pi_t^f}{\partial Y_{j,t}} &= \frac{\theta}{\theta - 1} P_t \Bigg( \int_0^1 Y_{j,t}^{\frac{\theta - 1}{\theta}} dj \Bigg)^{\frac{\theta}{\theta-1}-1} \frac{\theta-1}{\theta} Y_{j,t}^{-\frac{1}{\theta}} - P_{j,t} \overset{!}{=} 0 \nonumber \\
+    \Leftrightarrow \ \frac{P_{j,t}}{P_t} &= \Bigg[ \Bigg( \int_0^1 Y_{j,t}^{\frac{\theta - 1}{\theta}} dj \Bigg)^{\frac{\theta}{\theta-1}} \Bigg]^{\frac{1}{\theta}} Y_{j,t}^{-\frac{1}{\theta}} \nonumber  \\
+    \Leftrightarrow \ \frac{P_{j,t}}{P_t} &= (y_t^f)^{\frac{1}{\theta}} Y_{j,t}^{-\frac{1}{\theta}} \nonumber \\
+    \Leftrightarrow \ \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} &= (y_t^f)^{-1} Y_{j,t} \nonumber \\
+    \Leftrightarrow \ Y_{j,t} &= \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} y_t^f, \label{eq:app-firms-input-demand}
+\end{align}
+which is, as desired, demand for inputs by the final-good firm. As this firm is perfectly competitive, we impose a zero-profits restriction, implying:
+\begin{align}
+    \Pi_t^f \overset{!}{=} 0 \ &\Rightarrow \ P_t y_t^f - \int_0^1 P_{j,t} Y_{j,t} dj = 0 \nonumber \\
+    &\Leftrightarrow \ P_t y_t^f - \int_0^1 P_{j,t} \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} y_t^f dj = 0 \nonumber \\
+    &\Leftrightarrow \ y_t^f \Bigg( P_t - \int_0^1 P_{j,t} \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} dj \Bigg) = 0 \nonumber \\
+    &\Leftrightarrow \ P_t = \int_0^1 P_{j,t} \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} dj \nonumber \\
+    &\Leftrightarrow \ P_t = \frac{1}{P_t^{-\theta}} \int_0^1 P_{j,t}^{1-\theta} dj \nonumber \\ 
+    &\Leftrightarrow \ P_t = \Bigg( \int_0^1 P_{j,t}^{1-\theta} dj \Bigg)^{\frac{1}{1-\theta}}, \nonumber
+\end{align}
+where the last equation is the solution for the price of the final good.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Intermediate-Goods Firms}
+
+Consider next the intermediate-goods firms, of which there is a continuum. They sell their output, $Y_{j,t}$, produced with labour input $N_{j,t}$ and with the production function:
+\begin{equation}
+    Y_{j,t} = z N_{j,t}, \label{eq:app-firms-input-production}
+\end{equation}
+to the representative final-good firm in a monopolistically competitive market by setting the nominal price $P_{j,t}$. In adjusting their prices in period $t$, the intermediate-goods firms are subject to quadratic price adjustment costs à la \textcite{rotemberg1982} in the form of:
+\begin{equation}
+    \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 y_t^f, \label{eq:app-firms-price-adj}
+\end{equation}
+as in \textcite{gust2017wp}.
+
+The objective of intermediate-goods firm $j$ is to maximise the discounted stream of its profits, i.e.~revenues minus labour input costs and price adjustment costs \eqref{eq:app-firms-price-adj}, by setting the price $P_{j,t}$ in $t$.\footnote{How to discount firm profits is not entirely straightforward in \Gls{ha} economies. I let firms discount profits at rate $\beta$. In most studies the results remain robust under alternative specifications.} Formally, they maximise:
+\begin{equation}
+    \max_{P_{j,t}} \ \Pi_t = \sum_{t=0}^{\infty} \Bigg( \beta^t \Bigg[ \frac{P_{j,t} Y_{j,t} - W_t N_{j,t}}{P_t} - \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 y_t^f \Bigg] \Bigg), \label{eq:app-firms-profits-input}
+\end{equation}
+where $W_t$ is the nominal wage, defined as $W_t \equiv w_t P_t$, subject to the demand for their inputs from the final-good firm \eqref{eq:app-firms-input-demand}. Using \eqref{eq:app-firms-input-demand}, $mc_t = \frac{w_t}{z}$ and \eqref{eq:app-firms-input-production}, expression \eqref{eq:app-firms-profits-input} can be simplified a bit:
+\begin{align}
+    &\max_{P_{j,t}} \sum_{t=0}^{\infty} \Bigg( \beta^t \Bigg[ \frac{P_{j,t} Y_{j,t} - W_t N_{j,t}}{P_t} - \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 y_t^f \Bigg] \Bigg) \nonumber \\
+    \Leftrightarrow \ &\max_{P_{j,t}} \sum_{t=0}^{\infty} \Bigg( \beta^t \Bigg[ \frac{P_{j,t} Y_{j,t} - W_t \frac{Y_{j,t}}{z}}{P_t} - \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 y_t^f \Bigg] \Bigg) \nonumber \\
+    \Leftrightarrow \ &\max_{P_{j,t}} \sum_{t=0}^{\infty} \Bigg( \beta^t \Bigg[ \Bigg( \frac{P_{j,t}}{P_t} - mc_t \Bigg) Y_{j,t} - \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 y_t^f \Bigg] \Bigg) \nonumber \\
+    \Leftrightarrow \ &\max_{P_{j,t}} \sum_{t=0}^{\infty} \Bigg( \beta^t \Bigg[ \Bigg( \frac{P_{j,t}}{P_t} - mc_t \Bigg) \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} y_t^f - \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 y_t^f \Bigg] \Bigg) \nonumber \\
+    \Leftrightarrow \ &\max_{P_{j,t}} \sum_{t=0}^{\infty} \Bigg( \beta^t y_t^f \Bigg[ \Bigg( \frac{P_{j,t}}{P_t} - mc_t \Bigg) \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} - \frac{\psi}{2} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg)^2 \Bigg] \Bigg) \label{eq:app-firms-input-max}
+\end{align}
+
+Solving \eqref{eq:app-firms-input-max} yields the \Gls{nkpc}, but requires some algebra. The first step is to differentiate with respect to $P_{j,t}$:
+\begin{alignat}{3}
+    \frac{\partial \Pi_t}{\partial P_{j,t}} &= \beta^t y_t^f \Bigg( &&(1-\theta) \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} \frac{1}{P_t} + \theta \frac{mc_t}{P_t} \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta-1} \nonumber \\
+    & \ &&- \psi \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg) \frac{1}{P_{j,t-1} \tilde{\pi}_{t-1}} \Bigg) \nonumber \\
+    & \ &&+\beta^{t+1} y_{t+1}^f \Bigg( -\psi \Bigg( \frac{P_{j,t+1}}{P_{j,t} \tilde{\pi}_{t}} - 1 \Bigg) (-1) \frac{P_{j,t+1}}{P_{j,t}^2 \tilde{\pi}_{t}} \Bigg) \overset{!}{=} 0, \nonumber
+\end{alignat}
+which becomes:
+\begin{align}
+    \Leftrightarrow \ 0 = \frac{1-\theta}{P_t} \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta} &+ \frac{\theta mc_t}{P_t} \Bigg( \frac{P_{j,t}}{P_t} \Bigg)^{-\theta-1} - \frac{\psi}{P_{j,t-1} \tilde{\pi}_{t-1}} \Bigg( \frac{P_{j,t}}{P_{j,t-1} \tilde{\pi}_{t-1}} - 1 \Bigg) \nonumber \\
+    &+\psi \beta \frac{P_{j,t+1}}{P_{j,t}^2 \tilde{\pi}_{t}} \Bigg( \frac{P_{j,t+1}}{P_{j,t} \tilde{\pi}_t} - 1 \Bigg) \frac{y_{t+1}^f}{y_t^f} \nonumber \\
+    \Leftrightarrow \ \psi \Bigg( \frac{\pi_t}{\tilde{\pi}_{t-1}} - 1 \Bigg) \frac{\pi_t}{\tilde{\pi}_{t-1}} &= (1-\theta) + \theta mc_t + \psi \beta \Bigg( \frac{\pi_{t+1}}{\tilde{\pi}_{t}} - 1 \Bigg) \frac{\pi_{t+1}}{\tilde{\pi}_{t}} \frac{y_{t+1}^f}{y_t^f}, \label{eq:app-firms-nkpc}
+\end{align}
+which is finally the desired result and where I used that, in the symmetric equilibrium, $P_{j,t} = P_t$ $\forall j$ holds. This is because all intermediate-goods firms face the same problem. \eqref{eq:app-firms-nkpc} is equation \eqref{eq:firms-nkpc} in the main text. 
+
+As all intermediate-goods firms behave identically, aggregate production can be described by $y_t^f = zN_t$ and aggregate profits by \eqref{eq:firms-profits}. Thus, equations \eqref{eq:firms-production}, \eqref{eq:firms-nkpc} and \eqref{eq:firms-profits} constitute the corporate block. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Full System of Equations}
 \label{sec-app:full-equations}
 
-This subsection lists all equations from the baseline model.
+This subsection contains the full system of equations passed to the \texttt{Econpizza} package. The equations for the household block are either:
+\begin{align}
+    x_{i,t}^{-\sigma_c} &\ge \beta \mathbb{E}_{e,t} \{ V_{b,t+1} (e_{i,t+1} b_{i,t} ) \} \\
+    V_{b,t} &= RR (RR_t, b_{i,t-1}) x_{i,t}^{-\sigma_c} \\
+    w_t &= N_t^{\sigma_l}
+\end{align}
+in the case of \Gls{ghh} preferences or:
+\begin{align}
+    c_{i,t}^{-\sigma_c} &\ge \beta \mathbb{E}_{e,t} \{ V_{b,t+1} (e_{i,t+1} b_{i,t} ) \} \\
+    V_{b,t} &= RR (RR_t, b_{i,t-1}) c_{i,t}^{-\sigma_c} \\
+    n_{i,t} &= \Bigg( \frac{c_{i,t}^{-\sigma_c} w_t e_{i,t}}{\phi} \Bigg)^{\frac{1}{\sigma_l}}
+\end{align}
+in the case of \Gls{crra} preferences.
 
+The rest of the model reads:\footnote{I omit some equations which have the main purpose of defining certain quantities or percentiles.}
+\begin{align}
+    C_t &= \int c_{i,t} d \Psi_t (b,e) \\
+    N_t &= \int n_{i,t} d \Psi_t (b,e) \\ 
+    B &= \int b_{i,t} d \Psi_t (b,e) \\
+    C_t &= y_t \\
+    D_t &= - \int b_{i,t} \mathbb{1}_{[\phi_t \le b_{i,t} \le 0]} d \Psi_t (b,e) \\
+    y_t^f &= zN_t \\
+    mc_t &= \frac{w_t}{z} \\
+    \psi \Bigg( \frac{\pi_t}{\tilde{\pi}_{t-1}} - 1 \Bigg) \frac{\pi_t}{\tilde{\pi}_{t-1}} &= (1-\theta) + \theta mc_t + \psi \beta \Bigg( \frac{\pi_{t+1}}{\tilde{\pi}_{t}} - 1 \Bigg) \frac{\pi_{t+1}}{\tilde{\pi}_{t}} \frac{y_{t+1}^f}{y_t^f} \\
+    \tilde{\pi}_t &= \pi_{ss}^{\omega} \pi_{t}^{1-\omega} \\
+    \Pi_t &= \Bigg[ 1 - \frac{\psi}{2} \Bigg( \frac{\pi_t}{\tilde{\pi}_{t-1}} - 1 \Bigg)^2 \Bigg] y_t^f - w_t N_t \\
+    y_t &= \Bigg( 1 - \frac{\psi}{2} \Bigg( \frac{\pi_t}{\tilde{\pi}_{t-1}} - 1 \Bigg)^2 \Bigg) y_t^f - \kappa_t D_t \\
+    \tau_t &= (RR_t - 1) B \\
+    R_{t}^n &= ( R_{t-1}^n )^{\rho} \Bigg[ R_{ss} \Bigg( \frac{\pi_t}{\pi_{ss}} \Bigg)^{\phi_{\pi}} \Bigg( \frac{y_t}{y_{ss}} \Bigg)^{\phi_y} \Bigg]^{(1-\rho)} \\
+    R_t &= \text{max} \ \{ 1, \ R_{t}^n \} \\
+    RR (RR_t, b_{i,t-1}) &= \begin{cases}
+	\frac{R_{t-1}}{\pi_t} \ \ \ \ \ \ \ \ \ \ \ \ \ \text{if} \ b_{i,t-1} \ge 0 \\
+	\frac{R_{t-1}}{\pi_t} + \kappa_t \ \ \ \ \text{if} \ b_{i,t-1} < 0,
+	\end{cases} \\
+    \phi_t &= \phi_{ss} \Bigg( \frac{\phi_{t-1}}{\phi_{ss}} \Bigg)^{\rho_{\phi}} exp(\varepsilon_{\phi}) \\
+    \kappa_t &= \kappa_{ss} \Bigg( \frac{\kappa_{t-1}}{\kappa_{ss}} \Bigg)^{\rho_{\kappa}} exp(\varepsilon_{\kappa}).
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Graphical Summary of the Model}
 \label{sec-app:full-graphical}
 
-This subsection presents a visualisation of the baseline model presented in section \ref{sec:model}. The figure is meant to be an aid in understanding the flows and mechanisms of the model and clearly does not capture essential aspects of the model, such as its dynamic nature.
+This subsection presents a visualisation of the baseline model. The figure is meant to be an aid in understanding the flows and mechanisms of the model and clearly does not capture essential aspects of the model, such as its dynamic nature.
 
 \begin{figure}[H]
 \centering
@@ -1367,8 +1508,8 @@ This subsection presents a visualisation of the baseline model presented in sect
   \draw[fill=white] (0,) rectangle (15,8);
   \node at (7.5,7.5) {\Large Households};
 
-  \node at (3,6) {"unlucky"};
-  \node at (12,6) {"lucky"};
+  \node at (3,6) {``unlucky"};
+  \node at (12,6) {``lucky"};
 
   \node at (2.25,4) {Borrowers};
   \node at (2.25,3.6) {\scriptsize negative \Gls{iou}s};
@@ -1427,25 +1568,26 @@ This subsection presents a visualisation of the baseline model presented in sect
   \draw[->] (12.2,1) -- (12.2,-4); % to FP
   \node at (11.4,-2) {Taxes $\tau$};
 
-  \node at (5.5,4.5) {\footnotesize "Consumption"};
-  \node at (5.5,3.5) {\footnotesize "Insurance"};
+  \node at (5.5,4.5) {\footnotesize ``Consumption"};
+  \node at (5.5,3.5) {\footnotesize ``Insurance"};
   \node at (5.5,3) {\footnotesize + Interest $RR$};
 
 \end{tikzpicture}
 \begin{flushleft}
 \footnotesize
-\textit{Note}: This figure displays the agents and some key mechanisms of the baseline model from section \ref{sec:model}. To ease notation, time subscripts are suppressed.
+\textit{Note}: This figure displays the agents and some key mechanisms of the baseline model from section \ref{sec:model}. To ease notation, I suppress time subscripts.
 \end{flushleft}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The Natural Borrowing Limit}
-\label{sec:app-hh-borrowing}
-The natural borrowing limit is the borrowing limit which just marginally ensures that borrowers can repay and not have negative consumption. This natural borrowing limit can be calculated from forward iterating the household budget constraint \eqref{eq:hh-budget}:
-\begin{equation*}
-    \frac{wne_{L} + \Pi_t \bar{\Pi} (e_{L}) - \tau_t \bar{\tau} (e_{L})}{RR - 1},
-\end{equation*}
-where $e_L$ denotes the lowest level of skills attainable from \eqref{eq:hh-income-process}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{The Natural Borrowing Limit}
+% \label{sec:app-hh-borrowing}
+% The natural borrowing limit is the borrowing limit which just marginally ensures that borrowers can repay and not have negative consumption. This natural borrowing limit can be calculated from forward iterating the household budget constraint \eqref{eq:hh-budget}:
+% \begin{equation*}
+%     \frac{wne_{L} + \Pi_t \bar{\Pi} (e_{L}) - \tau_t \bar{\tau} (e_{L})}{RR - 1},
+% \end{equation*}
+% where $e_L$ denotes the lowest level of skills attainable from \eqref{eq:hh-income-process}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1453,41 +1595,69 @@ where $e_L$ denotes the lowest level of skills attainable from \eqref{eq:hh-inco
 \section{Computational Implementation}
 \label{sec-app:codes}
 
-This appendix has two parts. The first one notes some caveats when implementing the financial shocks of sections \ref{sec:limit} -- \ref{sec:sensitivity} in \texttt{Econpizza}. The second part provides a rough guide for the computer codes producing the results for this thesis. The full set of codes is provided together with the thesis and is available on my GitHub page: \url{https://github.com/andkound98/master-thesis}, last retrieved \printdate{2023-08-25}.
+This appendix has two parts. The first one notes some caveats when implementing the simulations of the main text and the present appendices in \texttt{Econpizza}. The second part provides a small guide to the computer codes which produce the results (figures, tables, etc.) for this thesis. The full set of codes is provided together with the thesis and is available as a GitHub repository: \url{https://github.com/andkound98/master-thesis}, last retrieved \printdate{2023-08-25}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Implementation of Shocks in \texttt{Econpizza}}
+\subsection{Notes on the Implementation in \texttt{Econpizza}}
 \label{sec-app:codes-ep}
 
-The choices on the grid sizes naturally involve an accuracy-speed trade-off. I approximate the productivity process on a grid with $8$ grid points. The asset grid has $236$ grid points. I choose the number of grid points roughly such that increasing the number does not change the main results in a meaningful way.
+As mentioned in the main text of this thesis, the \texttt{Econpizza} package is maintained by Dr.~Gregor Böhl on GitHub under this link: \url{https://github.com/gboehl/econpizza/tree/master}, last retrieved \printdate{2023-08-22}, and documented in detail here: \url{https://econpizza.readthedocs.io/en/stable/index.html}, last retrieved \printdate{2023-08-22}.
 
-Regarding the implementation of the shocks in the subsequent sections, it is important to note two things. First, in case of permanent shocks, the transition path must be calculated using the Jacobian of the terminal steady state instead of the initial steady state (see \cite{auclert2021}). Second, in the case of a shock to the borrowing limit, a correct implementation requires that the asset grid is not changed over time so as to avoid invalid comparisons based on different interpolations, see e.g.~the note by \textcite{mellior2016mimeo}. The code considers both of these aspects.
+I next note some important aspects regarding the implementation of this thesis' simulations with the package.
 
-The horizon is set to $200$, i.e.~the solution method assumes that after $200$ quarters the system has returned its steady state.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Discretisation of Asset and Productivity Grids}
 
-%Second, in the case of a shock to the borrowing limit, a correct implementation requires that the asset grid is not changed over time, as this mimeo notes. Otherwise, the interpolation would be between repeatedly different grid points, making the comparison of over time inaccurate. 
+As remarked in section \ref{sec:model-solution}, the asset and productivity grids have to be discretised. The package does this internally but the user must specify some characteristics of the grids, e.g.~the number of grid points. Moreover, the asset grid requires special attention in my use case. Therefore, I here briefly explain my approach to discretisation with an emphasis on the asset grid and the pitfalls associated with specifying it.
 
-This is because, from $t=1$, the new regime applies.
+Consider first the productivity grid. Given the persistence of the skills process, $\rho_e$, and the variance of productivity shocks, $\sigma_e$, I need to specify the number of grid points, $N_e$. Choosing the number of grid points of course involves an accuracy-speed trade-off. In general, the more grid points, the more accurate the solution, but also the more computationally demanding the computation of that solution. I try to proceed pragmatically and choose $N_e = 8$. Changing this to $N_e=6$ or $N_e=10$ did not meaningfully affect my results for the aggregate dynamics after a credit crunch through the borrowing limit. 
+
+Given $N_e = 8$ and the calibration of $\rho_e$ and $\sigma_e$ from table \ref{tab:calibration-baseline}, the \texttt{Econpizza} package employs the \textcite{rouwenhorst1995} method to convert the \Gls{ar}(1) process \eqref{eq:hh-income-process} into a grid of skills levels, a matrix of transition probabilities and a stationary skills distribution.
+
+Next, consider the asset grid. Its specification is more involved in the present case because the correct implementation of a shock to the borrowing limit requires that the asset grid is the same in every time period, see \textcite{mellior2016mimeo}. If it was not, the fact that the lowest admissible grid point (i.e.~the borrowing limit) changes over time would imply that household policies are not given on the same grid in every instance of time. This would invalidate the dynamics because interpolation would occur between differing asset grids.\footnote{Recall that the policies are given as interpolants over discretised grids.}
+
+To meet this requirement in the implementation, I use a function (named \texttt{create\_grid()} in the \texttt{hank\_functions.py} file, see section \ref{sec-app:codes-guide}) which creates a standard logarithmic grid (as is the default in the package) and then extend it as follows. Given the process for the credit limit \eqref{eq:borrowing-limit-process} together with values for the initial borrowing limit, $\phi_{ss}$ and, in the case of a permanent shock, the terminal borrowing limit, $\phi_{ss}'$, the persistence parameter, $\rho_{\phi}$, as well as the terminal horizon by which the model has settled in steady state (see below), it first calculates the specific transition that the borrowing limit undertakes from the initial period to the terminal period within the given horizon. I round these values to the sixth decimal place and thus remove points which are indistinguishably close to each other to avoid unnecessarily large grids. Then, the function adds the remaining points to the initial logarithmic grid. Finally, I compute the reverse transition of the borrowing limit, i.e.~from $\phi_{ss}'$ to $\phi_{ss}$, and add the resulting values to the grid, too, so that I can fairly compare an easing credit limit to a tightening one as in done in section \ref{sec:asymmetry} of the thesis.
+
+To guarantee that the solution of the household block indeed uses valid asset grid points, I add a further step to the \Gls{egm} function of the implementation (\texttt{egm\_step()} and \texttt{egm\_step\_labour()} in the \texttt{hank\_functions.py} file), which finds for a given $\phi_s$ in period $s$ the closest point to $\phi_{ss}$ which is on the grid.
+
+Note that the above procedure of creating the asset grid implies that the asset grids differ whenever one of the following parameters changes: $\phi_{ss}$, $\phi_{ss}'$, $\rho_{\phi}$ -- apart from the obvious ones such as the number of grid points (for the logarithmic grid) or the terminal horizon. This has to be kept in mind when interpreting the results, especially when comparing across models. 
+
+In the baseline model with $\phi_{ss}$, $\phi_{ss}'$ and $\rho_{\phi}$ as in table \ref{tab:calibration-baseline}, the asset grid has $N_b = 236$ grid points as I specify the basic logarithmic grid to begin with $200$ grid points.\footnote{Changing this to $500$ did not affect the aggregate dynamics after a shock to the borrowing limit as in section \ref{sec:limit-transition}.} I set the maximum grid point to $150$, which ensures that no experiment considered in this thesis has negative values in the distribution in steady state.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Transition to New Steady State}
+
+Throughout this thesis, I consider \textit{permanent} shocks. That is, once disturbed, the economy does not return to its initial steady state but converges to a new steady state, in which a new environment applies. To calculate the perfect-foresight transition of a model to the terminal steady state, this transition path must be calculated using the Jacobian of the terminal steady state instead of the one from the initial steady state, see \textcite{auclert2021}.\footnote{The steady-state Jacobian of a model is the crucial object in the solution approaches by \textcite{auclert2021} and \textcite{boehl2023econpizza}. It contains information as to how the economy behaves when outside of its steady state.} This is because, from $t=1$, the new regime applies. Implementing this in \texttt{Econpizza} is done by applying the function \texttt{.find\_path()} to the terminal model and passing to that function the initial steady state (i.e.~the aggregate steady-state values) and the initial distribution of agents over assets and skills.
+
+Note that another crucial choice in the implementation is on the terminal period in which the economy is assumed to have completed its transition to the terminal steady state. I follow the default of the \texttt{Econpizza} package, which sets this horizon to $200$. See \textcite{auclert2021} for the importance of choosing this horizon sufficiently large.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Guide to Computer Codes}
 \label{sec-app:codes-guide}
 
-I now shortly describe the Python code files employed. All these codes were run using the Spyder IDE $5.3.4$ with Python $3.9.12$ and \texttt{Econpizza} $0.6.1$ on macOS $12.6.5$.
+I now shortly describe the Python code files employed. Essentially, this description is the \href{https://github.com/andkound98/master-thesis/blob/main/README.md}{README} file in the GitHub repository. 
 
-\subsection*{\texttt{main.py}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\texttt{main.py}}
 
 The file \texttt{main.py} is the main file of the project.
 
-\subsection*{\texttt{custom\_functions.py}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\texttt{custom\_functions.py}}
 
-\subsection*{\texttt{plot\_functions.py}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\texttt{plot\_functions.py}}
 
-\subsection*{\texttt{calibration.py}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\texttt{calibration.py}}
 
-This file uses the data described in appendix \ref{sec-app:data} to calculate the desired calibration targets and to create the figures \ref{fig:app-calibration-liquid}, \ref{fig:app-calibration-debt} and \ref{fig:app-calibration-bonds}.
+This file uses the data described in appendix \ref{sec-app:data} to calculate the desired calibration targets and to create the figures \ref{fig:app-calibration} and \ref{fig:app-calibration-bonds}.
+
+\bigskip
+
+All these codes were run using the Spyder IDE $5.4.3$ with Python $3.9.12$ and \texttt{Econpizza} $0.6.1$ on macOS $12.6.5$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1497,45 +1667,74 @@ This file uses the data described in appendix \ref{sec-app:data} to calculate th
 
 This appendix describes the data series and sources used for the calibration of the baseline model in section \ref{sec:model-solution} and for the calibration of the model in section \ref{sec-app:robust-bonds}.
 
-First, to match $B$ to total liquid assets held by households, I follow \textcite{mckay2016} and \textcite{gl2017} in using information on aggregate household balance sheets, available in the Financial Accounts of the US Z1, known as "Flow of Funds" (\Gls{fof}) and provided by the Federal Reserve. I acquire data on US nominal \Gls{gdp}, the US price level from the FRED data base, which is maintained by the Federal Reserve of Saint Louis. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Matching $B$}
 
-Second, in the robustness exercise of appendix\ref{sec-app:robust-bonds}, I follow \textcite{bayer2023} to calibrate $B$ such that it corresponds to the market value of gross U.S.~federal debt. As the authors do, I obtain the data from FRED.
+First, to match $B$ to total liquid assets held by households as in \textcite{mckay2016} and \textcite{gl2017}, I follow these authors by using information on aggregate household balance sheets, available through the Financial Accounts of the U.S.~(Z1), known as ``Flow of Funds" (\Gls{fof}) and provided by the Board of Governors of the Federal Reserve System. The data are available online through the website: \url{https://www.federalreserve.gov/releases/z1/}, last retrieved \printdate{2023-08-21}. I download the CSV file with the data from that website.
 
-\begin{figure}[H]
-    \caption{Time Series of Data for the Baseline Model Calibration}
+To obtain the time series of the measure of total liquid assets, I use the information from the table B.101, titled ``Balance Sheet of Households and Nonprofit Organizations (1)", as the aforementioned studies do. The code file \texttt{calibration.py} reads the CSV file and takes the sum of the seven following series to obtain total liquid assets (series IDs in brackets):\footnote{I try to be as close as possible to the choices of \textcite{mckay2016} and \textcite{gl2017} but some instances do not allow for this as series' names have likely changed.}
+\begin{enumerate}
+    \item 'Foreign deposits' (LM153091003.Q),
+    \item 'Checkable deposits and currency' (FL153020005.Q),
+    \item 'Time and savings deposits' (FL153030005.Q),
+    \item 'Money market fund shares' (FL153034005.Q),
+    \item 'Debt securities' (LM154022005.Q),
+    \item 'Corporate equities' (LM153064105.Q),
+    \item 'Mutual fund shares' (LM153064205.Q).
+\end{enumerate}
+
+I require data on the price level and \Gls{gdp} in the U.S., so that I can match $B$. I acquire data on U.S.~nominal \Gls{gdp} and the U.S.~price level from the FRED data base, which is maintained by the Federal Reserve Bank of St.~Louis and accessible through this website: \url{https://fred.stlouisfed.org}, last retrieved \printdate{2023-08-21}. Nominal \Gls{gdp} is titled ``Gross Domestic Product" (GDP) and the price level is ``Gross Domestic Product: Implicit Price Deflator" (GDPDEF). To obtain that data, \texttt{calibration.py} requires a FRED API key, which can be created for free through the FRED website. However, the data can be downloaded without that key as well.
+
+I deflate the result for total liquid assets by the \Gls{gdp} deflator and convert it to a share of real \Gls{gdp} (nominal \Gls{gdp} deflated by the same deflator). Next, I multiply the result by four (to transform it into quarterly terms as ``GDP" is in annualised terms) and by steady-state output, $y_{ss}$ (to have a result which is in model units). Finally, I take the simple mean over the sample from the fourth quarter of 1951 to the first quarter of 2023. This procedure results in $B=5.21$ for the baseline model and $B=5.39$ for the model of section \ref{sec:sensitivity-end-labour}.\footnote{These differ because, in the model with endogenous labour supply, $y_{ss}$ is different than in the baseline.} I depict the data series together with its mean for the baseline model in figure \ref{fig:app-calibration-liquid}.
+
+\begin{figure}[t]
+    \caption{Data for the Baseline Model Calibration}
+    \label{fig:app-calibration}
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
     \caption{Liquid Assets Held by Households}
     \label{fig:app-calibration-liquid}
          \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/FRED_l.svg}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/calibration_liquid.svg}
      \end{subfigure}
      \hfill
      \begin{subfigure}[b]{0.49\textwidth}
      \caption{Consumer Credit over \Gls{gdp}} 
     \label{fig:app-calibration-debt}
          \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/FRED_d.svg}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/calibration_d.svg}
      \end{subfigure}
-     \begin{flushleft}
-     \footnotesize
-	\textit{Note}: Data taken from the \href{https://www.federalreserve.gov/releases/z1/}{\Gls{fof} statistics} and the \href{https://fred.stlouisfed.org}{FRED data base}. Sample range: 1951:Q4 -- 2023:Q1. The dotted line is the full sample mean of the respective series. The series in panel \ref{fig:app-calibration-liquid} is in terms of the units from the \textit{baseline} calibration of the model in section \ref{sec:model}, in which $y_{ss} = 0.9129$. 
-	\end{flushleft}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \caption{Time Series of Government Bonds}
-    \label{fig:app-calibration-bonds}
-    \includesvg[inkscapelatex=false, width=0.75\textwidth]{Results/FRED_b.svg}
 
     \vspace{10pt}
     
-    \begin{minipage}{0.75\textwidth} %{12cm}
+    \begin{minipage}{\textwidth} 
+    \footnotesize
+    \textit{Note}: Data taken from the \href{https://www.federalreserve.gov/releases/z1/}{\Gls{fof} statistics} and the \href{https://fred.stlouisfed.org}{FRED data base}. Sample range: 1951:Q4 -- 2023:Q1. The dotted line is the full sample mean of the respective series. The series in panel \ref{fig:app-calibration-liquid} is in terms of the units from the \textit{baseline} calibration of the model in section \ref{sec:model}, in which $y_{ss} = 0.9129$. 
+    \end{minipage}
+\end{figure}
+
+Second, in the robustness exercise of appendix \ref{sec-app:robust-bonds}, I follow \textcite{bayer2023} to calibrate $B$ such that it corresponds to the market value of gross U.S.~federal debt. This data is also available on FRED, specifically as ``Market Value of Gross Federal Debt" (MVGFD027MNFRBDAL). I take three-month averages to convert this monthly series into a quarterly one. Thereafter, I proceed analogously to before, I deflate the series, divide it by real \Gls{gdp}, multiply it by four and by $y_{ss}$. For the baseline model, the result is $B=2.24$, which is used in appendix \ref{sec-app:robust-bonds}. Figure \ref{fig:app-calibration-bonds} plots the series.
+
+\begin{figure}[H]
+    \centering
+    \caption{U.S.~Federal Debt}
+    \label{fig:app-calibration-bonds}
+    \includesvg[inkscapelatex=false, width=0.75\textwidth]{Results/calibration_b.svg}
+
+    \vspace{10pt}
+    
+    \begin{minipage}{0.75\textwidth} 
     \footnotesize
     \textit{Note}: Data taken from \href{https://fred.stlouisfed.org}{FRED data base}. Sample range: 1951:Q4 -- 2023:Q1. The dotted line is the full sample mean of the series. The series is in terms of the units from the \textit{baseline} calibration of the model in section \ref{sec:model}, in which $y_{ss} = 0.9129$.
     \end{minipage}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Matching $\frac{D}{y}$}
+
+As in \textcite{gl2017} and \textcite{bayer2023}, I use data on unsecured household credit to calibrate the (loose) debt limit. This is a quantity from the \Gls{fof} but I obtain it through the FRED data base. Therein, it is titled ``Households and Nonprofit Organizations; Consumer Credit; Liability, Level" (HCCSDODNS). Again, I deflate the series and divide by real \Gls{gdp}. Finally, I multiply by four to convert into quarterly terms and take the mean over 1951 (fourth quarter) to 2023 (first quarter). The result is $57\%$, which is the target for (model) debt over output used throughout the thesis. 
+
+See figure \ref{fig:app-calibration-debt} for a visualisation of the time series. It reflects the remark in section \ref{sec:limit-stst-tight}, namely that reductions in debt-to-\Gls{gdp} of around five percentage points are not unrealistic. However, in reality, these changes are rather transitory around what appears to be a deterministic upward trend.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1543,7 +1742,7 @@ Second, in the robustness exercise of appendix\ref{sec-app:robust-bonds}, I foll
 \section{Supplementary Results}
 \label{sec-app:figures}
 
-This appendix contains supplementary figures and tables, placed here for the sake of brevity in the main text.
+This appendix contains supplementary figures and tables, placed here for the sake of brevity in the main text. It is ordered according to the corresponding sections in the text.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1569,8 +1768,10 @@ This appendix contains supplementary figures and tables, placed here for the sak
 \subsection{Figures for Section \ref{sec:limit-stst-tight}}
 \label{sec-app:figures-limit-tight}
 
+The figure is placed on a separate page.
+
 \begin{sidewaysfigure}
-    \caption{Baseline Model -- Shock to the Borrowing Limit: Comparison of Asset Distributions}
+    \caption{Baseline Model -- Shock to Borrowing Limit: Comparison of Asset Distributions}
     \label{fig:comparison-stst-baseline-dist}
     \centering
 \includesvg[inkscapelatex=false, width=0.8\textwidth]{Results/stst_dist_2d_comparison_baseline_limit_permanent.svg}
@@ -1644,21 +1845,22 @@ This appendix contains supplementary figures and tables, placed here for the sak
      \caption{Debt, $D$}
      \label{fig:baseline-permanent-limit-longrun-D}
          \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/D_longrun.svg}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_D_baseline_limit_permanent_long_run_debt.svg}
      \end{subfigure}
      \hfill
      \begin{subfigure}[b]{0.49\textwidth}
      \caption{Debt-to-Output, $\frac{D}{y}$}
      \label{fig:baseline-permanent-limit-longrun-DY}
          \centering
-         \includesvg[inkscapelatex=false, width=\textwidth]{Results/DY_longrun.svg}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_DY_baseline_limit_permanent_long_run_debt.svg}
      \end{subfigure}
 
      \vspace{10pt}
 
-     \justifying
-     \footnotesize
-	\textit{Note}: The time horizon in all plots is fixed to $80$ quarters, including the initial steady state in $t=0$. 
+     \begin{minipage}{\textwidth} 
+    \footnotesize
+    \textit{Note}: The time horizon in all plots is fixed to $80$ quarters, including the initial steady state in $t=0$.
+    \end{minipage}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1686,12 +1888,37 @@ This appendix contains supplementary figures and tables, placed here for the sak
 
     \vspace{10pt}
      
-     \justifying
-     \footnotesize
-	\textit{Note}: The blue dashed line corresponds to $\rho_{\phi} = 0.3$ ("fast shock"), the orange continuous line corresponds to $\rho_{\phi} = 0.5$ (baseline) and the green dotted line corresponds to $\rho_{\phi} = 0.65$ ("slow shock"). Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to twelve quarters, including the initial steady state in $t=0$.
+     \begin{minipage}{\textwidth} 
+    \footnotesize
+    \textit{Note}: The blue dashed line corresponds to $\rho_{\phi} = 0.3$ ("fast shock"), the orange continuous line corresponds to $\rho_{\phi} = 0.5$ (baseline) and the green dotted line corresponds to $\rho_{\phi} = 0.65$ ("slow shock"). Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to twelve quarters, including the initial steady state in $t=0$.
+    \end{minipage}
 \end{figure}
 
 %%%%%%%%% INSERT FIGURES OF LONG-RUN DEBT DEVELOPMENT
+\begin{figure}[H]
+    \caption{Baseline Model -- Varying the Duration of a Credit Crunch: \\ Debt in the Long-Run}
+    \label{fig:baseline-permanent-limit-duration-long-run}
+    \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Debt, $D$}
+     \label{fig:baseline-permanent-limit-duration-long-run-D}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_D_fast_shock_limit_permanent_baseline_limit_permanent_slow_shock_limit_permanent_long_run_debt}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Debt-to-Output, $\frac{D}{y}$}
+     \label{fig:baseline-permanent-limit-duration-long-run-DY}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_DY_fast_shock_limit_permanent_baseline_limit_permanent_slow_shock_limit_permanent_long_run_debt}
+     \end{subfigure}
+
+     \vspace{10pt}
+
+     \begin{minipage}{\textwidth} 
+    \footnotesize
+    \textit{Note}: The blue dashed line corresponds to $\rho_{\phi} = 0.3$ ("fast shock"), the orange continuous line corresponds to $\rho_{\phi} = 0.5$ (baseline) and the green dotted line corresponds to $\rho_{\phi} = 0.65$ ("slow shock"). Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to $80$ quarters, including the initial steady state in $t=0$.
+    \end{minipage}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1753,17 +1980,16 @@ $C$ &   $0.944$ &   $0.9438$ & $-0.02\%$ \\
 $N$ &   $0.944$ &   $0.9438$ & $-0.02\%$ \\
 $\frac{D}{y}$ & $57\%$ & $52\%$ & $-5 \ p.p.$ \\
 $B+D$ &  $5.93$ &   $5.88$ & $-0.80\%$ \\
-$Rr-1$ &  $0.15\%$ & $0.14\%$ & -0.0001 \\
-$\tau$ &  0.0082 &   0.0074 & -0.0008 \\
+$Rr-1$ &  $0.15\%$ & $0.14\%$ & $-0.01 \ p.p.$ \\
 & & & \\
 \multicolumn{2}{l}{\textbf{Cross-Section}} & & \\
-Top10A &  0.5322 &   0.5264 & -0.0058 \\
-Top10C &  0.1563 &   0.1564 &  0.0001 \\
-Top10N &  0.2123 &   0.2121 & -0.0002 \\
-Fraction of Borrowers &   39.14 &    38.46 & -0.6800 \\
-Fraction at Borrowing Limit &   11.21 &    11.24 &  0.0300 \\
-\Gls{mpc} of Borrowers &    0.33 &     0.34 &  \\
-\Gls{mpc} of Lenders &    0.02 &     0.02 &  \\
+Share of Assets Held by Top-$10\%$ &  $53.22$ &   $52.64$ & $-0.58 \ p.p.$ \\
+Share of Consumption by Top-$10\%$ &  $15.63$ &   $15.64$ &  $0.01 \ p.p.$ \\
+Share of Labour Hours by Top-$10\%$ &  $21.23$ &   $21.21$ & $-0.02 \ p.p.$ \\
+Fraction of Borrowers &   $39.14$ &    $38.46$ & $-0.68 \ p.p.$ \\
+Fraction at Borrowing Limit &   $11.21$ &    $11.24$ &  $0.03 \ p.p.$ \\
+\Gls{mpc} of Borrowers &    $0.33$ &     $0.34$ &  \\
+\Gls{mpc} of Lenders &    $0.02$ &     $0.02$ &  \\
 \hline
 \multicolumn{4}{l}{\footnotesize \multirow{2}{12cm}{\justifying \textit{Note:} The table contains selected values of the initial steady state with $\phi_{ss}$ and the terminal steady state with $\phi_{ss}'$. All numbers are rounded and refer to quarterly values. $p.p.$ stands for percentage points.}} \\
 & & & \\
@@ -1825,7 +2051,7 @@ Fraction at Borrowing Limit &   11.21 &    11.24 &  0.0300 \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Figures for Section \ref{sec:wedge}}
+\subsection{Results for Section \ref{sec:wedge}}
 \label{sec-app:figures-wedge}
 
 \begin{figure}[H]
@@ -1920,6 +2146,63 @@ Fraction at Borrowing Limit &   11.21 &    11.24 &  0.0300 \\
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Analogy of Interest Rate Wedge Shock to Slow Borrowing Limit Shock}
+\label{sec-app:figures-wedge-analogy}
+
+\begin{figure}[H]
+    \caption{Baseline Model -- Shock to Interest Rate Wedge vs \\ Slow Shock to Borrowing Limit ($\rho_{\phi} = 0.86$): Aggregate Dynamics}
+    \label{fig:comparison-wedge-analogy-slow}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{Borrowing Limit, $\phi$}
+    \label{fig:comparison-wedge-analogy-slow-phi}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_phi_baseline_wedge_permanent_very_slow_phi_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{Interest Rate Wedge, $\kappa$}
+    \label{fig:comparison-wedge-analogy-slow-kappa}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_kappa_baseline_wedge_permanent_very_slow_phi_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{Consumption, $C$}
+    \label{fig:comparison-wedge-analogy-slow-C}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_C_baseline_wedge_permanent_very_slow_phi_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    \caption{\textit{Ex-Post} Real Rate on Debt, $RR+\kappa$}
+    \label{fig:comparison-wedge-analogy-slow-Rrminus}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_Rrminus_baseline_wedge_permanent_very_slow_phi_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Debt, $D$}
+     \label{fig:comparison-wedge-analogy-slow-D}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_D_baseline_wedge_permanent_very_slow_phi_limit_permanent.svg}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Debt-to-Output, $\frac{D}{y}$}
+     \label{fig:comparison-wedge-analogy-slow-DY}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/compare_transitions/comparison_DY_baseline_wedge_permanent_very_slow_phi_limit_permanent.svg}
+     \end{subfigure}
+     
+     \vspace{10pt}
+     
+     \justifying
+     \footnotesize
+	\textit{Note}: Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to twelve quarters, including the initial steady state in $t=0$.
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Robustness and Supplementary Experiments}
@@ -1932,11 +2215,19 @@ This appendix presents various robustness exercises and supplementary experiment
 \subsection{Abscence of the \Gls{zlb}}
 \label{sec-app:robust-no-zlb}
 
-This appendix conducts the same exercise as section \ref{sec:limit} does, but exchanges \eqref{eq:zlb} for:
+This appendix conducts the same exercise as section \ref{sec:limit-transition} but ignores the \Gls{zlb}. The \Gls{zlb} is usually motivated by the argument that households would not hold any asset with a return strictly below zero as money would have a strictly higher return.\footnote{As is common in the literature, the present model does not feature money explicitly.} The literature has highlighted the \Gls{zlb} either as the trigger (as in \cite{egg2012}) or as an amplifier (as in \cite{gl2017}) of financial shocks, contractions in the debt limit in particular.
+
+Given the fact that the \Gls{zlb} does bind in my baseline experiment -- in fact, I calibrated $\beta$ to be such that it does -- I here aim to gauge the quantitative effect that the \Gls{zlb} has on the results from section \ref{sec:limit-transition}. to that end, I leave the model used in that section unchanged but exchange \eqref{eq:zlb} for:
 \begin{equation}
     R_t = R^n_t, \label{eq:no-zlb}
 \end{equation}
-i.e.~the modified model ignores the \Gls{zlb} on nominal interest rates. I do so in order to gauge the effect that the \Gls{zlb} has on the quantitative results from section \ref{sec:limit}.
+i.e.~the modified model ignores the \Gls{zlb} on nominal interest rates and lets the nominal rate fall below zero.
+
+Figure \ref{fig:comparison-no-ZLB-agg} replicates figure \ref{fig:baseline-permanent-limit-agg}. In particular, it presents some selected aggregate dynamics after a permanent contraction in the debt limit and compares these to the baseline case, i.e.~the responses from plot \ref{fig:baseline-permanent-limit-agg}. Clearly, the \Gls{zlb} does have a noticable impact on the economy's dynamics. Aggregate consumption does not drop as much in the absence of this constraint as it does in its presence. Specifically, consumption drops by roughly half a percentage point less on impact, see figure \ref{fig:comparison-no-ZLB-agg-C}.
+
+This is intuitive because, as explained in the main text, once the \Gls{zlb} becomes binding, the real interest rate cannot fall as much, reducing the incentive for the unconstrained agents to reduce their higher wealth targets, i.e.~less debt in the case of an unconstrained net borrower and more savings in the case of an unconstrained net lender. Thus, in the absence of the \Gls{zlb}, the real interest rate in $t=2$ falls by more, stimulating more consumption as well as less savings or more debt, respectively. This dampens the recession in $t=1$, which again feeds back into a nominal interest rate in $t=1$ which is lower than the notional rate in the same period in the presence of the \Gls{zlb}, see plot \ref{fig:comparison-no-ZLB-agg-Rn}.
+
+Note however, that the evidence presented also supports the claim in section \ref{sec:limit-transition} that the \Gls{zlb} is merely an amplifier and not the cause of the recession in the present model, consistent with the findings by \textcite{gl2017}. That is, a rough calculation suggests that from the three percent drop observed in the \Gls{zlb} scenario, only $0.5$ percentage points, i.e.~around one sixth, is due to the \Gls{zlb} binding.
 
 \begin{figure}[H]
     \caption{Baseline w/o \Gls{zlb} -- Shock to the Borrowing Limit: Aggregate Dynamics}
@@ -1996,11 +2287,11 @@ i.e.~the modified model ignores the \Gls{zlb} on nominal interest rates. I do so
 \subsection{Calibration of Bonds à la \textcite{bayer2023}}
 \label{sec-app:robust-bonds}
 
-This appendix re-calibrates $B$ following the approach of \textcite{bayer2023}. Specifically, $B$ here targets the ratio of the market value of federal government debt to \Gls{gdp} instead of the fraction of total liquid assets over \Gls{gdp}. To that end, I use -- as \textcite{bayer2023} do -- data from FRED, see appendix \ref{sec-app:data} for details. The result is that $B$ must equal $2.24$ to match the empirical ratio of $2.45$. What is more, I re-set $\beta$ so that the steady state (real) interest rate is $0.15\%$, as before.
+This appendix re-calibrates $B$ following the approach of \textcite{bayer2023}. Specifically, $B$ here targets the market value of gross federal government debt instead of total liquid assets. To that end, I use -- as \textcite{bayer2023} do -- data from FRED, see appendix \ref{sec-app:data} for details. The result is that $B$ must equal $2.24$. Further, I re-set $\beta$ so that the net steady-state interest rate is $0.15\%$, as before.
+
+Note that the corresponding steady states, the wealth distributions in particular, is different. For example, both the fraction of borrowers ($46.71\%$) and the aggregate \Gls{mpc} ($0.14$) are much higher in the present case than in the baseline. The latter observation is consistent with the observation by \textcite{kaplan2018} that \Gls{mpc}s increase when the wealth target is smaller.
 
 Now, \Gls{iou}s make up a larger share of gross liquidity. 
-
-Clearly, the steady-state distributions are different. \Gls{mpc}s are much higher, consistent with the observation by \textcite{kaplan2018} that \Gls{mpc}s rise with less available liquidity.
 
 \begin{figure}[H]
     \caption{Baseline with Low $B$ -- Shock to the Borrowing Limit: Aggregate Dynamics}
@@ -2060,7 +2351,54 @@ Clearly, the steady-state distributions are different. \Gls{mpc}s are much highe
 \subsection{Shock to the Discount Factor}
 \label{sec-app:robust-beta}
 
-This section briefly presents the results of a permanent shock to the discount factor in the baseline model.
+This section briefly presents the results of the baseline model of section \ref{sec:model} to a shock to the household discount factor, $\beta$. I do so to show that the sluggish and gradual response of aggregate debt holdings is a feature of the \Gls{hank} which is present also in other setting than merely in the credit-crunch scenarios studied in the main text.
+
+In particular, I permanently increase $\beta$ from the baseline $0.99056$ to $0.992$, where $\beta$ evolves analogously to \eqref{eq:borrowing-limit-process} as:\footnote{The terminal value of $\beta$ is not meant to achieve any particular target. The long-run dynamics of debt are telling in any case.}
+\begin{equation*}
+    \beta_t = \beta_{ss} \Bigg( \frac{\beta_{t-1}}{\beta_{ss}} \Bigg)^{\rho_{\beta}} exp(\varepsilon_{\beta}),
+\end{equation*}
+where $\rho_{\beta} = 0.5$ to achieve a transition of six quarters and $\varepsilon_{\beta} = 0$ $\forall t$.
+
+Figure \ref{fig:baseline-permanent-beta-agg} presents the resulting dynamics of the discount factor itself, of aggregate consumption and of the debt quantities over a horizon of $100$ quarters. The findings clearly point to what was argued in the main text: agents in the present \Gls{hank} model find it optimal to adjust their balance sheets over prolonged periods of time, as witnessed by the lengthy transitions of debt and debt-to-output in figures \ref{fig:baseline-permanent-beta-agg-D} and \ref{fig:baseline-permanent-beta-agg-DY}.
+
+\begin{figure}[H]
+    \caption{Baseline Model -- Shock to Discount Factor: Aggregate Dynamics}
+    \label{fig:baseline-permanent-beta-agg}
+    \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Household Discount Factor, $\beta$}
+     \label{fig:baseline-permanent-beta-agg-beta}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_beta_baseline_beta_permanent.svg}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \centering
+     \caption{Consumption, $C$}
+     \label{fig:baseline-permanent-beta-agg-C}
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_C_baseline_beta_permanent.svg}
+     \end{subfigure}
+     \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Debt, $D$}
+     \label{fig:baseline-permanent-beta-agg-D}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_D_baseline_beta_permanent.svg}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+     \caption{Debt-to-Output, $\frac{D}{y}$}
+     \label{fig:baseline-permanent-beta-agg-DY}
+         \centering
+         \includesvg[inkscapelatex=false, width=\textwidth]{Results/transition_DY_baseline_beta_permanent.svg}
+     \end{subfigure}
+
+     \vspace{10pt}
+
+     \begin{flushleft}
+     \footnotesize
+	\textit{Note}: Percent deviations mean percent deviations from the respective initial steady state. The time horizon in all plots is fixed to $100$ quarters, including the initial steady state in $t=0$.
+	\end{flushleft}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
