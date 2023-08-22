@@ -82,11 +82,11 @@ def get_exact_results_path(settings):
 def get_parametrisation(settings):
     
     # Baseline model of section 4
-    if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'no_ZLB':
-        shock_model_parameters = {'initial_borrowing_limit': -2.3485,
-                                  'terminal_borrowing_limit': -2.1775,
-                                  'initial_wedge': 1e-8,
-                                  'terminal_wedge': 0.00203} 
+    #if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'very_slow_phi' or settings['Model'] == 'no_ZLB':
+    shock_model_parameters = {'initial_borrowing_limit': -2.3485,
+                              'terminal_borrowing_limit': -2.1775,
+                              'initial_wedge': 1e-8,
+                              'terminal_wedge': 0.00203} 
     
     # Model version with CRRA preferences of section 5.2
     if settings['Model'] == 'end_L':
@@ -158,28 +158,6 @@ def return_models_permanent(model_path,
         
         # Create model with terminal borrowing wedge
         hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['terminal_wedge']
-        
-        # Load terminal model
-        hank_model_terminal = ep.load(hank_dict)
-    
-    # Models for permanent shock to the discount factor
-    if settings['Shock'].startswith('beta') == True:
-        # Settings for borrowing limit
-        init = shock_model_parameters['initial_borrowing_limit']
-        term = shock_model_parameters['terminal_borrowing_limit']
-        
-        hank_dict['steady_state']['fixed_values']['phi'] = init
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {init}')
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}')
-        
-        # Settings for interest rate wedge
-        hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
-        
-        # Load initial model
-        hank_model_initial = ep.load(hank_dict)
-        
-        # Create model with terminal borrowing wedge
-        hank_dict['steady_state']['fixed_values']['beta'] = shock_model_parameters['terminal_beta']
         
         # Load terminal model
         hank_model_terminal = ep.load(hank_dict)
@@ -505,7 +483,8 @@ def get_labels(comparison):
                       'no_ZLB_limit_permanent': 'No ZLB; Shock to \u03C6',
                       'no_ZLB_wedge_permanent': 'No ZLB; Shock to \u03BA',
                       'slow_shock_limit_permanent': 'Slow Shock; Shock to \u03C6',
-                      'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA'}
+                      'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA',
+                      'very_slow_phi_limit_permanent': 'Very Slow \u03C6; Shock to \u03C6'}
     
     # Create empty list of data frames with desired transitions
     list_of_labels = []
@@ -587,3 +566,10 @@ def shorten_asset_dist(hank_model,
     
     # Return shortened distribution
     return short_asset_dist
+
+def convert_quarter_to_datetime(quarter_str):
+    year, quarter = quarter_str.split(':')
+    quarter_number = int(quarter[1:])
+    quarter_start_month = (quarter_number - 1) * 3 + 1
+    
+    return pd.to_datetime(f"{year}-{quarter_start_month:02d}-01")

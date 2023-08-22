@@ -61,9 +61,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = False # True: save results (tables and plots)
+save_results = True # True: save results (tables and plots)
 
-show_titles_in_plots = True # True: show plot titles
+show_titles_in_plots = False # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -73,10 +73,11 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Settings
 
 # Choose model(s)
-models = ['baseline', # baseline model (section 4)
+models = [#'baseline', # baseline model (section 4)
           #'slow_shock', # baseline model with slow deleveraging (section 5.1)
           #'fast_shock', # baseline model with fast deleveraging (section 5.1)
           #'end_L', # extended model with endogenous labour supply (section 5.2)
+          'very_slow_phi', # baseline model with very slow deleveraging (section 6)
           #'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
           #'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
@@ -87,7 +88,7 @@ shocks = ['limit_permanent', # permanent shock to the borrowing limit (with base
          ]
 
 # Choose asymmetry 
-asymmetry = True # True: credit easing
+asymmetry = False # True: credit easing
 
 # Loop thorugh model-shock combinations to obtain results
 for model in models:
@@ -165,10 +166,11 @@ for model in models:
         # TRANSITION
         #######################################################################
         
-        # Initial seady state as starting point of transition
+        # Initial seady state and distribution as starting point of transition
         hank_model_initial_stst = hank_model_initial['stst'].copy()
         hank_model_initial_dist = hank_model_initial['steady_state']['distributions'].copy()
         
+        # Get transition and check for negative consumption values
         x_transition, _ = get_agg_and_dist_transitions_and_check_c(hank_model_terminal,
                                                                    hank_model_initial_stst,
                                                                    hank_model_initial_dist)
@@ -199,9 +201,9 @@ for model in models:
         # Plot long-term debt dynamics separately
         plot_selected_transition(dict_of_variables_to_plot['debt'], 
                                  hank_model_terminal, 
-                                 x_transition, 80, 
-                                 False, 
-                                 exact_path, 
+                                 x_transition, 80, # long horizon
+                                 save_results, 
+                                 exact_path + '_' + 'long_run_debt', 
                                  title=show_titles_in_plots)
         
         #######################################################################
@@ -225,7 +227,7 @@ for model in models:
                                     hank_model_terminal, x_transition,
                                     [['Bot25C','Bottom-25%'], 
                                      ['Bot50C','Bottom-50%'], 
-                                     ['Top25C','Top-25%']], 200, 
+                                     ['Top25C','Top-25%']], horizon, 
                                     save_results, exact_path,
                                     title=show_titles_in_plots)
         

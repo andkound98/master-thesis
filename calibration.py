@@ -20,6 +20,7 @@ the respective CSV file has to be downloaded
 
 ###############################################################################
 ###############################################################################
+###############################################################################
 # Import packages
 import os # path creation
 import pandas as pd # data wrangling
@@ -30,11 +31,20 @@ from full_fred.fred import Fred # for easy access to the FRED data base
 
 ###############################################################################
 ###############################################################################
+###############################################################################
+# Imports
+
+from custom_functions import convert_quarter_to_datetime
+
+###############################################################################
+###############################################################################
+###############################################################################
 # Preliminaries
 save_results = False # If true, results (tables and plots) are stored
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
+###############################################################################
 ###############################################################################
 ###############################################################################
 # FRED Data
@@ -118,6 +128,7 @@ FRED_data = FRED_data.dropna()
 
 ###############################################################################
 ###############################################################################
+###############################################################################
 # FoF Data
 
 ###############################################################################
@@ -146,12 +157,6 @@ fof_data = fof_data[keep_col]
 # Rename the date column
 fof_data.rename(columns={'date': 'Date'}, inplace=True)
 
-def convert_quarter_to_datetime(quarter_str):
-    year, quarter = quarter_str.split(':')
-    quarter_number = int(quarter[1:])
-    quarter_start_month = (quarter_number - 1) * 3 + 1
-    return pd.to_datetime(f"{year}-{quarter_start_month:02d}-01")
-
 fof_data['Date'] = fof_data['Date'].apply(convert_quarter_to_datetime)
 
 # Drop entries before specified date
@@ -179,18 +184,19 @@ data = pd.merge(FRED_data,
 
 # Define steady state output of the HANK model (needed for conversion into 
 # units of the model)
-ySS = 0.9129 # 0.9410
-#ySS = 0.5310
+ySS = 0.9129 # baseline model 
+#ySS = 0.944 # model with endogenous labour supply
 
 # Deflate Government Bonds and divide by deflated ANNUALISED GDP, then convert
 # to quarterly; finally, obtain it in terms of the steady-state model output
 data['B'] = 4*ySS*((data["Government Bonds"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
 
 # Deflate Household Debt and divide by deflated ANNUALISED GDP, then convert to
-# quarterly; finally, obtain it in terms of the steady-state model output
+# quarterly
 data['D_y'] = 4*((data["Household Debt"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
 
-# 
+# Deflate Government Bonds and divide by deflated ANNUALISED GDP, then convert
+# to quarterly; finally, obtain it in terms of the steady-state model output
 data['L'] = 4*ySS*((data["Total Liquid Assets"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
 
 ###############################################################################
@@ -241,7 +247,7 @@ fig_l.show()
 # Save figure
 path_plot_l = os.path.join(os.getcwd(),
                            'Results',
-                           'FRED_l.svg')
+                           'calibration_liquid.svg')
 fig_l.write_image(path_plot_l)
 
 # Government Bonds
@@ -273,7 +279,7 @@ fig_b.show()
 # Save figure
 path_plot_b = os.path.join(os.getcwd(),
                            'Results',
-                           'FRED_b.svg')
+                           'calibration_b.svg')
 fig_b.write_image(path_plot_b)
 
 # Household Debt
@@ -305,5 +311,5 @@ fig_d.show()
 # Save figure
 path_plot_d = os.path.join(os.getcwd(),
                            'Results', 
-                           'FRED_d.svg')
+                           'calibration_d.svg')
 fig_d.write_image(path_plot_d)

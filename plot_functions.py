@@ -666,6 +666,16 @@ def plot_selected_transition(list_of_variables,
                              exact_path,
                              percent=100,
                              title=True):
+    # Check whether selected path exists 
+    desired_path = os.path.join(os.getcwd(), 
+                                'Results', 
+                                f'{exact_path}')
+    
+    # Check if the folder exists
+    if not os.path.exists(desired_path):
+    # Create the folder if it doesn't exist
+        os.makedirs(desired_path)
+    
     # Loop through list of selected variables
     for sublist in list_of_variables:
         if 'R' in sublist:
@@ -921,7 +931,7 @@ def compare_selected_transitions(list_of_transition_dfs,
                     col_name2 = f'{variable_name2}; {legend[i]}'
                     new_col2 = percent*((df[f'{variable2}'][:horizon] - df[f'{variable2}'][0]) / df[f'{variable2}'][0])
                     transition_df[col_name2] = new_col2.reset_index(drop=True)
-        
+
         # Plot
         fig = px.line(transition_df,
                       x = 'Quarters',
