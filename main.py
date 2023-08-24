@@ -11,12 +11,15 @@ This file contains the main code for my master thesis with the title:
 supervised by Prof. Dr. Keith Kuester and Dr. Gregor Böhl at the University of 
 Bonn and submitted on 25th August 2023.
 
-The code herein reproduces the results found in the thesis. It allows the user
-to select one or more of the possible combinations of models and shocks. Having
-set the respective choices, the code loads, adjusts and solves the initial
-and terminal models, computes the fully non-linear perfect-foresight transition 
-paths and plots various informative plots about the steady states and
-transitions. If desired, the results are stored in the folder 'Results'.
+The code herein produces the core results of my thesis. Some of the results 
+are used by other code files, such as compare_transitions.py. The code here
+allows the user to select one or more of the possible combinations of models 
+and shocks. Having set the respective choices, the code loads, adjusts and 
+solves the initial and terminal models, computes the fully non-linear perfect-
+foresight transition paths and prints various (hopefully) informative plots
+and tables about the steady states and the transitions. If desired, these 
+results are stored in the folder 'Results'. The transitions can also be stored
+as pickle files in the end, for easy re-use by compare_transitions.py.
 """
 
 ###############################################################################
@@ -52,7 +55,8 @@ from plot_functions import (plot_full_stst,
                             plot_all,
                             plot_selected_transition,
                             visualise_dist_over_time,
-                            plot_percentile_transitions)
+                            plot_percentile_transitions,
+                            plot_assets_on_impact_over_dist)
 
 # Selections of variables to plot
 from list_variables_to_plot import dict_of_variables_to_plot
@@ -61,9 +65,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = False # True: save results (tables and plots)
+save_results = True # True: save results (tables and plots)
 
-show_titles_in_plots = True # True: show plot titles
+show_titles_in_plots = False # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -73,18 +77,18 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Settings
 
 # Choose model(s)
-models = ['baseline', # baseline model (section 4)
-          #'slow_shock', # baseline model with slow deleveraging (section 5.1)
-          #'fast_shock', # baseline model with fast deleveraging (section 5.1)
-          #'end_L', # extended model with endogenous labour supply (section 5.2)
-          #'very_slow_phi', # baseline model with very slow deleveraging (section 6)
-          #'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
-          #'low_B' # baseline model with a low B calibration (appendix E.2)
+models = ['baseline', # baseline model (section 3)
+          'slow_shock', # baseline model with slow deleveraging (section 5.1)
+          'fast_shock', # baseline model with fast deleveraging (section 5.1)
+          'end_L', # extended model with endogenous labour supply (section 5.2)
+          'very_slow_phi', # baseline model with very slow deleveraging (section 6)
+          'no_ZLB', # baseline model with a low beta calibration (appendix E.1)
+          'low_B' # baseline model with a low B calibration (appendix E.2)
           ]
 
 # Choose shock(s)
 shocks = ['limit_permanent', # permanent shock to the borrowing limit (with baseline model, section 4)
-          #'wedge_permanent', # permanent shock to the interest rate wedge (with baseline model, section 6)
+          'wedge_permanent', # permanent shock to the interest rate wedge (with baseline model, section 6)
          ]
 
 # Choose asymmetry 
@@ -132,7 +136,7 @@ for model in models:
                                                                           shock_model_parameters,
                                                                           asym = asymmetry)
         
-        if not settings['Shock'].startswith('limit') == True:
+        if not settings['Shock'].startswith('limit') == True or asymmetry == True:
             shock_model_parameters['terminal_borrowing_limit'] = None
         
         #######################################################################
@@ -240,6 +244,20 @@ for model in models:
                                          ['Top25N','Top-25%']], horizon, 
                                         save_results, exact_path,
                                         title=show_titles_in_plots)
+        
+        # Plot asset changes over borrowers
+        plot_assets_on_impact_over_dist(hank_model_initial,hank_model_terminal,
+                                        x_transition,
+                                        save_results,
+                                        exact_path,
+                                        x_threshold=0,
+                                        borr_lim=shock_model_parameters['terminal_borrowing_limit'])
+        
+        # Plot asset changes over entire distribution
+        plot_assets_on_impact_over_dist(hank_model_initial,hank_model_terminal,
+                                        x_transition,
+                                        save_results,
+                                        exact_path)
         
         #######################################################################
         # Save transition as pickle for convenience

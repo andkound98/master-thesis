@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 04.05.2023
+Date: 25.08.2023
 
-This file contains custom functions for plotting various results from the HANK
-models, e.g. policies, distributions and transitions.
+This file contains custom functions for plotting various results throughout the
+project.
 """
 
 ###############################################################################
@@ -1039,3 +1039,86 @@ def compare_selected_transitions(list_of_transition_dfs,
                                          f'comparison_{variable1}_{variable2}_{combined_key}.svg')
             fig.write_image(path_plot)
             
+def plot_assets_on_impact_over_dist(hank_model_initial, 
+                                    hank_model_terminal,
+                                    x_transition,
+                                    save_results,
+                                    exact_path,
+                                    x_threshold=None,
+                                    borr_lim=None,
+                                    leave_out_close_to_zero=True,
+                                    percent=100):
+    # Get disaggregated dynamics
+    hank_model_initial_dist = hank_model_initial['steady_state']['distributions'].copy()
+    dist_transition = hank_model_terminal.get_distributions(trajectory = x_transition,
+                                                            init_dist = hank_model_initial_dist)
+    
+    # Get steady state policy
+    stst_policy = hank_model_initial['steady_state']['decisions']['a']
+    dist_stst = hank_model_initial['steady_state']['distributions'][0]
+    av_stst_policy = jnp.sum(stst_policy * dist_stst, axis=0)
+    
+    # Get policy in period 1, averaged over productivity
+    period_1_policy = dist_transition['a'][:, :, 0]
+    dist_1 = dist_transition['dist'][:, :, 0]
+    av_period_1_policy = jnp.sum(period_1_policy * dist_1, axis=0)
+    
+    # Calculate differences in percent
+    diff_stst = percent*(av_period_1_policy - av_stst_policy)/(abs(av_stst_policy))
+    
+    # Get a list of whether - at a given asset grid point - the sign of
+    # the policy changed
+    sign_change = jnp.not_equal(jnp.sign(av_period_1_policy), 
+                                jnp.sign(av_stst_policy)) 
+    
+    # Loop over the percentage change in asset policies to leave out the 
+    # cases where the sign of the policy changed (rendering percentage 
+    # change calculation difficult)
+    for ii in range(len(sign_change)):
+        if sign_change[ii] == True:
+            diff_stst = diff_stst.at[ii].set(np.nan)
+    
+    # Make data frame
+    impact = {'grid': np.array(hank_model_terminal['context']['a_grid']),
+              'impact': diff_stst}
+    impact_df = pd.DataFrame(impact)
+
+    # Cut off x axis at threshold
+    if x_threshold != None:
+        impact_df.loc[impact_df['grid'] > x_threshold, :] = np.nan
+        
+    if leave_out_close_to_zero == True:
+        condition = (-0.5 < impact_df['grid']) & (impact_df['grid'] < 0.5)
+        impact_df.loc[condition, :] = np.nan
+
+    # Plot
+    fig_impact=px.line(impact_df, 
+                       x = 'grid', 
+                       y = 'impact', 
+                       title='', 
+                       color_discrete_sequence=[px.colors.qualitative.D3[0]])
+    fig_impact.update_layout(xaxis_title='Bond/IOU Holdings', 
+                              yaxis_title='Percent Deviation',
+                              plot_bgcolor = 'whitesmoke', 
+                              font=dict(family="Times New Roman",
+                                        size=20,
+                                        color="black"),
+                              margin=dict(l=15, r=15, t=5, b=5), 
+                              legend_title='') 
+    fig_impact.update_traces(line=dict(width=4))
+    
+    # Add terminal borrowing limit as vertical line
+    if borr_lim != None:
+        fig_impact.add_vline(x=borr_lim,
+                             line_width=3, line_dash="dash", line_color="red")
+    
+    # Show plot
+    fig_impact.show()
+    
+    # Save plot
+    if save_results == True:
+        path_plot = os.path.join(os.getcwd(),
+                                 'Results',
+                                 f'{exact_path}',
+                                 f'a_on_impact_over_dist_{exact_path}_{x_threshold}.svg')
+        fig_impact.write_image(path_plot)

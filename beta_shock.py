@@ -4,8 +4,8 @@
 Author: Andreas Koundouros
 Date: 25.08.2023
 
-This file confronts the baseline model with a permanent shock to the household
-discount factor as described in appendix E.3 of the thesis.
+This file implements the permanent shock to the household discount factor in 
+the baseline model, as described in appendix E.3 of the thesis.
 """
 
 ###############################################################################
@@ -95,7 +95,7 @@ x_transition, _ = get_agg_and_dist_transitions_and_check_c(hank_model_terminal,
 horizon = 100 # long horizon
 
 #######################################################################
-# Check for convergence and plot key variables 
+# Check for convergence and plot relevant variables 
    
 plot_all(x_transition, hank_model_initial['variables'], 
           bunch=True, 
@@ -110,3 +110,9 @@ plot_selected_transition([['beta', 'Discount Factor', 'Model Units'],
                          save_results, 
                          'baseline_beta_permanent', 
                          title=show_titles_in_plots)
+
+###############################################################################
+##############################################################################
+###############################################################################
+# Print run time
+print(f'It took {round((tm.time()-start)/60, 2)} minutes to execute this script.')

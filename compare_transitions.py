@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 21.07.2023
+Date: 25.08.2023
 
-This file creates plots that compare the transitions produced by different
-models and shocks.
-
-To compare the transitions, you must have implemented them first through 
-the main file and stored them.
+This file contains code which visually compares the transitions produced by 
+different models and shocks. In particular, the user selects the combination of
+instances to be compared. To compare transitions, these must have been 
+implemented and stored first via the main.py file.
 """
 
 ###############################################################################
@@ -43,9 +42,9 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: results (tables and plots) are saved
+save_results = False # True: results (tables and plots) are saved
 
-show_titles_in_plots = False # True: show plot titles
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -55,11 +54,11 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Choose model-shock combinations to comapre
 
 comparison = {'transition_1': 'baseline_limit_permanent',
-              'transition_2': 'baseline_wedge_permanent'}
+              'transition_2': 'low_B_limit_permanent'}
 
-comparison = {'transition_1': 'fast_shock_limit_permanent',
-              'transition_2': 'baseline_limit_permanent',
-              'transition_3': 'slow_shock_limit_permanent'}
+# comparison = {'transition_1': 'fast_shock_limit_permanent',
+#               'transition_2': 'baseline_limit_permanent',
+#               'transition_3': 'slow_shock_limit_permanent'}
 
 # Get informative legend names for plots
 legend = get_labels(comparison)

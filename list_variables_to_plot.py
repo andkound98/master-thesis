@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 21.06.2023
+Date: 25.08.2023
 
-This file allows to specify a dictionary with lists of aggregate and cross-
-sectional variables from the HANK models to be plotted.
+This file allows to specify a dictionary with lists of variables from the 
+employed models to be plotted.
 """
 
 # Selection of aggregate variables

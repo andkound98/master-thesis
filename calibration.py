@@ -2,20 +2,17 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 13.07.2023
+Date: 25.08.2023
 
-This file calculates targets for the calibration of the employed HANK model. In
-particular, the file downloads FRED data on government bonds, household debt, 
-GDP and the GDP deflator in the US as well as Flow of Funds (FoF) data on 
-household holdings of liquid assets in the US.
+This file calculates targets for the calibration of the models in the thesis 
+and plots some of the time series. 
 
-After obtaining the data, the code calculates the market value of government 
-bonds in model units, household debt over output and household liquid assets in 
-model units.
-
-Note that a FRED API key is required to obtain the FRED data. For the FoF data,
-the respective CSV file has to be downloaded 
-(https://www.federalreserve.gov/releases/z1/). 
+Some of the data are downloaded from FRED. To obtain the FRED data, a FRED API 
+key is required (see https://fred.stlouisfed.org/docs/api/api_key.html). The 
+user must set the path 'full_path_api' to where he/she has stored the text file
+with the key. The rest of the data are from the Flow of Funds (FoF), which were 
+dowloaded from https://www.federalreserve.gov/releases/z1/ and are stored as a 
+CSV file in the 'Data' folder of this project.
 """
 
 ###############################################################################
@@ -27,7 +24,7 @@ import pandas as pd # data wrangling
 import numpy as np # data wrangling
 import plotly.express as px # plotting
 import plotly.io as pio # plotting
-from full_fred.fred import Fred # for easy access to the FRED data base 
+from full_fred.fred import Fred # convenient package for FRED access
 
 ###############################################################################
 ###############################################################################

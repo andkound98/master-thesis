@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 15.05.2023
+Date: 25.08.2023
 
-This file contains custom functions used throughout the project, inter alia in 
-the main file and the plot_functions file.
+This file contains custom functions used throughout the project.
 """
 
 ###############################################################################
