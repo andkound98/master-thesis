@@ -684,7 +684,7 @@ For the household utility function \eqref{eq:hh-utility-fun}, I use a standard v
 
 On the production side, I choose $\theta = 6$ as in \textcite{auclert2021} and $\psi = 100$ to achieve a rather flat \Gls{nkpc} with a slope of $0.06$, which seems in line with empirical estimates.\footnote{See e.g.~\textcite{schorfheide2008}. Recent cross-regional evidence from the U.S.~by \textcite{hazell2022} suggests an even flatter Phillips Curve.} In this simple setup, $\theta$ pins down all of the following: $\mu_{ss}$, $mc_{ss}$, $w_{ss}$, $N_{ss}$ as well as $C_{ss}$ and $y_{ss}$ if $\kappa_{ss}$ does not change. This leaves the interest rate free to adjust to a permanent disturbance to the model. $z=1$ normalises output to aggregate labour hours. $\omega = 0.44$ is from \textcite{gust2017wp}. 
 
-Regarding policy, I set $B$, the supply of real government bonds, along the lines of \textcite{mckay2016} and \textcite{gl2017} by matching it to the ratio of liquid assets held by U.S.~households to U.S.~real gross domestic product (\Gls{gdp}), averaged over $1951$ -- $2023$.\footnote{See appendix \ref{sec-app:data} for details on the data sources and the required calculations.} Appendix \ref{sec-app:robust-bonds} calibrates $B$ as in \textcite{bayer2023}. The parameters for monetary policy are mostly standard. I set steady-state net inflation to $0$, $\rho = 0.8$, $\phi_y = 0.15$ and $\phi_{\pi} = 2$. The latter is arguably a strong reaction of monetary policy to inflation but lies between the values from two recent estimations of \Gls{hank} models: \textcite{boehl2022} and \textcite{bayer2023}.
+Regarding policy, I set $B$, the supply of real government bonds, along the lines of \textcite{mckay2016} and \textcite{gl2017} by matching it to the ratio of liquid assets held by U.S.~households to U.S.~real gross domestic product (\Gls{gdp}), averaged over $1951$ -- $2023$.\footnote{See appendix \ref{sec-app:data} for details on the data sources and the required calculations.} Appendix \ref{sec-app:robust-bonds} calibrates $B$ as in \textcite{bayer2023}. The parameters for monetary policy are mostly standard. I set steady-state net inflation to zero, $\rho = 0.8$, $\phi_y = 0.15$ and $\phi_{\pi} = 2$. The latter is arguably a strong reaction of monetary policy to inflation but lies between the values from two recent estimations of \Gls{hank} models: \textcite{boehl2022} and \textcite{bayer2023}.
 
 Finally, consider the financial constraints in the steady state of relatively ``loose" credit. Akin to \textcite{gl2017} and \textcite{bayer2023}, I select $\phi_{ss}$, the loose debt limit, so that the ratio of household debt to output in the model is equal to the fraction of unsecured consumer credit over \Gls{gdp} in the U.S., averaged over $1951$ -- $2023$, which turns out to be $57\%$.\footnote{See again appendix \ref{sec-app:data}.} I set $\kappa_{ss} =$ 1e-8, so that there is virtually no premium on borrowing to begin with.
 
@@ -914,13 +914,23 @@ Consider now the dampening forces in general equilibrium. One of those is that f
 
 The real interest rate in $t=2$ is the key determinant for the consumption-savings decisions of households in $t=1$ and is driven by the nominal rate and inflation. With the advent of the shock, the monetary authority immediately adjusts its target rate to $R_{ss}' - 1 = 0.13\%$. Concurrently, the pronounced downward deviations of inflation and output from their steady-state levels let the Taylor rule prescribe a nominal rate of roughly $-0.3$ percent \textit{per annum} but the \Gls{zlb} starts binding. Still, this achieves a downward adjustment in the real rate in $t=2$. 
 
-The lower interest rate induces intertemporal substitution by dampening the desire of unconstrained agents to achieve lower debt or higher asset holdings, respectively, in favour of consumption today. This reduces the excess-demand pressure in the asset market in $t=1$. The \Gls{zlb} prevents a more forceful reduction of the real rate and thus confines the incentive to expand consumption. However, unlike in \textcite{egg2012} and as demonstrated in appendix \ref{sec-app:robust-no-zlb}, the \Gls{zlb} here is indeed only an amplifier and not the main mechanism behind the recession. At the same time, those agents who are most interest-rate sensitive feature low \Gls{mpc}s. This implies that, even amid falling rates, these households do not substitute away from their increased savings demand sufficiently and consequently do not aid much in dampening the recession. The result of all the above forces is the strong general-equilibrium reduction of aggregate consumption witnessed in figure \ref{fig:baseline-permanent-limit-agg-C}.
+The lower interest rate induces intertemporal substitution by dampening the desire of unconstrained agents to achieve lower debt or higher asset holdings, respectively, in favour of consumption today. This reduces the excess-demand pressure in the asset market in $t=1$. The \Gls{zlb} prevents a more forceful reduction of the real rate and thus confines the incentive to expand consumption. However, unlike in \textcite{egg2012} and as demonstrated in appendix \ref{sec-app:robust-no-zlb}, the \Gls{zlb} here is indeed only an amplifier and not the main mechanism behind the recession. Crucially, those agents who are most interest-rate sensitive feature low \Gls{mpc}s. This implies that, even amid falling rates, these households do not substitute away from their increased savings demand sufficiently and consequently do not aid much in dampening the recession. The result of all the above forces is the strong general-equilibrium reduction of aggregate consumption witnessed in figure \ref{fig:baseline-permanent-limit-agg-C}.
 
-Lower interest rates feedback to unconstrained debtors and their decisions on how much debt to hold are thus influenced by counteracting forces: falling consumption and dampened rates encourage borrowing but ever closer limits discourage it. Figure xxx displays the reaction of the average borrower across debt holdings between $\phi_1$ and zero. Evidently, unconstrained borrowers increase their indebtedness on average. Thus, in the present calibration, the former of the above forces slightly dominates the latter and unconstrained households take up more debt in the admissible range of debt. This also explains the mild impact-decline of total debt, driven by constrained and unconstrained borrowers in the aggregate, in plot \ref{fig:baseline-permanent-limit-agg-d}.\footnote{Some calibrations, not shown, indeed produce an increase of aggregate debt on impact.}
+Lower interest rates feedback to unconstrained debtors and their decisions on how much debt to hold are thus influenced by counteracting forces: falling consumption and dampened rates encourage borrowing but ever closer limits discourage it. Figure \ref{fig:baseline-permanent-limit-dist-a-response} displays the reaction of borrowers across debt holdings between $\phi_1$ and zero. Evidently, unconstrained borrowers increase their indebtedness on average. Thus, in the present calibration, the former of the above forces slightly dominates the latter and unconstrained households take up more debt in the admissible range of debt. This explains why plot \ref{fig:baseline-permanent-limit-agg-d} shows, on impact, a mild decline of total debt, driven by both, constrained and unconstrained borrowers.\footnote{Some calibrations, not shown, indeed produce an increase of aggregate debt on impact.}
 
-%As aggregate debt is determined by the policies of \textit{all} borrowers. 
-%As mentioned above, constrained borrowers must delever by the amount prescribed by the exogenous movement in $\phi_t$. Unconstrained borrowers are in principle free to choose more or less debt. As 
-%lower interest rate apply to the liability side of balance sheets, too, debt becomes relatively cheaper. Thus, unconstrained debtors' decisions on how much debt to hold are influenced by counteracting forces: falling consumption and dampened rates encourage borrowing but ever closer limits discourage it. Plot \ref{fig:baseline-permanent-limit-agg-d} shows a mild decline of aggregate debt on impact in the present calibration, so the latter effect slightly dominates the former and unconstrained households do take up more debt in the admissible range of indebtedness.\footnote{An increase of total debt would be possible as the shock restricts the maximum quantity of each household's debt and not economy-wide indebtedness. Some calibrations, not shown, indeed produce an increase on impact.}
+\begin{figure}[t]
+    \centering
+    \caption{Baseline Model -- Shock to Borrowing Limit: \\ Asset Response on Impact Across Debt}
+    \label{fig:baseline-permanent-limit-dist-a-response}
+    \includesvg[inkscapelatex=false, width=0.75\textwidth]{Results/a_on_impact_over_dist_baseline_limit_permanent_0.svg}
+
+    \vspace{10pt}
+    
+    \begin{minipage}{0.75\textwidth} 
+    \footnotesize
+    \textit{Note}: The responses are calculated by taking the percent difference of asset policies from $t=0$ to $t=1$, weighted by the distribution of agents over skills and assets. The figure disregards debt holdings smaller than $0.5$ because percentage change calculation results in very large numbers if the denominator is very small. The line is influenced by numerical issues due to the procedure of asset grid creation outlined in appendix \ref{sec-app:codes-ep}.
+    \end{minipage}
+\end{figure}
 
 This leads to a noteworthy result: despite the borrowing limit tightening most strongly in $t=1$, total debt does not decline much and yet, the economy enters recession. Thus, one might infer that the model features strong internal amplification through heterogeneous \Gls{mpc}s: a financial shock might not force all debtors to delever but it affects the most vulnerable ones, i.e.~those at and close to the initial limit, and thus provokes a strong reaction in aggregate consumption, which in turn sets into motion the amplifying effects described above.
 
@@ -1198,11 +1208,11 @@ All in all, for the same long-term reduction in debt-to-\Gls{gdp}, the credit cr
 This section explores the asymmetry of financial shocks, i.e.~the possibility that the sign of the
 shock is relevant for the absolute magnitude of its effect on some outcome. \textcite{kocherlakota2000} remarks that one of the stylised features of business cycles is that they are asymmetric. Can financial shocks -- with ``financial shocks" not necessarily corresponding exactly to the ones analysed in the present thesis -- explain such behaviour in principle? 
 
-There is some evidence that the answer might be affirmative. For example, \textcite{guerrieri2017asym} estimate a dynamic, two-agent general-equilibrium model and find that the occasionally binding housing collateral constraint accounts for the asymmetric relationship between house prices and consumption before and during the Great Recession. In an econometric framework, \textcite{barnichon2022} show that economic activity adjusts more strongly following an adverse shock to a measure of excess bond premiums than after a favourable shock. %According to this analysis, house price growth did not overly stimulate consumption before the Great Recession but that it contributed significantly to the downturn during the crisis.
+There is some evidence that the answer might be affirmative. For example, \textcite{guerrieri2017asym} estimate a dynamic, two-agent general-equilibrium model and find that the occasionally binding housing collateral constraint accounts for the asymmetric relationship between house prices and consumption before and during the Great Recession. In an econometric framework, \textcite{barnichon2022} show that economic activity adjusts more strongly following an adverse shock to a measure of excess bond premiums than after a favourable shock.
 
-To explore the potential sign dependency of disturbances to debtors' borrowing capacity in the present framework, I consider a simple experiment: what if the borrowing limit, instead of tightening from $\phi_{ss}$ to $\phi_{ss}'$, unexpectedly loosens from $\phi_{ss}'$ to $\phi_{ss}$?\footnote{I call this a ``simple" experiment because a more complete analysis would also consider an expansion from $\frac{D}{y} = 57\%$ to $\frac{D}{y} = 62\%$. I avoid doing so because this would require further adjustments to the asset grid.} Would the economy experience the same dynamics just with their sign reversed? To answer these questions, I use the baseline model from section \ref{sec:limit} and compute the transition from $\phi_{ss}'$ to $\phi_{ss}$. %, thus inducing a credit easing. 
+To explore the potential sign dependency of disturbances to debtors' borrowing capacity in the present framework, I consider a simple experiment: what if the borrowing limit, instead of tightening from $\phi_{ss}$ to $\phi_{ss}'$, unexpectedly loosens from $\phi_{ss}'$ to $\phi_{ss}$?\footnote{I call this a ``simple" experiment because a more complete analysis would also consider an expansion from $\frac{D}{y} = 57\%$ to $\frac{D}{y} = 62\%$. I avoid doing so because this would require further adjustments to the asset grid.} Would the economy experience the same dynamics just with their sign reversed? To answer these questions, I use the baseline model from section \ref{sec:limit} and compute the transition from $\phi_{ss}'$ to $\phi_{ss}$.
 
-Figure \ref{fig:comparison-asymmetry-C} plots the response of consumption after such a credit easing and compares it with the dynamics after the reverse transition.\footnote{Note that the figure masks that the impulse responses from the credit easing exhibit some wiggle around $t=8$ and $t=9$, which I could not eliminate even with the procedure creating the asset grid described in appendix \ref{sec-app:codes-ep}.} The results are telling: the boom from a credit easing is much less pronounced than the recession caused by a credit tightening. Specifically, in the former case, consumption increases by only slightly more than $0.5\%$ on impact, significantly less than the three percent drop provoked by tightening financial conditions. The less pronounced boom of course extends to all quantities in the economy, e.g.~labour hours, inflation, interest rates.
+Figure \ref{fig:comparison-asymmetry-C} plots the response of consumption after a credit easing and compares it with the dynamics of a credit crunch.\footnote{Note that the figure masks that the impulse responses from the credit easing exhibit some wiggle around $t=8$ and $t=9$, which I could not eliminate even with the procedure creating the asset grid described in appendix \ref{sec-app:codes-ep}.} The results are telling: the boom from a credit easing is much less pronounced than the recession caused by a credit tightening. Specifically, in the former case, consumption increases by only slightly more than $0.5\%$ on impact, significantly less than the three percent drop provoked by tightening financial conditions. The less pronounced boom of course extends to all quantities in the economy, e.g.~labour hours, inflation, interest rates.
 
 \begin{figure}[t]
     \caption{Baseline Model -- Shock to Borrowing Limit: Asymmetry}
@@ -1572,13 +1582,24 @@ This subsection presents a visualisation of the baseline model. The figure is me
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{The Natural Borrowing Limit}
-% \label{sec:app-hh-borrowing}
-% The natural borrowing limit is the borrowing limit which just marginally ensures that borrowers can repay and not have negative consumption. This natural borrowing limit can be calculated from forward iterating the household budget constraint \eqref{eq:hh-budget}:
-% \begin{equation*}
-%     \frac{wne_{L} + \Pi_t \bar{\Pi} (e_{L}) - \tau_t \bar{\tau} (e_{L})}{RR - 1},
-% \end{equation*}
-% where $e_L$ denotes the lowest level of skills attainable from \eqref{eq:hh-income-process}.
+\subsection{The Natural Borrowing Limit}
+\label{sec:app-hh-borrowing}
+
+This subsection shows how the natural borrowing limit for the present model can be calculated. The natural borrowing limit is the borrowing limit which ensures that borrowers can repay in any state of the world, while not having negative consumption. This natural borrowing limit can be found by forward iterating the household budget constraint \eqref{eq:hh-budget} as follows:
+\begin{align*}
+    RR_t b_{i,t-1} &= c_{i,t} + b_{i,t} - w_t e_{i,t} n_{i,t} - \Pi_t \bar{\Pi} (e_{i,t}) + \tau_t \bar{\tau} (e_{i,t}) \\
+    \Rightarrow \ RR_t b_{i,t-1} &\ge \frac{1}{RR_{t+1}} \Bigg( c_{i,t+1} + b_{i,t+1} - w_{t+1} e_{i,t+1} n_{i,t+1} - \Pi_{t+1} \bar{\Pi} (e_{i,t+1}) \\
+    & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ + \tau_{t+1} \bar{\tau} (e_{i,t+1}) \Bigg) - w_t e_{i,t} n_{i,t} - \Pi_{t} \bar{\Pi} (e_{i,t}) + \tau_t \bar{\tau} (e_{i,t}) \\
+    \Rightarrow \ b_{i,t-1} &\ge - \frac{1}{RR_t} \sum_{j=0}^{\infty} \Bigg[ \Bigg( \frac{1}{RR_{t+j}} \Bigg)^j \bigg( w_{t+j} e_{i,t+j} n_{i,t+j} + \Pi_{t+j} \bar{\Pi} (e_{i,t+j}) \\ 
+    & \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ - \tau_{t+j} \bar{\tau} (e_{i,t+j}) \bigg) \Bigg]
+\end{align*}
+where I use $RR_t$ for the real interest rate schedule to ease notation and where I made use of the assumption that $c_{t} \ge 0$ $\forall t$.  Now, assume that we are in steady state and that household $i$ always attains the lowest level of skills attainable on the discretised grid from the skills process \eqref{eq:hh-income-process}, denoted by $e_L$ (i.e.~the worst-case scenario for a household). Then, the last expression becomes: 
+\begin{equation}
+    b \ge \frac{we_{L}n + \Pi \bar{\Pi} (e_{L}) - \tau \bar{\tau} (e_{L})}{RR - 1}, \label{eq:app-natural-phi}
+\end{equation}
+where I drop time and index subscripts. Given that consumption is non-negative, \eqref{eq:app-natural-phi} gives the natural borrowing limit for the models considered in this thesis.
+
+I calculated this natural limit for some instances and in every case it was much larger, in absolute terms, than the actual borrowing limits, $\phi_t$, considered.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1604,47 +1625,62 @@ As remarked in section \ref{sec:model-solution}, the asset and productivity grid
 
 Consider first the productivity grid. Given the persistence of the skills process, $\rho_e$, and the variance of productivity shocks, $\sigma_e$, I need to specify the number of grid points, $N_e$. Choosing the number of grid points of course involves an accuracy-speed trade-off. In general, the more grid points, the more accurate the solution, but also the more computationally demanding the computation of that solution. I try to proceed pragmatically and choose $N_e = 8$. Changing this to $N_e=6$ or $N_e=10$ did not meaningfully affect my results for the aggregate dynamics after a credit crunch through the borrowing limit. 
 
-Given $N_e = 8$ and the calibration of $\rho_e$ and $\sigma_e$ from table \ref{tab:calibration-baseline}, the \texttt{Econpizza} package employs the \textcite{rouwenhorst1995} method to convert the \Gls{ar}(1) process \eqref{eq:hh-income-process} into a grid of skills levels, a matrix of transition probabilities and a stationary skills distribution.
+Given $N_e = 8$ and the calibration of $\rho_e$ and $\sigma_e$ from table \ref{tab:calibration-baseline}, the \texttt{Econpizza} package employs the \textcite{rouwenhorst1995} method to convert the \Gls{ar}(1) process \eqref{eq:hh-income-process} into a grid of skill levels, a matrix of transition probabilities and a stationary distribution over productivity levels.
 
 Next, consider the asset grid. Its specification is more involved in the present case because the correct implementation of a shock to the borrowing limit requires that the asset grid is the same in every time period, see \textcite{mellior2016mimeo}. If it was not, the fact that the lowest admissible grid point (i.e.~the borrowing limit) changes over time would imply that household policies are not given on the same grid in every instance of time. This would invalidate the dynamics because interpolation would occur between differing asset grids.\footnote{Recall that the policies are given as interpolants over discretised grids.}
 
-To meet this requirement in the implementation, I use a function (named \texttt{create\_grid()} in the \texttt{hank\_functions.py} file, see section \ref{sec-app:codes-guide}) which creates a standard logarithmic grid (as is the default in the package) and then extend it as follows. Given the process for the credit limit \eqref{eq:borrowing-limit-process} together with values for the initial borrowing limit, $\phi_{ss}$ and, in the case of a permanent shock, the terminal borrowing limit, $\phi_{ss}'$, the persistence parameter, $\rho_{\phi}$, as well as the terminal horizon by which the model has settled in steady state (see below), it first calculates the specific transition that the borrowing limit undertakes from the initial period to the terminal period within the given horizon. I round these values to the sixth decimal place and thus remove points which are indistinguishably close to each other to avoid unnecessarily large grids. Then, the function adds the remaining points to the initial logarithmic grid. Finally, I compute the reverse transition of the borrowing limit, i.e.~from $\phi_{ss}'$ to $\phi_{ss}$, and add the resulting values to the grid, too, so that I can fairly compare an easing credit limit to a tightening one as in done in section \ref{sec:asymmetry} of the thesis.
+To meet this requirement in the implementation, I use a function (named \texttt{create\_grid()} in the \texttt{hank\_functions.py} file, see section \ref{sec-app:codes-guide}) which creates a standard logarithmic grid (as is the default in the package) and then extend it as follows. Given the process for the credit limit \eqref{eq:borrowing-limit-process} together with values for the initial borrowing limit, $\phi_{ss}$ and, in the case of a permanent shock, the terminal borrowing limit, $\phi_{ss}'$, the persistence parameter, $\rho_{\phi}$, as well as the terminal horizon by which the model has settled in steady state (see below), it first calculates the specific transition that the borrowing limit undertakes from the initial period to the terminal period within the given horizon. I round these values to the sixth decimal place and thus remove points which are indistinguishably close to each other to avoid unnecessarily large grids. Then, the function adds the remaining points to the initial logarithmic grid. Finally, I compute the reverse transition of the borrowing limit, i.e.~from $\phi_{ss}'$ to $\phi_{ss}$, and add the resulting values to the grid, too, so that I can fairly compare an easing credit limit to a tightening one as is done in section \ref{sec:asymmetry} of the thesis.
 
-To guarantee that the solution of the household block indeed uses valid asset grid points, I add a further step to the \Gls{egm} function of the implementation (\texttt{egm\_step()} and \texttt{egm\_step\_labour()} in the \texttt{hank\_functions.py} file), which finds for a given $\phi_s$ in period $s$ the closest point to $\phi_{ss}$ which is on the grid.
+To guarantee that the solution of the household block indeed uses valid asset grid points, I add a further step to the \Gls{egm} function of the implementation (\texttt{egm\_step()} and \texttt{egm\_step\_labour()} in the \texttt{hank\_functions.py} file), which finds, for a given $\phi_t$ in period $t$, the closest point to this value which is \textit{on} the grid.
 
-Note that the above procedure of creating the asset grid implies that the asset grids differ whenever one of the following parameters changes: $\phi_{ss}$, $\phi_{ss}'$, $\rho_{\phi}$ -- apart from the obvious ones such as the number of grid points (for the logarithmic grid) or the terminal horizon. This has to be kept in mind when interpreting the results, especially when comparing across models. 
+Note that the above procedure of creating the asset grid implies that the grids differ whenever one of the following parameters changes: $\phi_{ss}$, $\phi_{ss}'$, $\rho_{\phi}$ -- apart from the obvious ones, e.g.~the number of grid points (for the logarithmic grid). This has to be kept in mind in the interpretation of the results, especially when comparing across models. 
 
-In the baseline model with $\phi_{ss}$, $\phi_{ss}'$ and $\rho_{\phi}$ as in table \ref{tab:calibration-baseline}, the asset grid has $N_b = 236$ grid points as I specify the basic logarithmic grid to begin with $200$ grid points.\footnote{Changing this to $500$ did not affect the aggregate dynamics after a shock to the borrowing limit as in section \ref{sec:limit-transition}.} I set the maximum grid point to $150$, which ensures that no experiment considered in this thesis has negative values in the distribution in steady state.
+In the baseline model with $\phi_{ss}$, $\phi_{ss}'$ and $\rho_{\phi}$ as in table \ref{tab:calibration-baseline}, the asset grid has $N_b = 236$ grid points as I specify the basic logarithmic grid to begin with $200$ grid points.\footnote{Changing this to $500$ did not affect the aggregate dynamics after a shock to the borrowing limit.} I set the maximum grid point to $150$, which ensures that no experiment considered in this thesis has negative values in the distribution in steady state.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection*{Transition to New Steady State}
 
-Throughout this thesis, I consider \textit{permanent} shocks. That is, once disturbed, the economy does not return to its initial steady state but converges to a new steady state, in which a new environment applies. To calculate the perfect-foresight transition of a model to the terminal steady state, this transition path must be calculated using the Jacobian of the terminal steady state instead of the one from the initial steady state, see \textcite{auclert2021}.\footnote{The steady-state Jacobian of a model is the crucial object in the solution approaches by \textcite{auclert2021} and \textcite{boehl2023econpizza}. It contains information as to how the economy behaves when outside of its steady state.} This is because, from $t=1$, the new regime applies. Implementing this in \texttt{Econpizza} is done by applying the function \texttt{.find\_path()} to the terminal model and passing to that function the initial steady state (i.e.~the aggregate steady-state values) and the initial distribution of agents over assets and skills.
+Throughout this thesis, I consider \textit{permanent} shocks. That is, once disturbed, the economy does not return to its initial steady state but converges to a steady state in which a new environment applies. To calculate the perfect-foresight transition of a model from an initial to a terminal steady state, this transition path must be calculated using the Jacobian of the terminal steady state instead of the one from the initial steady state, see \textcite{auclert2021}.\footnote{The steady-state Jacobian of a model is the crucial object in the solution approaches by \textcite{auclert2021} and \textcite{boehl2023econpizza}. It contains information as to how the economy behaves when outside of the steady state.} This is because, from $t=1$ on, the new regime takes effect. Implementing this in \texttt{Econpizza} is done by applying the function \texttt{.find\_path()} to the terminal model and passing to that function the initial steady state (i.e.~the aggregate initial steady-state values) and the initial distribution of agents over assets and skills.
 
-Note that another crucial choice in the implementation is on the terminal period in which the economy is assumed to have completed its transition to the terminal steady state. I follow the default of the \texttt{Econpizza} package, which sets this horizon to $200$. See \textcite{auclert2021} for the importance of choosing this horizon sufficiently large.
+In this context, another crucial choice in the implementation is on the terminal period in which the economy is assumed to have completed its transition to the terminal steady state. I follow the default of the \texttt{Econpizza} package, which sets this horizon to $200$. See \textcite{auclert2021} for the importance of choosing this horizon sufficiently large.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Guide to Computer Codes}
 \label{sec-app:codes-guide}
 
-I now shortly describe the Python code files employed. Essentially, this description is the \href{https://github.com/andkound98/master-thesis/blob/main/README.md}{README} file in the GitHub repository. 
+I now shortly describe the most important Python code files employed. For more details, see the \href{https://github.com/andkound98/master-thesis/blob/main/README.md}{README} file in the GitHub repository accompanying this thesis. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection*{\texttt{main.py}}
 
-The file \texttt{main.py} is the main file of the project.
+The file \texttt{main.py} is the main code file and produces the core results of this thesis. Some of the results are used by other code files, such as \texttt{compare\_transitions.py}. The code
+allows the user to select one or more of the possible combinations of models and shocks. Having set the respective choices, the code loads, adjusts and solves the initial and terminal models, computes the fully non-linear perfect-foresight transition paths and prints some of the plots and tables about the steady states and the transitions used throughout this text.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{\texttt{custom\_functions.py}}
+\subsubsection*{\texttt{compare\_transitions.py}}
+
+This file contains code which compares the transitions produced by different models and shocks. In particular, the user selects the combination of instances to be compared.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{\texttt{plot\_functions.py}}
+\subsubsection*{\texttt{beta\_shock.py}}
+
+This file implements the permanent shock to the household discount factor in the baseline model, as described in appendix \ref{sec-app:robust-beta}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection*{\texttt{calibration.py}}
 
 This file uses the data described in appendix \ref{sec-app:data} to calculate the desired calibration targets and to create the figures \ref{fig:app-calibration} and \ref{fig:app-calibration-bonds}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\texttt{custom\_functions.py}}
+
+This file contains custom functions used throughout the project.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\texttt{plot\_functions.py}}
+
+This file contains custom functions for plotting various results throughout the project.
 
 \bigskip
 
@@ -1759,7 +1795,7 @@ This appendix contains supplementary figures and tables, placed here for the sak
 \subsection{Figures for Section \ref{sec:limit-stst-tight}}
 \label{sec-app:figures-limit-tight}
 
-The figure is placed on a separate page.
+The figure is placed on the next page.
 
 \begin{sidewaysfigure}
     \caption{Baseline Model -- Shock to Borrowing Limit: Comparison of Asset Distributions}
@@ -2206,19 +2242,21 @@ This appendix presents various robustness exercises and supplementary experiment
 \subsection{Abscence of the \Gls{zlb}}
 \label{sec-app:robust-no-zlb}
 
-This appendix conducts the same exercise as section \ref{sec:limit-transition} but ignores the \Gls{zlb}. The \Gls{zlb} is usually motivated by the argument that households would not hold any asset with a return strictly below zero as money would have a strictly higher return.\footnote{As is common in the literature, the present model does not feature money explicitly.} The literature has highlighted the \Gls{zlb} either as the trigger (as in \cite{egg2012}) or as an amplifier (as in \cite{gl2017}) of financial shocks, contractions in the debt limit in particular.
+This appendix conducts the same exercise as section \ref{sec:limit-transition} but ignores the \Gls{zlb}. The \Gls{zlb} is usually motivated by the argument that households would not hold any asset with a return strictly below zero as money would have a strictly higher return.\footnote{As is common in the literature, the present model does not feature money explicitly.} The literature has highlighted the \Gls{zlb} either as the trigger (as in \cite{egg2012}) or as an amplifier (as in \cite{gl2017}) of financial shocks and of contractions in the debt limit in particular.
 
-Given the fact that the \Gls{zlb} does bind in my baseline experiment -- in fact, I calibrated $\beta$ to be such that it does -- I here aim to gauge the quantitative effect that the \Gls{zlb} has on the results from section \ref{sec:limit-transition}. to that end, I leave the model used in that section unchanged but exchange \eqref{eq:zlb} for:
+Given the fact that the \Gls{zlb} does bind in my baseline experiment -- in fact, I calibrated $\beta$ to be such that it does -- I here aim to gauge the quantitative effect that the \Gls{zlb} has on the results from section \ref{sec:limit-transition}. To that end, I leave the model used in that section unchanged but exchange \eqref{eq:zlb} for:
 \begin{equation}
     R_t = R^n_t, \label{eq:no-zlb}
 \end{equation}
 i.e.~the modified model ignores the \Gls{zlb} on nominal interest rates and lets the nominal rate fall below zero.
 
-Figure \ref{fig:comparison-no-ZLB-agg} replicates figure \ref{fig:baseline-permanent-limit-agg}. In particular, it presents some selected aggregate dynamics after a permanent contraction in the debt limit and compares these to the baseline case, i.e.~the responses from plot \ref{fig:baseline-permanent-limit-agg}. Clearly, the \Gls{zlb} does have a noticable impact on the economy's dynamics. Aggregate consumption does not drop as much in the absence of this constraint as it does in its presence. Specifically, consumption drops by roughly half a percentage point less on impact, see figure \ref{fig:comparison-no-ZLB-agg-C}.
+Figure \ref{fig:comparison-no-ZLB-agg} replicates figure \ref{fig:baseline-permanent-limit-agg}. In particular, it presents some selected aggregate dynamics after a permanent contraction in the debt limit and compares these to the baseline case, i.e.~the responses from plot \ref{fig:baseline-permanent-limit-agg}. Clearly, the \Gls{zlb} does have a noticeable impact on the economy's dynamics. Aggregate consumption does not drop as much in the absence of this constraint as it does in its presence. Specifically, consumption falls by roughly half a percentage point less on impact, see figure \ref{fig:comparison-no-ZLB-agg-C}.
 
 This is intuitive because, as explained in the main text, once the \Gls{zlb} becomes binding, the real interest rate cannot fall as much, reducing the incentive for the unconstrained agents to reduce their higher wealth targets, i.e.~less debt in the case of an unconstrained net borrower and more savings in the case of an unconstrained net lender. Thus, in the absence of the \Gls{zlb}, the real interest rate in $t=2$ falls by more, stimulating more consumption as well as less savings or more debt, respectively. This dampens the recession in $t=1$, which again feeds back into a nominal interest rate in $t=1$ which is lower than the notional rate in the same period in the presence of the \Gls{zlb}, see plot \ref{fig:comparison-no-ZLB-agg-Rn}.
 
 Note however, that the evidence presented also supports the claim in section \ref{sec:limit-transition} that the \Gls{zlb} is merely an amplifier and not the cause of the recession in the present model, consistent with the findings by \textcite{gl2017}. That is, a rough calculation suggests that from the three percent drop observed in the \Gls{zlb} scenario, only $0.5$ percentage points, i.e.~around one sixth, is due to the \Gls{zlb} binding.
+
+All in all, the responses of the model look similar but the adjustments take place faster as the central bank is unconstrained in stimulating the economy. 
 
 \begin{figure}[H]
     \caption{Baseline w/o \Gls{zlb} -- Shock to the Borrowing Limit: Aggregate Dynamics}
@@ -2278,11 +2316,43 @@ Note however, that the evidence presented also supports the claim in section \re
 \subsection{Calibration of Bonds à la \textcite{bayer2023}}
 \label{sec-app:robust-bonds}
 
-This appendix re-calibrates $B$ following the approach of \textcite{bayer2023}. Specifically, $B$ here targets the market value of gross federal government debt instead of total liquid assets. To that end, I use -- as \textcite{bayer2023} do -- data from FRED, see appendix \ref{sec-app:data} for details. The result is that $B$ must equal $2.24$. Further, I re-set $\beta$ so that the net steady-state interest rate is $0.15\%$, as before.
+This appendix conducts the same exercise as section \ref{sec:limit-transition} but re-calibrates $B$ following the approach of \textcite{bayer2023}. Specifically, $B$ here targets the market value of gross federal government debt instead of total liquid assets. To that end, I use -- as \textcite{bayer2023} do -- data from FRED, see appendix \ref{sec-app:data} for details. The result is that $B$ must equal $2.24$ (instead of $5.21$). Further, I re-set $\beta$, $\phi_{ss}$ and $\phi_{ss}'$ so as to hit the same targets as before, i.e.~a net steady-state interest rate of $0.15\%$, a debt-to-output ratio of $57\%$ initially and of $52\%$ in the terminal steady state.
 
-Note that the corresponding steady states, the wealth distributions in particular, is different. For example, both the fraction of borrowers ($46.71\%$) and the aggregate \Gls{mpc} ($0.14$) are much higher in the present case than in the baseline. The latter observation is consistent with the observation by \textcite{kaplan2018} that \Gls{mpc}s increase when the wealth target is smaller.
+Note that the corresponding steady states, the wealth distributions in particular, are quite different from the baseline, see table \ref{tab:stst_comparison_low_B_limit_permanent}. For example, both the fraction of borrowers ($46.71\%$) and the aggregate \Gls{mpc} ($0.14$) are much higher in the present case. The latter observation is consistent with the observation by \textcite{kaplan2018} that \Gls{mpc}s increase when the wealth target is smaller.
 
-Now, \Gls{iou}s make up a larger share of gross liquidity. 
+\begin{table}[t]
+\centering
+\caption{Baseline with Low $B$ -- Shock to Borrowing Limit: \\ Comparison of Steady States}
+\label{tab:stst_comparison_low_B_limit_permanent}
+\begin{tabular}{lccc}
+Variable & Initial & Terminal &  Change \\
+\hline
+\hline
+\multicolumn{2}{l}{\textbf{Borrowing Limit}} & & \\
+$\phi$ & $-1.5495$ &  $-1.4238$ &  $0.1257$ \\
+& & & \\
+\multicolumn{2}{l}{\textbf{Aggregates}} & & \\
+$C$ &  $0.9129$ &   $0.9129$ &  -- \\
+$D / y$ &    $57\%$ & $52\%$ & $-5 \ p.p.$ \\
+$B + D$ & $2.76$ &   $2.71$ & $-1.66\%$ \\
+$RR - 1$ &  $0.15\%$ &  $0.12\%$ & $-0.03 \ p.p.$ \\
+& & & \\
+\multicolumn{2}{l}{\textbf{Cross-Section}} & & \\
+Share of Assets Held by Top-$10\%$ &  $64.86$ &  $63.59$ & $-1.27 \ p.p.$ \\
+Share of Consumption by Top-$10\%$ &  $18.34$ &   $18.36$ &  $0.02 \ p.p.$ \\
+Fraction of Borrowers &   $46.71$ &    $46.11$ & $-0.6 \ p.p.$ \\
+Fraction at Borrowing Limit &    $9.39$ &     $9.94$ &  $0.55 \ p.p.$ \\
+\Gls{mpc} of Borrowers &    $0.27$ &     $0.27$ &   \\
+\Gls{mpc} of Lenders &    $0.03$ &     $0.03$ & \\
+\hline
+\multicolumn{4}{l}{\footnotesize \multirow{2}{12cm}{\justifying \textit{Note:} Selected values of the steady states with $\phi_{ss}$ and $\phi_{ss}'$. Numbers are rounded and refer to quarterly values. $p.p.$ stands for percentage points.}} \\
+& & & \\
+\end{tabular}
+\end{table}
+
+Figure \ref{fig:comparison-low-B-agg} replicates figure \ref{fig:baseline-permanent-limit-agg}. In particular, it presents some selected aggregate dynamics after a permanent contraction in the debt limit and compares these to the baseline case, i.e.~the responses from plot \ref{fig:baseline-permanent-limit-agg}. Evidently, the fallout from the credit crunch is much more severe in the present case. Aggregate consumption drops by over five percent, for the same long-run reduction in debt-to-\Gls{gdp}.
+
+Why is that the case? Intuitively, as $B$ is much smaller than in the baseline, \Gls{iou}s make up a larger share of gross liquidity. Thus, the same reduction in debt brings about a much larger change in the liquidity available to agents. In particular, $B+D$ falls by $1.66$ percent from the initial to the terminal steady state in this low-$B$ calibration rather than by $0.8$ percent in the baseline. This, together with the high fraction of borrowers and their high \Gls{mpc}s, induces the much more pronounced responses of the economy witnessed in plot \ref{fig:comparison-low-B-agg}.
 
 \begin{figure}[H]
     \caption{Baseline with Low $B$ -- Shock to the Borrowing Limit: Aggregate Dynamics}
@@ -2342,7 +2412,7 @@ Now, \Gls{iou}s make up a larger share of gross liquidity.
 \subsection{Shock to the Discount Factor}
 \label{sec-app:robust-beta}
 
-This section briefly presents the results of the baseline model of section \ref{sec:model} to a shock to the household discount factor, $\beta$. I do so to show that the sluggish and gradual response of aggregate debt holdings is a feature of the \Gls{hank} which is present also in other setting than merely in the credit-crunch scenarios studied in the main text.
+This section briefly presents the results of the baseline model of section \ref{sec:model} after a shock to the household discount factor, $\beta$. I do so to show that the sluggish and gradual response of aggregate debt holdings is a feature of the \Gls{hank} which arises also outside of the credit-crunch context.
 
 In particular, I permanently increase $\beta$ from the baseline $0.99056$ to $0.992$, where $\beta$ evolves analogously to \eqref{eq:borrowing-limit-process} as:\footnote{The terminal value of $\beta$ is not meant to achieve any particular target. The long-run dynamics of debt are telling in any case.}
 \begin{equation*}
@@ -2391,21 +2461,18 @@ Figure \ref{fig:baseline-permanent-beta-agg} presents the resulting dynamics of 
 	\end{flushleft}
 \end{figure}
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{appendices}
-\newpage
 \thispagestyle{plain}
 \pagenumbering{Roman} % Start Roman page numbering for appendix references
 \renewcommand*{\thepage}{A-\Roman{page}} % Add 'A' to each page number for appendix references
 
-\printbibliography[heading=subbibliography, title={Appendix References}]
 \addcontentsline{toc}{section}{Appendix References}
-
+\printbibliography[heading=subbibliography, title={Appendix References}]
+\thispagestyle{plain}
 \cleardoublepage % Ensure the next content starts on an odd page (if your document is two-sided)
-
-\pagenumbering{arabic} % Switch back to Arabic page numbering
-\renewcommand*{\thepage}{\arabic{page}} % Reset the page numbering format
 
 \end{refsection}
 
