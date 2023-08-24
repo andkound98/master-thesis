@@ -4,35 +4,51 @@ This repository accompanies my master thesis, titled *Financial Constraints and 
 
 ## `main.py`
 
-This is the main file of the project. The code herein reproduces the results found in the thesis. It allows the user to select one or more of the possible combinations of models and shocks. Having set the respective choices, the code loads, adjusts and solves the initial and terminal models, computes the fully non-linear perfect-foresight transition paths and plots various informative plots about the steady states and transitions. If desired, the results are stored in the folder 'Results'.
+This is the main file of the project. The code herein produces the core results of my thesis. Some of the results are used by other code files, such as `compare_transitions.py`. The code here allows the user to select one or more of the possible combinations of models and shocks. Having set the respective choices, the code loads, adjusts and solves the initial and terminal models, computes the fully non-linear perfect-foresight transition paths and prints various informative plots and tables about the steady states and the transitions. If desired, these results are stored in the folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results). The transitions can also be stored as pickle files in the end, for easy re-use by `compare_transitions.py`.
 
 ## `compare_transitions.py`
 
-This file creates plots that compare the transitions produced by different models and shocks. To compare the transitions, they must have been implemented first through the main file and stored in a folder in 'Results'.
+This file contains code which visually compares the transitions produced by different models and shocks. In particular, the user selects the combination of instances to be compared. To compare transitions, these must have been implemented and stored first via the `main.py file`.
 
-## `custom_functions.py`
+## `beta_shock.py`
 
-This file contains custom functions used throughout the project, inter alia in the `main.py` file and the `plot_functions.py` file.
-
-## `plot_functions.py`
-
-This file contains custom functions for plotting various results from the HANK models, e.g. policies, distributions and transitions.
+This file implements the permanent shock to the household discount factor in the baseline model, as described in appendix E.3 of the thesis.
 
 ## `calibration.py`
 
-This file calculates targets for the calibration of the employed HANK model.
+This file calculates targets for the calibration of the models in the thesis and plots some of the time series. 
+
+## `custom_functions.py`
+
+This file contains custom functions used throughout the project.
+
+## `plot_functions.py`
+
+This file contains custom functions for plotting various results throughout the project.
 
 ## Models 
 
-The folder [**Models**](https://github.com/andkound98/master-thesis/tree/main/Models) contains the models employed by the various code files.
+The folder [**Models**](https://github.com/andkound98/master-thesis/tree/main/Models) contains the models employed by the various code files:
+1. `hank_baseline.yml`: baseline model
+2. `hank_end_L.yml`: extended model with CRRA preferences and endogenous labour supply
+3. `hank_no_ZLB.yml`: model without zero-lower bound
+4. `hank_low_B.yml`: model with re-calibration of liquid assets
+5. `hank_slow_shock.yml`: model with high persistence in shock processes
+6. `hank_very_slow_phi.yml`: model with very high persistence in shock to borrowing limit
+7. `hank_fast_shock.yml`: model with low persistence in shock processes
+8. `hank_baseline_beta.yml`: baseline model with shock to household discount factor
+
+Finally, the model also contains `hank_functions.py`, which contains functions necessary for the solution of the models. 
 
 ## Results
 
 The folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results) contains the results produced by the `main.py` file and the `plot_functions.py` file.
 
+## Data
+
 ## Thesis 
 
-The folder [**Thesis**](https://github.com/andkound98/master-thesis/tree/main/Thesis) contains the TeX code of the thesis as well as its `.bib` file. The PDF version of the thesis is also in this folder.
+The folder [**Thesis**](https://github.com/andkound98/master-thesis/tree/main/Thesis) contains the TeX code of the thesis, its `.bib` file and the PDF version of the thesis.
 
 ---
 All these codes were run using the Spyder IDE 5.4.3 with Python 3.9.12 and [`Econpizza`](https://github.com/gboehl/econpizza/tree/master) 0.6.1 on macOS 12.6.5.
