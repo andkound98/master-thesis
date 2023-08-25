@@ -30,12 +30,12 @@ This file contains custom functions for plotting various results throughout the 
 
 The folder [**Models**](https://github.com/andkound98/master-thesis/tree/main/Models) contains the models employed by the various code files:
 1. `hank_baseline.yml`: baseline model
-2. `hank_end_L.yml`: extended model with CRRA preferences and endogenous labour supply
-3. `hank_no_ZLB.yml`: model without zero-lower bound
-4. `hank_low_B.yml`: model with re-calibration of liquid assets
-5. `hank_slow_shock.yml`: model with high persistence in shock processes
-6. `hank_very_slow_phi.yml`: model with very high persistence in shock to borrowing limit
-7. `hank_fast_shock.yml`: model with low persistence in shock processes
+2. `hank_slow_shock.yml`: model with high persistence in shock processes
+3. `hank_fast_shock.yml`: model with low persistence in shock processes
+4. `hank_end_L.yml`: extended model with CRRA preferences and endogenous labour supply
+5. `hank_very_slow_phi.yml`: model with very high persistence in borrowing limit
+6. `hank_no_ZLB.yml`: model without zero-lower bound
+7. `hank_low_B.yml`: model with low calibration of liquid assets
 8. `hank_baseline_beta.yml`: baseline model with shock to household discount factor
 
 Finally, the model also contains `hank_functions.py`, which contains functions necessary for the solution of the models. 
