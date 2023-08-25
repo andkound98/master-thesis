@@ -38,17 +38,20 @@ The folder [**Models**](https://github.com/andkound98/master-thesis/tree/main/Mo
 7. `hank_low_B.yml`: model with low calibration of liquid assets
 8. `hank_baseline_beta.yml`: baseline model with shock to household discount factor
 
-Finally, the model also contains `hank_functions.py`, which contains functions necessary for the solution of the models. 
+All of these are to the largest part based on the models from the [`Econpizza`](https://github.com/gboehl/econpizza/tree/master) package, which is also used for the model solution. Finally, the [**Models**](https://github.com/andkound98/master-thesis/tree/main/Models) folder also contains `hank_functions.py`, which contains functions necessary for the solution of the models and similarly derives almost entirely from an example file in [`Econpizza`](https://github.com/gboehl/econpizza/tree/master).
 
 ## Results
 
-The folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results) contains the results produced by the `main.py` file and the `plot_functions.py` file.
+The folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results) contains the results produced by the `main.py` file and the `custom_functions.py` file.
 
 ## Data
 
+The folder [**Data**](https://github.com/andkound98/master-thesis/tree/main/Data) contains a CSV file with data on US household balance sheets, obtained from the Federal Reserve website on the [Flow of Funds](https://www.federalreserve.gov/releases/z1/) and used by `calibration.py`.
+
 ## Thesis 
 
-The folder [**Thesis**](https://github.com/andkound98/master-thesis/tree/main/Thesis) contains the TeX code of the thesis, its `.bib` file and the PDF version of the thesis.
+The folder [**Thesis**](https://github.com/andkound98/master-thesis/tree/main/Thesis) contains the TeX code of the thesis, its `.bib` file and its PDF version.
 
 ---
+
 All these codes were run using the Spyder IDE 5.4.3 with Python 3.9.12 and [`Econpizza`](https://github.com/gboehl/econpizza/tree/master) 0.6.1 on macOS 12.6.5.
