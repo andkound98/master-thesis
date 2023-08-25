@@ -18,12 +18,12 @@ CSV file in the 'Data' folder of this project.
 ###############################################################################
 ###############################################################################
 ###############################################################################
-# Import packages
-import os # path creation
+# Packages
+import os # path management
+import plotly.io as pio # plot settings
 import pandas as pd # data wrangling
 import numpy as np # data wrangling
 import plotly.express as px # plotting
-import plotly.io as pio # plotting
 from full_fred.fred import Fred # convenient package for FRED access
 
 ###############################################################################
@@ -31,13 +31,11 @@ from full_fred.fred import Fred # convenient package for FRED access
 ###############################################################################
 # Imports
 
-from custom_functions import convert_quarter_to_datetime
+from custom_functions import convert_quarter_to_datetime # function to convert to datetime
 
 ###############################################################################
-###############################################################################
-###############################################################################
 # Preliminaries
-save_results = False # If true, results (tables and plots) are stored
+save_results = True # True: save results 
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -116,7 +114,6 @@ FRED_data["Government Bonds"] = quarterly_bonds
 
 # Drop entries before specified date
 start_date = '1951-10-01' # Full observations start in 1951:Q4
-#start_date = '2013-01-01' # Include only more recent observation
 mask = FRED_data['Date'] >=  pd.to_datetime(start_date)
 FRED_data = FRED_data[mask]
 
@@ -140,99 +137,89 @@ fof_variables = {'Date': 'date',
                  'Mutual fund shares': 'LM153064205.Q'}
 
 # Read the CSV file with the FoF Table B.101 data into a pandas DataFrame
-path_to_fof = os.path.join(os.getcwd(),
-                           'Data',
-                           'FoF_B101.csv')
+path_to_fof = os.path.join(os.getcwd(),'Data','FoF_B101.csv')
 fof_data = pd.read_csv(path_to_fof)
     
-# Get the list of columns to keep from the specified dictionary
+# # Keep only the specified columns
 keep_col = list(fof_variables.values())
-    
-# Keep only the specified columns
 fof_data = fof_data[keep_col]
 
-# Rename the date column
+# Rename the date column and convert to datetime object
 fof_data.rename(columns={'date': 'Date'}, inplace=True)
-
 fof_data['Date'] = fof_data['Date'].apply(convert_quarter_to_datetime)
 
 # Drop entries before specified date
 mask = fof_data['Date'] >=  pd.to_datetime(start_date)
 fof_data = fof_data[mask]
 
+# Make all columns (except Date) numeric and divide by 1000
 fof_data[fof_data.columns.drop('Date')] = fof_data[fof_data.columns.drop('Date')].apply(pd.to_numeric)
 fof_data[fof_data.columns.drop('Date')] = fof_data[fof_data.columns.drop('Date')] / 1000
 
-# Create variable of total liquid assets as simple sum of all the kept 
-# variables
+# Create variable of total liquid assets as sum of all the kept variables
 fof_data['Total Liquid Assets'] = fof_data.iloc[:, 1:].sum(axis=1)
 
 ###############################################################################
 ###############################################################################
+###############################################################################
+# Combine data
+
 # Obtain one single data set 
-data = pd.merge(FRED_data, 
-                fof_data[['Date', 'Total Liquid Assets']],
-                on='Date', 
-                how='left')
+data = pd.merge(FRED_data,                                  # FRED data
+                fof_data[['Date', 'Total Liquid Assets']],  # FoF data
+                on='Date', how='left')
 
 ###############################################################################
 ###############################################################################
-# Final calcualtions
+###############################################################################
+# Calculations and visualisation
 
-# Define steady state output of the HANK model (needed for conversion into 
+# Define steady-state output of the HANK model (needed for conversion into 
 # units of the model)
-ySS = 0.9129 # baseline model 
-#ySS = 0.944 # model with endogenous labour supply
+ySS = 0.9129 # baseline model (hank_baseline)
+#ySS = 0.944 # extended model with CRRA preferences and endogenous labour supply (hank_end_L)
 
-# Deflate Government Bonds and divide by deflated ANNUALISED GDP, then convert
-# to quarterly; finally, obtain it in terms of the steady-state model output
-data['B'] = 4*ySS*((data["Government Bonds"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
+# Deflate Total Liquid Assets and divide by deflated annualised GDP, then 
+# convert to quarterly; finally, obtain it in terms of the steady-state model 
+#output
+data['L'] = 4*ySS*((data["Total Liquid Assets"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
 
-# Deflate Household Debt and divide by deflated ANNUALISED GDP, then convert to
+# Deflate Household Debt and divide by deflated annualised GDP, then convert to
 # quarterly
 data['D_y'] = 4*((data["Household Debt"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
 
-# Deflate Government Bonds and divide by deflated ANNUALISED GDP, then convert
+# Deflate Government Bonds and divide by deflated annualised GDP, then convert
 # to quarterly; finally, obtain it in terms of the steady-state model output
-data['L'] = 4*ySS*((data["Total Liquid Assets"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
+data['B'] = 4*ySS*((data["Government Bonds"]/data["GDP Deflator"])/(data["GDP"]/data["GDP Deflator"]))
 
 ###############################################################################
-###############################################################################
-# Calibration parameters/targets
-
-# Obtain the means of Government Bonds and Household Debt over the full sample
+# Obtain the means over the full sample
 mean_B = data['B'].mean()
 mean_D_y = data['D_y'].mean()
 mean_L = data['L'].mean()
 
-# Print the results
-print(round(mean_B,2)) # Government bond supply, B
-print(round(mean_D_y,2)) # Steady-state ratio of household-debt to output, D_{ss}/y_{ss}
-print(round(mean_L,2)) # Total liquid assets, B
+# Print the (rounded) results
+print(round(mean_L,2)) # Total Liquid Assets, for B
+print(round(mean_D_y,2)) # Household Debt, for D_{ss}/y_{ss}
+print(round(mean_B,2)) # Government Bonds, for B
 
 ###############################################################################
 ###############################################################################
-# Plot time series of total liquid assets, market value of government debt and
-# consumer credit
+# Plot time series of data
 
 # Total Liquid Assets
-fig_l = px.line(data,
-                x = 'Date',
-                y = 'L',
+fig_l = px.line(data,x = 'Date',y = 'L',
                 color_discrete_sequence=[px.colors.qualitative.D3[0]])
-fig_l.update_layout(title='', # empty title
-                   xaxis_title=None, # x-axis labeling
-                   yaxis_title='Quarterly Model Units', # y-axis labeling
-                   legend=dict(orientation="h", # horizontal legend
+fig_l.update_layout(title='',
+                   xaxis_title=None,
+                   yaxis_title='Quarterly Model Units',
+                   legend=dict(orientation="h",
                                yanchor="bottom", y=1.02, 
                                xanchor="right", x=1), 
-                   legend_title=None, 
-                   plot_bgcolor='whitesmoke', 
+                   legend_title=None, plot_bgcolor='whitesmoke', 
                    margin=dict(l=15, r=15, t=5, b=5),
-                   font=dict(family="Times New Roman", # adjust font
-                             size=20,
-                             color="black"))
-fig_l.add_hline(y=mean_L, line_dash="dot",
+                   font=dict(family="Times New Roman",size=20,color="black"))
+fig_l.add_hline(y=mean_L, line_dash="dot", # add mean of series
                 line_color=px.colors.qualitative.D3[1],
                 annotation_text=f'{round(mean_L,2)}', 
                 annotation_position='bottom right',
@@ -242,29 +229,22 @@ fig_l.update_traces(line=dict(width=3))
 fig_l.show()
 
 # Save figure
-path_plot_l = os.path.join(os.getcwd(),
-                           'Results',
-                           'calibration_liquid.svg')
+path_plot_l = os.path.join(os.getcwd(),'Results','calibration_liquid.svg')
 fig_l.write_image(path_plot_l)
 
 # Government Bonds
-fig_b = px.line(data,
-                x = 'Date',
-                y = 'B',
+fig_b = px.line(data,x = 'Date',y = 'B',
                 color_discrete_sequence=[px.colors.qualitative.D3[0]])
-fig_b.update_layout(title='', # empty title
-                   xaxis_title=None, # x-axis labeling
-                   yaxis_title='Quarterly Model Units', # y-axis labeling
-                   legend=dict(orientation="h", # horizontal legend
+fig_b.update_layout(title='',
+                   xaxis_title=None,
+                   yaxis_title='Quarterly Model Units',
+                   legend=dict(orientation="h",
                                yanchor="bottom", y=1.02, 
                                xanchor="right", x=1), 
-                   legend_title=None, 
-                   plot_bgcolor='whitesmoke', 
+                   legend_title=None, plot_bgcolor='whitesmoke', 
                    margin=dict(l=15, r=15, t=5, b=5),
-                   font=dict(family="Times New Roman", # adjust font
-                             size=20,
-                             color="black"))
-fig_b.add_hline(y=mean_B, line_dash="dot",
+                   font=dict(family="Times New Roman",size=20,color="black"))
+fig_b.add_hline(y=mean_B, line_dash="dot", # add mean of series
                 line_color=px.colors.qualitative.D3[1],
                 annotation_text=f'{round(mean_B,2)}', 
                 annotation_position='bottom right',
@@ -274,29 +254,22 @@ fig_b.update_traces(line=dict(width=3))
 fig_b.show()
 
 # Save figure
-path_plot_b = os.path.join(os.getcwd(),
-                           'Results',
-                           'calibration_b.svg')
+path_plot_b = os.path.join(os.getcwd(),'Results','calibration_b.svg')
 fig_b.write_image(path_plot_b)
 
 # Household Debt
-fig_d = px.line(data,
-                x = 'Date',
-                y = 'D_y',
+fig_d = px.line(data,x = 'Date',y = 'D_y',
                 color_discrete_sequence=[px.colors.qualitative.D3[0]])
-fig_d.update_layout(title='', # empty title
-                   xaxis_title=None, # x-axis labeling
-                   yaxis_title='Fraction of Quarterly GDP', # y-axis labeling
-                   legend=dict(orientation="h", # horizontal legend
+fig_d.update_layout(title='',
+                   xaxis_title=None,
+                   yaxis_title='Fraction of Quarterly GDP',
+                   legend=dict(orientation="h",
                                yanchor="bottom", y=1.02, 
                                xanchor="right", x=1), 
-                   legend_title=None, 
-                   plot_bgcolor='whitesmoke', 
+                   legend_title=None, plot_bgcolor='whitesmoke', 
                    margin=dict(l=15, r=15, t=5, b=5),
-                   font=dict(family="Times New Roman", # adjust font
-                             size=20,
-                             color="black"))
-fig_d.add_hline(y=mean_D_y, line_dash="dot",
+                   font=dict(family="Times New Roman",size=20,color="black"))
+fig_d.add_hline(y=mean_D_y, line_dash="dot", # add mean of series
                 line_color=px.colors.qualitative.D3[1],
                 annotation_text=f'{round(mean_D_y,2)}', 
                 annotation_position='bottom right',
@@ -306,7 +279,5 @@ fig_d.update_traces(line=dict(width=3))
 fig_d.show()
 
 # Save figure
-path_plot_d = os.path.join(os.getcwd(),
-                           'Results', 
-                           'calibration_d.svg')
+path_plot_d = os.path.join(os.getcwd(),'Results', 'calibration_d.svg')
 fig_d.write_image(path_plot_d)

@@ -10,11 +10,11 @@ project.
 
 ###############################################################################
 ###############################################################################
-# Import packages
+###############################################################################
+# Packages
 import os # path management
-import pandas as pd
-import numpy as np
-#import jax
+import pandas as pd # data wrangling
+import numpy as np # data wrangling
 import jax.numpy as jnp
 from grgrlib import grplot
 import plotly.express as px
@@ -22,9 +22,12 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from grgrlib import grbar3d
 
-# Import custom functions
-from custom_functions import (make_policy_df,
-                              shorten_asset_dist)
+###############################################################################
+###############################################################################
+###############################################################################
+# Imports
+from custom_functions import (make_policy_df, # data frame for policies
+                              shorten_asset_dist) # short asset distribution with sum over threshold
 
 ###############################################################################
 ###############################################################################
@@ -721,12 +724,11 @@ def plot_selected_transition(list_of_variables,
 def visualise_dist_over_time(initial_model,
                              terminal_model,
                              x_trans,
+                             dist_dyn,
                              horizon,
                              y_threshold,
                              x_threshold=None,
                              percent=100):
-    dist_dyn = terminal_model.get_distributions(trajectory = x_trans,
-                                                init_dist = initial_model['steady_state']['distributions'])
     dist_init = jnp.sum(initial_model['steady_state']['distributions'][0],axis=0)
     dist_term = jnp.sum(terminal_model['steady_state']['distributions'][0],axis=0)
     
@@ -1041,18 +1043,13 @@ def compare_selected_transitions(list_of_transition_dfs,
             
 def plot_assets_on_impact_over_dist(hank_model_initial, 
                                     hank_model_terminal,
-                                    x_transition,
+                                    dist_transition,
                                     save_results,
                                     exact_path,
                                     x_threshold=None,
                                     borr_lim=None,
                                     leave_out_close_to_zero=True,
                                     percent=100):
-    # Get disaggregated dynamics
-    hank_model_initial_dist = hank_model_initial['steady_state']['distributions'].copy()
-    dist_transition = hank_model_terminal.get_distributions(trajectory = x_transition,
-                                                            init_dist = hank_model_initial_dist)
-    
     # Get steady state policy
     stst_policy = hank_model_initial['steady_state']['decisions']['a']
     dist_stst = hank_model_initial['steady_state']['distributions'][0]

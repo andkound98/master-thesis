@@ -9,31 +9,22 @@ This file contains custom functions used throughout the project.
 
 ###############################################################################
 ###############################################################################
-# Import packages
+###############################################################################
+# Packages
 import os # path management
-import pandas as pd
-import numpy as np
-import jax
+import pandas as pd # data wrangling
+import numpy as np # data wrangling
+import jax 
 import jax.numpy as jnp
 import econpizza as ep # Econpizza
 
 ###############################################################################
 ###############################################################################
-# Function to obtain the path to the model
+# Function to obtain the path to a model based on settings
 def get_model_path(settings):
     """Path to models.
     
-    This function returns, for a chosen model, the full path to the model.
-    
-    Parameters:
-    ----------
-    settings            : dictionary which under 'Model' stores which model is
-                          chosen ('baseline', 'end_L', 'low_beta', 'high_B', 
-                                  'shock_beta')
-    
-    Returns:
-    ----------
-    full path to the model dictionary
+    This function returns the full path to the desired model.
     """
     # Extract chosen model from settings dictionary
     exact_model = settings['Model']
@@ -43,12 +34,18 @@ def get_model_path(settings):
 
 ###############################################################################
 ###############################################################################
-# Function to obtain a string for easy saving of results 
+# Function to obtain a path to save results
 def get_exact_results_path(settings):
+    """"Path for results.
+    
+    This function creates a path specifically asigned to a set of results and 
+    creates that path, if it does not yet exist, in the 'Results' folder.
+    """
     # Get sub-components of string
     comp1 = settings['Model']
     comp2 = settings['Shock']
     
+    # Differentiate along the dimension of whether the shock is asymmetric
     if settings['Asymmetry'] == True:
         # Define path 
         path = os.path.join(os.getcwd(), 
@@ -60,6 +57,7 @@ def get_exact_results_path(settings):
         # Create the folder if it doesn't exist
             os.makedirs(path)
             
+        # Return final component of path 
         return f'{comp1}_{comp2}_asymmetric'
     
     else:
@@ -72,29 +70,34 @@ def get_exact_results_path(settings):
         if not os.path.exists(path):
         # Create the folder if it doesn't exist
             os.makedirs(path)
-            
+        
+        # Return final component of path 
         return f'{comp1}_{comp2}'
 
 ###############################################################################
 ###############################################################################
 # Set model and shock parameters according to settings
 def get_parametrisation(settings):
+    """Obtain parameters.
     
-    # Baseline model of section 4
-    #if settings['Model'] == 'baseline' or settings['Model'] == 'slow_shock' or settings['Model'] == 'fast_shock' or settings['Model'] == 'very_slow_phi' or settings['Model'] == 'no_ZLB':
+    This function returns, for given settings, a pre-specified set of 
+    parameters.
+    """
+    # Baseline calibration (used for 'hank_baseline', 'hank_slow_shock',
+    # 'hank_fast_shock', 'hank_very_slow_phi', 'hank_no_ZLB')
     shock_model_parameters = {'initial_borrowing_limit': -2.3485,
                               'terminal_borrowing_limit': -2.1775,
                               'initial_wedge': 1e-8,
                               'terminal_wedge': 0.00203} 
     
-    # Model version with CRRA preferences of section 5.2
+    # Calibration for extended model with CRRA preferences
     if settings['Model'] == 'end_L':
         shock_model_parameters = {'initial_borrowing_limit': -1.7956,
                                   'terminal_borrowing_limit': -1.655,
                                   'initial_wedge': 1e-8,
                                   'terminal_wedge': 0.00277}
     
-    # Baseline model with a high B calibration of appendix E.2
+    # Calibration for model with low calibration of liquid assets
     if settings['Model'] == 'low_B':
         shock_model_parameters = {'initial_borrowing_limit': -1.54946,
                                   'terminal_borrowing_limit': -1.4238,
@@ -106,8 +109,7 @@ def get_parametrisation(settings):
 
 ###############################################################################
 ###############################################################################
-# Function to return two models, where the first one corresponds to the initial
-# steady state and the second one corresponds to the terminal steady state
+# Function to return initial and terminal models
 def return_models_permanent(model_path, 
                             settings, 
                             shock_model_parameters,
@@ -309,24 +311,6 @@ def stst_overview(models,
     borr_mpc_init = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_initial, 0))
     borr_mpc_term = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_terminal, 0))
     
-    #current_limit_index = jnp.argmax(distribution_skills_and_assets_initial > 0)
-    #current_limit = a_grid_init[current_limit_index]
-
-    # Find the value in arr1 which is 10 entries away from 'current_limit'
-    #target_index = current_limit_index + 10
-    #target_value = a_grid_init[target_index]
-    
-    #constr_mpc_init = jnp.sum(jnp.where(a_grid_init<target_value,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<target_value, distribution_skills_and_assets_initial, 0))
-    
-    #current_limit_index = jnp.argmax(distribution_skills_and_assets_terminal > 0)
-    #current_limit = a_grid_term[current_limit_index]
-
-    # Find the value in arr1 which is 10 entries away from 'current_limit'
-    #target_index = current_limit_index + 10
-    #target_value = a_grid_term[target_index]
-    
-    #constr_mpc_term = jnp.sum(jnp.where(a_grid_term<target_value,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_term<target_value, distribution_skills_and_assets_terminal, 0))
-    
     lend_mpc_init = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_initial, 0))
     lend_mpc_term = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_terminal, 0))
 
@@ -369,8 +353,6 @@ def stst_overview(models,
     row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
     stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
                                    ignore_index=True)
-    
-    # Add MPC of households very close to the constraint
     
     # Add MPC of lending households
     row_mpc_lending = {'Variable': 'MPC of Lenders',
@@ -466,10 +448,16 @@ def get_transitions(comparison):
     # Return the data frames of the chosen transitions as a list of data frames
     return list_of_transitions
 
-
-
-
+###############################################################################
+###############################################################################
+# Function to get informative labels for model-shock combinations
 def get_labels(comparison):
+    """Obtain labels for chosen comparison.
+    
+    For a given dictionary with model-shock combinations which are to be
+    compared, this function returns a list of informative labels.
+    """
+    # Correspondence of model-shock combinations to labels
     correspondence = {'baseline_limit_permanent': 'Baseline; Shock to \u03C6',
                       'baseline_limit_permanent_asymmetric': 'Credit Easing; Shock to \u03C6',
                       'baseline_wedge_permanent': 'Baseline; Shock to \u03BA',
@@ -485,22 +473,29 @@ def get_labels(comparison):
                       'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA',
                       'very_slow_phi_limit_permanent': 'Very Slow \u03C6; Shock to \u03C6'}
     
-    # Create empty list of data frames with desired transitions
+    # Initialise list 
     list_of_labels = []
     
-    # Get the values of the comparison dictionary as a list
+    # Get the values of the input dictionary
     comparison_list = list(comparison.values())
     
+    # Loop through values to fill list of labels
     for component in comparison_list:
         label = correspondence[component]
         list_of_labels.append(label)
     
     # Return list of labels
     return list_of_labels
-        
 
-
+###############################################################################
+###############################################################################
+# Function to check for negative values in an array 
 def check_for_negative_values(array_impl_obj):
+    """Check for negative entries.
+    
+    This function raises an error whenever a negative value appears in the 
+    provided data frame.
+    """
     # Convert input into a numpy array
     array = jnp.asarray(array_impl_obj)
 
@@ -510,21 +505,31 @@ def check_for_negative_values(array_impl_obj):
     # Raise error if negative entries were found
     if negative_indices.size > 0:
         raise ValueError('Warning: Negative values found in the consumption responses.')
-    
     else:
         print('No negative values found in the consumption responses.')
 
-
+###############################################################################
+###############################################################################
+# Function to obtain transition of aggregates and cross-section and check for 
+# non-negativity of consumption
 def get_agg_and_dist_transitions_and_check_c(terminal_model,
                                              initial_stst,
                                              initial_distr):
-    # Get transition of aggregate variables
-    agg_x, _ = terminal_model.find_path(init_state = initial_stst.values(),
-                                        init_dist = initial_distr)
+    """Obtain transition after shock.
+    
+    This function calculates for a terminal model and for initial conditions 
+    (aggregate and cross-sectional characteristics of the initial steady 
+     state) the transition of the model from the initial to the terminal state 
+    and checks whether the individual consumption responses contain negative 
+    values.
+    """
+    # Get transition of aggregate variables with Jacobian of terminal model
+    agg_x, _ = terminal_model.find_path(init_state = initial_stst.values(), # pass initial steady state (aggregate block)
+                                        init_dist = initial_distr) # pass initial distribution
     
     # Get transition of cross-sectional outcomes
-    dist_x = terminal_model.get_distributions(trajectory = agg_x,
-                                              init_dist = initial_distr)
+    dist_x = terminal_model.get_distributions(trajectory = agg_x, # pass aggregate transition 
+                                              init_dist = initial_distr) # pass initial distribution
     
     # Check cross-sectional dynamics of consumption for negative entries
     check_for_negative_values(dist_x['c'])
@@ -532,16 +537,24 @@ def get_agg_and_dist_transitions_and_check_c(terminal_model,
     # Return aggregate and cross-sectional transitions
     return agg_x, dist_x
     
+###############################################################################
+###############################################################################
+# Function to truncate asset distribution at some threshold
 def shorten_asset_dist(hank_model, 
                        x_threshold,
                        percent=100):
+    """"Shorten asset distribution.
+    
+    This function returns a truncated asset distribution for a given model and
+    threshold. To that end, it gets the full distribution, then collapses the 
+    skills dimension and calculates the cumulative density from points at and
+    greater than the threshold. This is then the last entry in the data frame.
+    """
     # Get asset grid
     a_grid = hank_model['context']['a_grid']
     
-    # Distribution over skills and assets
+    # Get distribution over assets as data frame
     distribution_skills_and_assets = hank_model['steady_state']['distributions'][0]
-    
-    # Distribution over assets
     distribution_assets = np.column_stack([a_grid, 
                                            percent*jnp.sum(distribution_skills_and_assets, 
                                                            axis = 0)])
@@ -554,7 +567,7 @@ def shorten_asset_dist(hank_model,
     # Calculate the sum of shares for grid points above or equal to the threshold
     sum_share = distribution_assets_df[distribution_assets_df['grid'] >= x_threshold]['distribution'].sum()
 
-    # Create a new row with the threshold and the sum of shares
+    # Create a new row with the threshold and the cumulative density from that point onward
     threshold_row = pd.DataFrame({'grid': [x_threshold], 'distribution': [sum_share]})
 
     # Concatenate the filtered data frame with the threshold row
@@ -566,9 +579,23 @@ def shorten_asset_dist(hank_model,
     # Return shortened distribution
     return short_asset_dist
 
+###############################################################################
+###############################################################################
+# Function to convert certain dates to pandas datetime
 def convert_quarter_to_datetime(quarter_str):
+    """Convert dates.
+    
+    This function converts dates which are in string format year:quarter to a
+    pandas datetime format.
+    """
+    # Split the input string into 'year' and 'quarter'
     year, quarter = quarter_str.split(':')
+    
+    # Get the number of the quarter
     quarter_number = int(quarter[1:])
+    
+    # Calculate the starting month of the quarter
     quarter_start_month = (quarter_number - 1) * 3 + 1
     
+    # Construct a date string which is easy to convert to pandas datetime
     return pd.to_datetime(f"{year}-{quarter_start_month:02d}-01")
