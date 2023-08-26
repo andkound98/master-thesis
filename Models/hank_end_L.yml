@@ -3,7 +3,7 @@
 # https://github.com/gboehl/econpizza/blob/master/econpizza/examples/hank_labor.yml
 ---
 name: 'hank_end_L'
-description: 'One-Asset HANK model with Endogenous Labour Supply and with Shocks to the Borrowing Constraint and the Interest Rate Wedge'
+description: 'HANK model with endogenous labour supply and shocks to borrowing limit and interest rate wedge'
 functions_file: 'hank_functions.py'
 
 ###############################################################################
@@ -17,10 +17,10 @@ definitions: |
     
     # Create custom grid
     amax = 150 # Maximum asset grid point
-    an = 200 # Number of asset grid points 
-    amin = 0 # Initial borrowing constraint
+    an = 200 # Initial number of asset grid points 
+    amin = 0 # Initial borrowing constraint (0 is a placeholder)
     rho_phi = 0.5 # Persistence in shock to borrowing constraint
-    amin_terminal = 0 # Terminal borrowing constraint
+    amin_terminal = 0 # Terminal borrowing constraint (0 is a placeholder)
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
     
 # Variables and parameters for household and aggrgeate blocks
@@ -38,13 +38,13 @@ distributions:
     # Productivity grid 
     skills:
       type: exogenous_rouwenhorst
-      rho: 0.966 # Persistence in labour income
-      sigma: 0.5 # Variance of shocks to labour income (income risk)
-      n: 8 # Number of income grid points
+      rho: 0.966 # persistence in labour productivity
+      sigma: 0.5 # variance of shocks to labour productivity
+      n: 8 # number of productivity grid points
     # Asset grid
     a: 
       type: endogenous_generic
-      n: a_grid_n # Number of asset grid points 
+      n: a_grid_n # number of asset grid points 
 
 # Decision problem of households
 decisions:

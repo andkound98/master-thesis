@@ -2,8 +2,8 @@
 # Based on example model from Gregor Boehl, see:
 # https://github.com/gboehl/econpizza/blob/master/econpizza/examples/hank_with_comments.yml
 ---
-name: 'hank_low_B'
-description: 'One-Asset HANK model with Shocks to the Borrowing Constraint and the Interest Rate Wedge'
+name: 'hank_baseline'
+description: 'HANK model with low B calibration'
 functions_file: 'hank_functions.py'
 
 ###############################################################################
@@ -18,9 +18,9 @@ definitions: |
     # Create custom grid
     amax = 150 # Maximum asset grid point
     an = 200 # Initial number of asset grid points 
-    amin = 0 # Initial borrowing constraint
+    amin = 0 # Initial borrowing constraint (0 is a placeholder)
     rho_phi = 0.5 # Persistence in shock to borrowing constraint
-    amin_terminal = 0 # Terminal borrowing constraint
+    amin_terminal = 0 # Terminal borrowing constraint (0 is a placeholder)
     a_grid, a_grid_n = create_grid(amax, an, amin, rho_phi, amin_terminal)
 
 # Variables and parameters for household and aggrgeate blocks
@@ -112,8 +112,8 @@ equations:
 
     # Market clearing conditions
     ~ y = (1 - psi*(pi/pitildeLag - 1)**2/2)*y_prod - kappa*aggr_debt # output (i.e. GDP)
-    ~ C = y # goods market
-    ~ B = aggr_a # asset market
+    ~ C = y # asset market
+    ~ B = aggr_a # bond market
     ~ w = N**sigma_l # labour market
 
     # Exogenous processes
@@ -130,7 +130,7 @@ steady_state:
         # Parameters
         
         # Households 
-        beta: 0.98415 # discount factor
+        beta: 0.99056 # discount factor
         sigma_c: 2. # coefficient of relative risk aversion
         sigma_l: 2. # inverse Frisch elasticity of labour supply
         
@@ -171,5 +171,5 @@ steady_state:
         Rr: R # steady state real interest rate on positive bond holdings 
         Rrminus: Rr + kappa # steady state real rate on negative bond holdings
         tau: (Rr-1)*B # steady state lump-sum tax
-        WaPrime: egm_init(a_grid, skills_stationary) # initialise marginal continuation value
+        WaPrime: egm_init(a_grid, skills_stationary) # initialise marginal continuation value       
         

@@ -3,7 +3,7 @@
 # https://github.com/gboehl/econpizza/blob/master/econpizza/examples/hank_with_comments.yml
 ---
 name: 'hank_baseline'
-description: 'One-Asset HANK model with Shocks to the Borrowing Limit and the Interest Rate Wedge'
+description: 'HANK model with shocks to borrowing limit and interest rate wedge'
 functions_file: 'hank_functions.py'
 
 ###############################################################################
