@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 25.08.2023
+Date: 26.08.2023
 
 This file contains code which visually compares the transitions produced by 
 different models and shocks. In particular, the user selects the combination of
@@ -42,8 +42,8 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: save results 
-show_titles_in_plots = False # True: show plot titles
+save_results = False # True: save results 
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -55,8 +55,7 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Dictionary with specified model-shock combination (must have been 
 # implemented and stored first )
 comparison = {'transition_1': 'baseline_limit_permanent',
-              'transition_2': 'baseline_limit_permanent_asymmetric'}
-
+              'transition_2': 'baseline_wedge_permanent'}
 # comparison = {'transition_1': 'fast_shock_limit_permanent',
 #               'transition_2': 'baseline_limit_permanent',
 #               'transition_3': 'slow_shock_limit_permanent'}

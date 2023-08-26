@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 25.08.2023
+Date: 26.08.2023
 
 This file contains the main code for my master thesis with the title:
     
@@ -68,8 +68,8 @@ from list_variables_to_plot import dict_of_variables_to_plot
 # Preliminaries
 start = tm.time() # Start timer
 
-save_results = True # True: save results 
-show_titles_in_plots = False # True: show plot titles
+save_results = False # True: save results 
+show_titles_in_plots = True # True: show plot titles
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -94,7 +94,7 @@ shocks = ['limit_permanent', # permanent shock to the borrowing limit
          ]
 
 # Choose asymmetry 
-asymmetry = False # True: credit easing
+asymmetry = False # True: credit easing, i.e. reverse transition
 
 # Loop thorugh model-shock combinations to obtain results
 for model in models:

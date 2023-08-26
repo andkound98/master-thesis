@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 25.08.2023
+Date: 26.08.2023
 
 This file contains custom functions used throughout the project.
 """
@@ -114,12 +114,19 @@ def return_models_permanent(model_path,
                             settings, 
                             shock_model_parameters,
                             asym=False):
+    """Obtain Econpizza model instances
+    
+    This function parses through the given model path. Then, it adjusts this 
+    model dictionary as specified in the setting and parameters passed to the 
+    function. The output is one initial model and one terminal model. They of 
+    course depend on the chosen shock.
+    """
     # Get model as dictionary
     hank_dict = ep.parse(model_path)
     
-    # Load models depending on the chosen shock and settings
+    # Load models depending on the chosen shock
     
-    # Models for permanent shock to the borrowing limit
+    # Permanent shock to the borrowing limit
     if settings['Shock'].startswith('limit') == True:
         # Settings for interest rate wedge
         hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
@@ -129,8 +136,8 @@ def return_models_permanent(model_path,
         term = shock_model_parameters['terminal_borrowing_limit']
         
         hank_dict['steady_state']['fixed_values']['phi'] = init
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {init}')
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}')
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {init}') # replace place holders
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}') # replace place holders
         
         # Load initial model
         hank_model_initial = ep.load(hank_dict)
@@ -141,15 +148,15 @@ def return_models_permanent(model_path,
         # Load terminal model
         hank_model_terminal = ep.load(hank_dict)
         
-    # Models for permanent shock to the interest rate wedge
+    # Permanent shock to the interest rate wedge
     if settings['Shock'].startswith('wedge') == True:
         # Settings for borrowing limit
         init = shock_model_parameters['initial_borrowing_limit']
         term = shock_model_parameters['terminal_borrowing_limit']
         
         hank_dict['steady_state']['fixed_values']['phi'] = init
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {init}')
-        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}')
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {init}') # replace place holders
+        hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}') # replace place holders
         
         # Create model with initial borrowing wedge
         hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
@@ -168,48 +175,29 @@ def return_models_permanent(model_path,
         return hank_model_initial, hank_model_terminal
     
     if asym == True: # Asymmetric case
-        return hank_model_terminal, hank_model_initial
+        return hank_model_terminal, hank_model_initial # just swap terminal and initial
 
 ###############################################################################
 ###############################################################################
-def return_models_transitory(model_path, 
-                            settings, 
-                            shock_model_parameters):
-    # Get model as dictionary
-    hank_dict = ep.parse(model_path)
-    
-    # Load model depending on the chosen shock
-    
-    hank_dict['steady_state']['fixed_values']['kappa'] = shock_model_parameters['initial_wedge']
-    
-    init = shock_model_parameters['initial_borrowing_limit']
-    term = shock_model_parameters['terminal_borrowing_limit']
-    
-    hank_dict['steady_state']['fixed_values']['phi'] = init
-    hank_dict['definitions'] = hank_dict['definitions'].replace('amin = 0', f'amin = {init}')
-    hank_dict['definitions'] = hank_dict['definitions'].replace('amin_terminal = 0', f'amin_terminal = {term}')
-    
-    hank_model = ep.load(hank_dict)
-        
-    # Return model
-    return hank_model
-
-###############################################################################
-###############################################################################
-# Function to find the closest on-grid asset grid point for a given off-grid 
-# value
+# Function to find the closest on-grid asset grid point for a given value
 def find_closest_grid_point(ar_borrowing_limit, 
                             asset_grid):
+    """Get closest on-grid grid point.
+    
+    This function returns the value and the index of the grid point (ON the 
+    grid) which is closest in terms of numerical distance from the number 
+    provided (potentially OFF grid).
+    """
     # Create an array of distances between the grid points and a given value
     array_distances = jnp.abs(asset_grid - ar_borrowing_limit)
     
     # Get the index of the minimum distance in array 
     indx_min_distance = jnp.argmin(array_distances)
     
-    # Identify the grid point with the minimum distance to the given value
+    # Get the grid point with the minimum distance to the given value
     closest_grid_point = asset_grid[indx_min_distance]
     
-    # Return the closest grid point and its index in the asset grid
+    # Return closest grid point and its index
     return closest_grid_point, indx_min_distance
 
 ###############################################################################
@@ -219,13 +207,18 @@ def make_policy_df(hank_model,
                    policy,
                    borr_cutoff=None,
                    x_threshold=None):
+    """Household policies as data frame.
+    
+    Obtain, for the desired household policy, a data frame of these policies 
+    across skill levels.
+    """
     # Preliminaries
-    a_grid = hank_model['context']['a_grid'] # Get asset grid
-    policy_arr = np.array(a_grid) # Initialise container for policies
-    policy_columns = ['grid'] # Initialise name constainer
+    a_grid = hank_model['context']['a_grid'] # asset grid
+    policy_arr = np.array(a_grid) # initialise container for policies
+    policy_columns = ['grid'] # initialise name constainer
     
     # Loop through skill grid to get policy functions for each skill level
-    for no_states in range(hank_model['distributions']['dist']['skills']['n']): # Note: here, n refers to the number of skill grid points
+    for no_states in range(hank_model['distributions']['dist']['skills']['n']): # n refers here to the number of skill grid points
         one_policy = hank_model['steady_state']['decisions'][f'{policy}'][no_states]
         
         if policy_arr.size == 0:
@@ -246,75 +239,83 @@ def make_policy_df(hank_model,
     if x_threshold != None:
         policy_df.loc[policy_df['grid'] > x_threshold, :] = np.nan
     
-    # Return resulting data frame
+    # Return data frame
     return policy_df
 
 ###############################################################################
 ###############################################################################
-# Function to compare initial and terminal steady state
-def stst_overview(models,
+# Function to compare initial and terminal steady states
+def stst_overview(models, # list of models
                   save_results, 
                   exact_path,
                   percent=100):
     """Steady state overview.
     
-    This function creates a data frame which holds the steady state values of
-    the one or two models passed to the function.
-    
-    If one model is passed, the function creates a table with the steady state 
-    values.
-    
-    If two models are passed, the function creates a table with both steady 
-    states side-by-side and adds a column which calculates the difference 
-    between the two steady states. It can also distinguish (manually) between 
-    variables for which it needs to take the change in absolute terms or in 
-    percentage terms.
+    This function creates a table which compares the steady state values of the 
+    two models passed to the function. The function adds a column which 
+    calculates the differences between the two steady states. It distinguishes 
+    (manually) between variables for which it needs to take the change in 
+    absolute terms or in percentage terms.
     """
     # Create a rounding function for convenience
     round_func_4 = lambda x: round(float(x), 4)
         
-    # Extract models
+    # Extract models from input list
     hank_model_init = models[0]
     hank_model_term = models[1]
     
+    # Data frame of initial steady state
     stst_df = pd.DataFrame(hank_model_init['stst'].items(), 
-                                columns = ['Variable', 'Initial'])
+                           columns = ['Variable', 'Initial'])
     stst_df['Initial'] = stst_df['Initial'].apply(round_func_4)
     
+    # Data frame of terminal steady state
     term_stst_df = pd.DataFrame(hank_model_term['stst'].items(),
-                                         columns = ['Variable', 'Terminal'])
+                                columns = ['Variable', 'Terminal'])
     term_stst_df['Terminal'] = term_stst_df['Terminal'].apply(round_func_4)
     
-    # Merge steady states into one data frame
+    # Merge into one data frame
     stst_df = pd.merge(stst_df, term_stst_df, 
                        on = 'Variable', how = 'left')
     
     # Add some more features of the steady states
-    a_grid_init = hank_model_init['context']['a_grid']
-    #a_grid_term = hank_model_term['context']['a_grid']
     
-    # Initial steady state 
-    distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0]
+    # Obtain asset grid and calculate distributions in initial and terminal
+    # states
+    a_grid_init = hank_model_init['context']['a_grid'] # asset grid
+    distribution_skills_and_assets_initial = hank_model_init['steady_state']['distributions'][0] # initial dist over skills and assets
     distribution_assets_initial = percent*jnp.sum(distribution_skills_and_assets_initial, 
-                                      axis = 0)
-    
-    # Terminal steady state 
-    distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0]
+                                      axis = 0) # initial dist over assets
+    distribution_skills_and_assets_terminal = hank_model_term['steady_state']['distributions'][0] # terminal dist over skills and assets
     distribution_assets_terminal = percent*jnp.sum(distribution_skills_and_assets_terminal, 
-                                      axis = 0)
+                                      axis = 0) # terminal dist over assets 
     
-    #a_grid = hank_model['context']['a_grid']
-    #dist = hank_model['steady_state']['distributions'][0]
+    # Calculate MPCs according to asset status, i.e. aggregate MPC among 
+    # lenders and aggregate MPC among borrowers
     mpc_init = hank_model_init['steady_state']['decisions']['mpc']
     mpc_term = hank_model_term['steady_state']['decisions']['mpc']
-    
     borr_mpc_init = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_initial, 0))
     borr_mpc_term = jnp.sum(jnp.where(a_grid_init<0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init<0, distribution_skills_and_assets_terminal, 0))
-    
     lend_mpc_init = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_initial*mpc_init,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_initial, 0))
     lend_mpc_term = jnp.sum(jnp.where(a_grid_init>=0,distribution_skills_and_assets_terminal*mpc_term,0), axis=(0,1)) / jnp.sum(jnp.where(a_grid_init>=0, distribution_skills_and_assets_terminal, 0))
 
-    # Add fraction of indebted households
+    # Add MPC of borrowers to data frame
+    row_mpc_indebted = {'Variable': 'MPC of Borrowers',
+                          'Initial': round(borr_mpc_init,2),
+                          'Terminal': round(borr_mpc_term,2)}
+    row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
+    stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
+                                   ignore_index=True)
+    
+    # Add MPC of lenders to data frame
+    row_mpc_lending = {'Variable': 'MPC of Lenders',
+                          'Initial': round(lend_mpc_init,2),
+                          'Terminal': round(lend_mpc_term,2)}
+    row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
+    stst_df = pd.concat([stst_df, row_mpc_lending_df], 
+                                   ignore_index=True)
+
+    # Add fraction of borrowers to data frame
     row_share_indebted = {'Variable': 'Frac. of Borrowers',
                           'Initial': jnp.sum(jnp.where(a_grid_init < 0, 
                                                                     distribution_assets_initial, 
@@ -326,7 +327,7 @@ def stst_overview(models,
     stst_df = pd.concat([stst_df, row_share_indebted_df], 
                                    ignore_index=True)
     
-    # Add fraction of households at borrowing limit    
+    # Add fraction of households at borrowing limit to data frame  
     row_share_limit = {'Variable': 'Frac. at Borrowing Limit',
                        'Initial': distribution_assets_initial[0].round(2).item(),
                        'Terminal': distribution_assets_terminal[distribution_assets_terminal>0][0].round(2).item()}
@@ -334,7 +335,7 @@ def stst_overview(models,
     stst_df = pd.concat([stst_df, row_share_limit_df], 
                                    ignore_index=True)
     
-    # Add fraction of households at 0 assets 
+    # Add fraction of households at zero assets to data frame
     row_share_zero = {'Variable': 'Frac. at Zero Assets',
                       'Initial': jnp.sum(jnp.where(a_grid_init == 0, 
                                                                 distribution_assets_initial, 
@@ -346,23 +347,7 @@ def stst_overview(models,
     stst_df = pd.concat([stst_df, row_share_zero_df], 
                                    ignore_index=True)
     
-    # Add MPC of indebted households
-    row_mpc_indebted = {'Variable': 'MPC of Borrowers',
-                          'Initial': round(borr_mpc_init,2),
-                          'Terminal': round(borr_mpc_term,2)}
-    row_mpc_indebted_df = pd.DataFrame([row_mpc_indebted])
-    stst_df = pd.concat([stst_df, row_mpc_indebted_df], 
-                                   ignore_index=True)
-    
-    # Add MPC of lending households
-    row_mpc_lending = {'Variable': 'MPC of Lenders',
-                          'Initial': round(lend_mpc_init,2),
-                          'Terminal': round(lend_mpc_term,2)}
-    row_mpc_lending_df = pd.DataFrame([row_mpc_lending])
-    stst_df = pd.concat([stst_df, row_mpc_lending_df], 
-                                   ignore_index=True)
-    
-    # Add column which calculates changes in percent between the steady states
+    # Add column with percentage changes
     stst_df['Change'] = 0
 
     # Calculate changes based on variable type
@@ -381,7 +366,7 @@ def stst_overview(models,
     # Round changes
     stst_df['Change'] = stst_df['Change'].apply(round_func_4)
     
-    # Save table in TeX
+    # Save data frame as TeX table
     if save_results == True:
         stst_table_path = os.path.join(os.getcwd(),
                                        'Results',
@@ -391,7 +376,7 @@ def stst_overview(models,
                          label = f'tab:stst_comparison_{exact_path}', 
                          index = False)
     
-    # Return resulting data frame
+    # Return data frame
     return stst_df
 
 ###############################################################################
@@ -401,16 +386,20 @@ def save_transition(model,
                     x_trans, 
                     save_results,
                     exact_path):
-    # Transform JAX array into Numpy array
+    """Pickle transition.
+    
+    This function saves a given transition as a pickled pandas data frame.
+    """
+    # Transform JAX array into numpy array
     nparr = jax.device_get(x_trans)
     
-    # Transform into Pandas data frame
+    # Transform into pandas data frame
     transition_df = pd.DataFrame(nparr)
     
     # Give columns names 
     transition_df.columns = model['variables']
     
-    # Get path to save pickle file
+    # Get path to save pickle
     path = os.path.join(os.getcwd(),
                         'Results',
                         f'{exact_path}',
@@ -426,7 +415,13 @@ def save_transition(model,
 ###############################################################################
 # Function to obtain pickled transitions
 def get_transitions(comparison):
-    # Create empty list of data frames with desired transitions
+    """Get pickled transitions.
+    
+    For a given dictionary with the names of saved transitions (in the 
+    'Results' folder), this function obtains the transitions and stores them
+    in a list of data frames.
+    """
+    # Create empty list of data frames
     list_of_transitions = []
     
     # Get the values of the comparison dictionary as a list
@@ -442,6 +437,8 @@ def get_transitions(comparison):
         try:
             x_df = pd.read_pickle(path)
             list_of_transitions.append(x_df)
+            
+        # Raise error if transition under desired name was not yet saved
         except FileNotFoundError:
             raise FileNotFoundError(f'No transition yet saved under the name {transition}.')
             
@@ -461,17 +458,29 @@ def get_labels(comparison):
     correspondence = {'baseline_limit_permanent': 'Baseline; Shock to \u03C6',
                       'baseline_limit_permanent_asymmetric': 'Credit Easing; Shock to \u03C6',
                       'baseline_wedge_permanent': 'Baseline; Shock to \u03BA',
+                      'baseline_wedge_permanent_asymmetric': 'Credit Easing; Shock to \u03BA',
                       'end_L_limit_permanent': 'End. LS; Shock to \u03C6',
+                      'end_L_limit_permanent_asymmetric': 'End. LS; Credit Easing; Shock to \u03C6',
                       'end_L_wedge_permanent': 'End. LS; Shock to \u03BA',
-                      'fast_shock_limit_permanent': 'Fast Shock; Shock to \u03C6',
-                      'fast_shock_wedge_permanent': 'Fast Shock; Shock to \u03BA',
-                      'low_B_limit_permanent': 'Low B; Shock to \u03C6',
-                      'low_B_wedge_permanent': 'Low B; Shock to \u03BA',
-                      'no_ZLB_limit_permanent': 'No ZLB; Shock to \u03C6',
-                      'no_ZLB_wedge_permanent': 'No ZLB; Shock to \u03BA',
+                      'end_L_wedge_permanent_asymmetric': 'End. LS; Credit Easing; Shock to \u03BA',
                       'slow_shock_limit_permanent': 'Slow Shock; Shock to \u03C6',
+                      'slow_shock_limit_permanent_asymmetric': 'Slow Shock; Credit Easing; Shock to \u03C6',
                       'slow_shock_wedge_permanent': 'Slow Shock; Shock to \u03BA',
-                      'very_slow_phi_limit_permanent': 'Very Slow \u03C6; Shock to \u03C6'}
+                      'slow_shock_wedge_permanent_asymmetric': 'Slow Shock; Credit Easing; Shock to \u03BA',
+                      'fast_shock_limit_permanent': 'Fast Shock; Shock to \u03C6',
+                      'fast_shock_limit_permanent_asymmetric': 'Fast Shock; Credit Easing; Shock to \u03C6',
+                      'fast_shock_wedge_permanent': 'Fast Shock; Shock to \u03BA',
+                      'fast_shock_wedge_permanent_asymmetric': 'Fast Shock; Credit Easing; Shock to \u03BA',
+                      'low_B_limit_permanent': 'Low B; Shock to \u03C6',
+                      'low_B_limit_permanent_asymmetric': 'Low B; Credit Easing; Shock to \u03C6',
+                      'low_B_wedge_permanent': 'Low B; Shock to \u03BA',
+                      'low_B_wedge_permanent_asymmetric': 'Low B; Credit Easing; Shock to \u03BA',
+                      'no_ZLB_limit_permanent': 'No ZLB; Shock to \u03C6',
+                      'no_ZLB_limit_permanent_asymmetric': 'No ZLB; Credit Easing; Shock to \u03C6',
+                      'no_ZLB_wedge_permanent': 'No ZLB; Shock to \u03BA',
+                      'no_ZLB_wedge_permanent_asymmetric': 'No ZLB; Credit Easing; Shock to \u03BA',
+                      'very_slow_phi_limit_permanent': 'Very Slow \u03C6; Shock to \u03C6', 
+                      'very_slow_phi_limit_permanent_asymmetric': 'Very Slow \u03C6; Credit Easing; Shock to \u03C6'}
     
     # Initialise list 
     list_of_labels = []

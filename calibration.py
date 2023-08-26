@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 25.08.2023
+Date: 26.08.2023
 
 This file calculates targets for the calibration of the models in the thesis 
 and plots some of the time series. 
@@ -35,7 +35,7 @@ from custom_functions import convert_quarter_to_datetime # function to convert t
 
 ###############################################################################
 # Preliminaries
-save_results = True # True: save results 
+save_results = False # True: save results 
 
 pio.renderers.default = 'svg' # For plotting in the Spyder window
 
@@ -48,13 +48,7 @@ pio.renderers.default = 'svg' # For plotting in the Spyder window
 # Get path to API and initialise FRED package
 
 # Get path
-full_path_api = os.path.join('/', 
-                             'Users', 
-                             'andreaskoundouros', 
-                             'Documents', 
-                             'RA-Saidi', 
-                             'Projekt-Sanktionen', 
-                             'api_key_fred.txt')
+full_path_api = os.path.join('api_key_fred.txt') # SET THE PATH TO YOUR FRED API HERE
 
 # Initialise FRED package
 fred = Fred(full_path_api)
@@ -67,17 +61,15 @@ with open(full_path_api, 'r') as api_txt:
 ###############################################################################
 # Set required variables and respective series IDs
 fred_variables = {'Government Bonds': 'MVGFD027MNFRBDAL', # Market Value of Gross Federal Debt
-                  'Household Debt': 'HCCSDODNS', # Consumer Credit (Households and Nonprofit Organizations)
+                  'Household Debt': 'HCCSDODNS', # Households and Nonprofit Organizations; Consumer Credit; Liability, Level
                   'GDP': 'GDP', # GDP (nominal, annualised)
                   'GDP Deflator': 'GDPDEF'} # GDP Deflator
 
 ###############################################################################
-# Preliminaries 
-
 # Empty data frame
 FRED_data = pd.DataFrame()
 
-# Dates for column of dates
+# Initialise column of dates
 dates = pd.date_range(start = "1940-01-01", # Some early starting value
                       end = "2023-06-01", # Some late ending value
                       freq = "MS") # Monthly frequency
@@ -99,8 +91,7 @@ for key in fred_variables.keys():
     else:
         FRED_data = pd.merge(FRED_data, 
                              fred_dt,
-                             on='Date', 
-                             how='left')
+                             on='Date',how='left')
     
 # Create quarterly observation for monthly Government Bonds
 quarterly_bonds = []
@@ -112,8 +103,8 @@ for i in range(len(FRED_data)):
         quarterly_bonds.append(three_month_avg)
 FRED_data["Government Bonds"] = quarterly_bonds 
 
-# Drop entries before specified date
-start_date = '1951-10-01' # Full observations start in 1951:Q4
+# Drop entries before 1951:Q4 as all series are available from then
+start_date = '1951-10-01'
 mask = FRED_data['Date'] >=  pd.to_datetime(start_date)
 FRED_data = FRED_data[mask]
 

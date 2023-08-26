@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 25.08.2023
+Date: 26.08.2023
 
 This file contains custom functions for plotting various results throughout the
 project.
@@ -20,7 +20,6 @@ from grgrlib import grplot
 import plotly.express as px
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from grgrlib import grbar3d
 
 ###############################################################################
 ###############################################################################
@@ -162,49 +161,10 @@ def plot_selected_policies(hank_model,
             
         else: 
             print('Error with the dimensions of the variable list.')
-        
-###############################################################################
-###############################################################################
-def plot_stst_dist_3d(model,
-                      percent=100):
-    """Plot the steady state distribution in 3D.
-    
-    This function plots the steady state distribution of a given model over 
-    skills and assets in three dimensions.
-
-    Parameters
-    ----------
-    model                           :
-    percent                         :
-
-    Returns
-    -------
-    fig_dist_skills_and_assets      : 3D steady state distribution plot
-
-    """
-    
-    # Get asset grid and the distribution over skills and assets
-    a_grid = model['context']['a_grid']
-    full_dist = model['steady_state']['distributions'][0]
-    
-    # Plot
-    fig_dist_skills_and_assets, _ = grbar3d(percent*full_dist,
-                                            xedges=jnp.arange(1, 
-                                                              (len(full_dist)+1)), 
-                                            yedges=a_grid, 
-                                            figsize=(9,7), 
-                                            depth=.5)
-    
-    # Label axes
-    fig_dist_skills_and_assets.set_xlabel('Productivity')
-    fig_dist_skills_and_assets.set_ylabel('Bond/IOU Holdings')
-    fig_dist_skills_and_assets.set_zlabel('Percent')
-    
-    # Adjust perspective
-    fig_dist_skills_and_assets.view_init(azim=120)
 
 ###############################################################################
 ###############################################################################
+# Function for creating a bar plot of the asset distribution
 def bar_plot_asset_dist(hank_model, 
                         save_results,
                         exact_path,
@@ -256,7 +216,7 @@ def bar_plot_asset_dist(hank_model,
     pos_y = y[y>0]
     pos_y.reset_index(drop=True, inplace=True)
     
-    # Empty plot
+    # Initialise plot
     fig = go.Figure() 
     
     # Fill plot step-by-step
@@ -717,7 +677,6 @@ def plot_selected_transition(list_of_variables,
         else: 
             print('Error with the dimensions of the variable list.')
 
-
 ###############################################################################
 ###############################################################################
 # Function to visualise the evolution of the asset distribution over time
@@ -842,7 +801,6 @@ def plot_percentile_transitions(policy,
                                  f'{exact_path}',
                                  f'percentile_transitions_{exact_path}_{policy_var}.svg')
         fig.write_image(path_plot)
-    
 
 ###############################################################################
 ###############################################################################
@@ -1040,7 +998,11 @@ def compare_selected_transitions(list_of_transition_dfs,
                 path_plot = os.path.join(path,
                                          f'comparison_{variable1}_{variable2}_{combined_key}.svg')
             fig.write_image(path_plot)
-            
+
+###############################################################################
+###############################################################################
+# Function to plot the percent change in asset holdings on impact of the shock 
+# over the asset distribution
 def plot_assets_on_impact_over_dist(hank_model_initial, 
                                     hank_model_terminal,
                                     dist_transition,

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Andreas Koundouros
-Date: 25.08.2023
+Date: 26.08.2023
 
 This file implements the permanent shock to the household discount factor in 
 the baseline model, as described in appendix E.3 of the thesis.
