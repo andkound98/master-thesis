@@ -42,7 +42,7 @@ All of these are to the largest part based on the models from the [`Econpizza`](
 
 ## Results
 
-The folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results) contains the results produced by the `main.py` file and the `custom_functions.py` file.
+The folder [**Results**](https://github.com/andkound98/master-thesis/tree/main/Results) contains the results produced by the `main.py` file and the `custom_functions.py` file. The figures and tables are in various subfolders, whose names are meant be indicative for their respective contents. However, it might be much more useful to run the simulations through the files `main.py` and `custom_functions.py` to obtain the specific results one desires.
 
 ## Data
 
